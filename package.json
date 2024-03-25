@@ -1,0 +1,61 @@
+{
+	"name": "@redis-x/client",
+	"version": "0.1.0-beta.1",
+	"description": "Enhanced redis client build on top of \"redis\" package.",
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"main": "src/main.js",
+	"exports": {
+		".": {
+			"import": "./dist/main.mjs",
+			"require": "./dist/main.cjs"
+		}
+	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
+	"dependencies": {
+		"valibot": "0.30.0"
+	},
+	"devDependencies": {
+		"@babel/eslint-parser": "7.21.8",
+		"eslint": "8.41.0",
+		"eslint-config-xo": "0.43.1",
+		"eslint-plugin-import": "2.27.5",
+		"eslint-plugin-jsdoc": "46.5.0",
+		"eslint-plugin-node": "11.1.0",
+		"eslint-plugin-promise": "6.1.1",
+		"eslint-plugin-unicorn": "47.0.0",
+		"redis": "4.6.13",
+		"vitest": "1.3.1"
+	},
+	"scripts": {
+		"compile": "bun run tools/compile.js",
+		"test": "bun run redis-up && bun run compile && bun test && npm run test-node",
+		"test-node": "vitest run --no-file-parallelism",
+		"coverage": "bun run redis-up && bun run compile && bun test --coverage",
+		"build": "bun run compile && rm -rf dist && bun run build-cjs",
+		"build-cjs": "bunx esbuild --bundle --platform=node --format=cjs --packages=external --outfile=dist/main.cjs src/main.js",
+		"# build-cjs": "bunx esbuild --platform=node --format=cjs --outdir=dist --out-extension:.js=.cjs $(find src -type f | grep -v .test.js)",
+		"redis-up": "docker ps | grep test-redis >/dev/null || docker run --rm -d -p 16379:6379 --name test-redis redis:7-alpine",
+		"redis-down": "docker stop test-redis"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/redis-x/client.git"
+	},
+	"keywords": [
+		"redis",
+		"client",
+		"transaction",
+		"multi"
+	],
+	"author": "Daniil Kirichenko (https://twitter.com/kirickme)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/redis-x/client/issues"
+	},
+	"homepage": "https://github.com/redis-x/client#readme"
+}

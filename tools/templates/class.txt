@@ -1,0 +1,8 @@
+	/**
+	 * @type {import("../main").RedisXClient}
+	 */
+	#parent;
+
+	constructor(parent) {
+		this.#parent = parent;
+	}
