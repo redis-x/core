@@ -8,7 +8,7 @@
  *
  * Unlike LPUSH command, multiple elements are inserted as bulk, like Array.prototype.unshift() method.
  *
- * O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
+ * Complexity: O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
  * @generator
  * @param {string} key Key name.
  * @param {RedisXCommandArgument[]} values Values to insert.

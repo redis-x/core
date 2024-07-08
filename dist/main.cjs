@@ -38,6 +38,103 @@ function* ping() {
   return yield ["PING"];
 }
 
+// src/x-commands/hash/set.js
+function* set(key, field, value) {
+  return yield [
+    "HSET",
+    key,
+    field,
+    value
+  ];
+}
+
+// src/x-commands/hash/append.js
+var v = __toESM(require("valibot"), 1);
+
+// src/utils/lodash/isObjectLike.js
+function isObjectLike(value) {
+  return Boolean(value) && typeof value === "object";
+}
+
+// src/utils/lodash/isPlainObject.js
+var objectTag = "[object Object]";
+function isHostObject(value) {
+  let result = false;
+  if (value != null && typeof value.toString !== "function") {
+    try {
+      result = Boolean(String(value));
+    } catch {
+    }
+  }
+  return result;
+}
+function overArgument(function_, transform) {
+  return function(arg) {
+    return function_(transform(arg));
+  };
+}
+var functionProto = Function.prototype;
+var objectProto = Object.prototype;
+var functionToString = functionProto.toString;
+var { hasOwnProperty } = objectProto;
+var objectCtorString = functionToString.call(Object);
+var objectToString = objectProto.toString;
+var getPrototype = overArgument(Object.getPrototypeOf, Object);
+function isPlainObject(value) {
+  if (!isObjectLike(value) || objectToString.call(value) != objectTag || isHostObject(value)) {
+    return false;
+  }
+  const proto = getPrototype(value);
+  if (proto === null) {
+    return true;
+  }
+  const Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
+  return typeof Ctor === "function" && Ctor instanceof Ctor && functionToString.call(Ctor) == objectCtorString;
+}
+
+// src/x-commands/hash/append.js
+var valueValidator = v.union(
+  [
+    v.record(
+      v.string(),
+      v.any()
+    ),
+    v.map(
+      v.string(),
+      v.any()
+    )
+  ],
+  'Argument "values" must be an object or a Map.'
+);
+function* append(key, values) {
+  const args = [
+    "HSET",
+    key
+  ];
+  values = v.parse(
+    valueValidator,
+    values
+  );
+  const iterable_target = isPlainObject(values) ? Object.entries(values) : values;
+  for (const [field, value] of iterable_target) {
+    args.push(field, value);
+  }
+  return yield args;
+}
+
+// src/x-commands/hash/get-all.js
+function* getAll(key) {
+  const result = yield [
+    "HGETALL",
+    key
+  ];
+  const response = {};
+  for (let index = 0; index < result.length; index += 2) {
+    response[result[index]] = result[index + 1];
+  }
+  return response;
+}
+
 // src/x-commands/key/delete.js
 function* delete_(...keys) {
   return yield [
@@ -82,61 +179,61 @@ function* unshift(key, ...values) {
 }
 
 // src/x-commands/string/set.js
-var v = __toESM(require("valibot"), 1);
-var optionsValidator = v.object(
+var v2 = __toESM(require("valibot"), 1);
+var optionsValidator = v2.object(
   {
-    existing: v.optional(
-      v.boolean()
+    existing: v2.optional(
+      v2.boolean()
     ),
-    expire: v.optional(
-      v.union(
+    expire: v2.optional(
+      v2.union(
         [
-          v.literal("keep"),
-          v.object(
+          v2.literal("keep"),
+          v2.object(
             {
-              in: v.number([
-                v.integer(),
-                v.minValue(0)
+              in: v2.number([
+                v2.integer(),
+                v2.minValue(0)
               ])
             },
-            v.never()
+            v2.never()
           ),
-          v.object(
+          v2.object(
             {
-              in_ms: v.number([
-                v.integer(),
-                v.minValue(0)
+              in_ms: v2.number([
+                v2.integer(),
+                v2.minValue(0)
               ])
             },
-            v.never()
+            v2.never()
           ),
-          v.object(
+          v2.object(
             {
-              at: v.number([
-                v.integer(),
-                v.minValue(0)
+              at: v2.number([
+                v2.integer(),
+                v2.minValue(0)
               ])
             },
-            v.never()
+            v2.never()
           ),
-          v.object(
+          v2.object(
             {
-              at_ms: v.number([
-                v.integer(),
-                v.minValue(0)
+              at_ms: v2.number([
+                v2.integer(),
+                v2.minValue(0)
               ])
             },
-            v.never()
+            v2.never()
           )
         ],
         'Property "expire" must be either "keep" or an object with one of the following properties: "in", "in_ms", "at", "at_ms".'
       )
     )
   },
-  v.never('Unknown property found in "options" argument. Only "existing" and "expire" are allowed.')
+  v2.never('Unknown property found in "options" argument. Only "existing" and "expire" are allowed.')
 );
-function* set(key, value, options = {}) {
-  options = v.parse(
+function* set2(key, value, options = {}) {
+  options = v2.parse(
     optionsValidator,
     options
   );
@@ -190,7 +287,7 @@ function* get(key) {
 }
 
 // src/generated/single-commands.js
-var RedisXClientToolsCommands = class {
+class RedisXClientToolsCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -211,7 +308,54 @@ var RedisXClientToolsCommands = class {
     return this.#parent._useGenerator(ping);
   }
 };
-var RedisXClientKeyCommands = class {
+class RedisXClientHashCommands {
+  /**
+   * @type {import("../main").RedisXClient}
+   */
+  #parent;
+  constructor(parent) {
+    this.#parent = parent;
+  }
+  /**
+   */
+  /**
+   * Sets the value of a field in a hash.
+   *
+   * Complexity: O(1)
+   * @async
+   * @param {string} key Key name.
+   * @param {string} field Field name.
+   * @param {RedisXCommandArgument} value Field value.
+   * @returns {Promise<number>} 1 if the field was added, 0 if it was updated.
+   */
+  set(key, field, value) {
+    return this.#parent._useGenerator(set, [key, field, value]);
+  }
+  /**
+   * Sets the specified fields to their respective values in the hash stored at key.
+   *
+   * Complexity: O(1) for each field/value pair added.
+   * @async
+   * @param {string} key Key name.
+   * @param {{ [key: string]: any } | Map<string, any>} values Field-value pairs.
+   * @returns {Promise<number>} The number of fields that were added.
+   */
+  append(key, values) {
+    return this.#parent._useGenerator(append, [key, values]);
+  }
+  /**
+   * Returns all fields and values of the hash stored at key.
+   *
+   * Complexity: O(N) where N is the size of the hash.
+   * @async
+   * @param {string} key Key name.
+   * @returns {Promise<{ [key: string]: any }>} The hash stored at key.
+   */
+  getAll(key) {
+    return this.#parent._useGenerator(getAll, [key]);
+  }
+};
+class RedisXClientKeyCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -226,26 +370,26 @@ var RedisXClientKeyCommands = class {
    *
    * Keyword `delete` is reserved in JavaScript, so you can use `delete_` or `remove` instead.
    *
-   * O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
+   * Complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
    * @async
-   * @param {string[]} keys Key name.
+   * @param {...string} keys Key name.
    * @returns {Promise<number>} The number of keys that were removed.
    */
-  delete_(keys) {
-    return this.#parent._useGenerator(delete_, [keys]);
+  delete_(...keys) {
+    return this.#parent._useGenerator(delete_, [...keys]);
   }
   /**
    * Removes the specified keys. A key is ignored if it does not exist.
    *
    * Keyword `delete` is reserved in JavaScript, so you can use `delete_` or `remove` instead.
    *
-   * O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
+   * Complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
    * @async
-   * @param {string[]} keys Key name.
+   * @param {...string} keys Key name.
    * @returns {Promise<number>} The number of keys that were removed.
    */
-  remove(keys) {
-    return this.#parent._useGenerator(remove, [keys]);
+  remove(...keys) {
+    return this.#parent._useGenerator(remove, [...keys]);
   }
   /**
    * Set a timeout on key. After the timeout has expired, the key will automatically be deleted.
@@ -260,7 +404,7 @@ var RedisXClientKeyCommands = class {
     return this.#parent._useGenerator(expire, [key, timeout]);
   }
 };
-var RedisXClientListCommands = class {
+class RedisXClientListCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -275,7 +419,7 @@ var RedisXClientListCommands = class {
    *
    * Unlike LPUSH command, multiple elements are inserted as bulk, like Array.prototype.unshift() method.
    *
-   * O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
+   * Complexity: O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
    * @async
    * @param {string} key Key name.
    * @param {RedisXCommandArgument[]} values Values to insert.
@@ -285,7 +429,7 @@ var RedisXClientListCommands = class {
     return this.#parent._useGenerator(unshift, [key, values]);
   }
 };
-var RedisXClientStringCommands = class {
+class RedisXClientStringCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -306,7 +450,7 @@ var RedisXClientStringCommands = class {
    * @returns {Promise<"OK" | null>} "OK" if SET was executed correctly, otherwise null.
    */
   set(key, value, options) {
-    return this.#parent._useGenerator(set, [key, value, options]);
+    return this.#parent._useGenerator(set2, [key, value, options]);
   }
   /**
    * Returns the string value of a key.
@@ -322,7 +466,7 @@ var RedisXClientStringCommands = class {
 };
 
 // src/generated/transaction-commands.js
-var RedisXClientToolsCommands2 = class {
+class RedisXClientToolsTransactionCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -342,7 +486,51 @@ var RedisXClientToolsCommands2 = class {
     return this.#parent._useGenerator(ping);
   }
 };
-var RedisXClientKeyCommands2 = class {
+class RedisXClientHashTransactionCommands {
+  /**
+   * @type {import("../main").RedisXClient}
+   */
+  #parent;
+  constructor(parent) {
+    this.#parent = parent;
+  }
+  /**
+   */
+  /**
+   * Sets the value of a field in a hash.
+   *
+   * Complexity: O(1)
+   * @param {string} key Key name.
+   * @param {string} field Field name.
+   * @param {RedisXCommandArgument} value Field value.
+   * @returns {RedisXTransaction} -
+   */
+  set(key, field, value) {
+    return this.#parent._useGenerator(set, [key, field, value]);
+  }
+  /**
+   * Sets the specified fields to their respective values in the hash stored at key.
+   *
+   * Complexity: O(1) for each field/value pair added.
+   * @param {string} key Key name.
+   * @param {{ [key: string]: any } | Map<string, any>} values Field-value pairs.
+   * @returns {RedisXTransaction} -
+   */
+  append(key, values) {
+    return this.#parent._useGenerator(append, [key, values]);
+  }
+  /**
+   * Returns all fields and values of the hash stored at key.
+   *
+   * Complexity: O(N) where N is the size of the hash.
+   * @param {string} key Key name.
+   * @returns {RedisXTransaction} -
+   */
+  getAll(key) {
+    return this.#parent._useGenerator(getAll, [key]);
+  }
+};
+class RedisXClientKeyTransactionCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -357,24 +545,24 @@ var RedisXClientKeyCommands2 = class {
    *
    * Keyword `delete` is reserved in JavaScript, so you can use `delete_` or `remove` instead.
    *
-   * O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
-   * @param {string[]} keys Key name.
+   * Complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
+   * @param {...string} keys Key name.
    * @returns {RedisXTransaction} -
    */
-  delete_(keys) {
-    return this.#parent._useGenerator(delete_, [keys]);
+  delete_(...keys) {
+    return this.#parent._useGenerator(delete_, [...keys]);
   }
   /**
    * Removes the specified keys. A key is ignored if it does not exist.
    *
    * Keyword `delete` is reserved in JavaScript, so you can use `delete_` or `remove` instead.
    *
-   * O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
-   * @param {string[]} keys Key name.
+   * Complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
+   * @param {...string} keys Key name.
    * @returns {RedisXTransaction} -
    */
-  remove(keys) {
-    return this.#parent._useGenerator(remove, [keys]);
+  remove(...keys) {
+    return this.#parent._useGenerator(remove, [...keys]);
   }
   /**
    * Set a timeout on key. After the timeout has expired, the key will automatically be deleted.
@@ -388,7 +576,7 @@ var RedisXClientKeyCommands2 = class {
     return this.#parent._useGenerator(expire, [key, timeout]);
   }
 };
-var RedisXClientListCommands2 = class {
+class RedisXClientListTransactionCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -403,7 +591,7 @@ var RedisXClientListCommands2 = class {
    *
    * Unlike LPUSH command, multiple elements are inserted as bulk, like Array.prototype.unshift() method.
    *
-   * O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
+   * Complexity: O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
    * @param {string} key Key name.
    * @param {RedisXCommandArgument[]} values Values to insert.
    * @returns {RedisXTransaction} -
@@ -412,7 +600,7 @@ var RedisXClientListCommands2 = class {
     return this.#parent._useGenerator(unshift, [key, values]);
   }
 };
-var RedisXClientStringCommands2 = class {
+class RedisXClientStringTransactionCommands {
   /**
    * @type {import("../main").RedisXClient}
    */
@@ -432,7 +620,7 @@ var RedisXClientStringCommands2 = class {
    * @returns {RedisXTransaction} -
    */
   set(key, value, options) {
-    return this.#parent._useGenerator(set, [key, value, options]);
+    return this.#parent._useGenerator(set2, [key, value, options]);
   }
   /**
    * Returns the string value of a key.
@@ -470,7 +658,7 @@ function updateArguments(command, args) {
 }
 
 // src/transaction.js
-var RedisXTransaction = class {
+class RedisXTransaction {
   #multi;
   #generators = [];
   #queue_length = 0;
@@ -480,7 +668,16 @@ var RedisXTransaction = class {
    */
   constructor(redisXClient) {
     this.#multi = redisXClient._redisClient.MULTI();
+    this.hash = new RedisXClientHashTransactionCommands(this);
+    this.key = new RedisXClientKeyTransactionCommands(this);
+    this.list = new RedisXClientListTransactionCommands(this);
+    this.string = new RedisXClientStringTransactionCommands(this);
+    this.tools = new RedisXClientToolsTransactionCommands(this);
   }
+  /**
+   * Number of commands added to the transaction.
+   * @type {number}
+   */
   get queue_length() {
     return this.#queue_length;
   }
@@ -501,7 +698,7 @@ var RedisXTransaction = class {
   }
   /**
    * Adds a command to the transaction using internal generator function.
-   * @access package
+   * @protected
    * @param {Function} fn Generator function.
    * @param {any[]} args Arguments for the generator function.
    * @returns {RedisXTransaction} -
@@ -514,10 +711,26 @@ var RedisXTransaction = class {
       ...redis_args
     );
   }
-  key = new RedisXClientKeyCommands2(this);
-  list = new RedisXClientListCommands2(this);
-  string = new RedisXClientStringCommands2(this);
-  tools = new RedisXClientToolsCommands2(this);
+  /**
+   * @type {RedisXClientHashTransactionCommands}
+   */
+  hash;
+  /**
+   * @type {RedisXClientKeyTransactionCommands}
+   */
+  key;
+  /**
+   * @type {RedisXClientListTransactionCommands}
+   */
+  list;
+  /**
+   * @type {RedisXClientStringTransactionCommands}
+   */
+  string;
+  /**
+   * @type {RedisXClientToolsTransactionCommands}
+   */
+  tools;
   /**
    * Sets custom name for the command result.
    * @param {*} field_name -
@@ -528,12 +741,17 @@ var RedisXTransaction = class {
     this.#custom_names[field_name] = this.#queue_length - 1;
     return this;
   }
+  #sent = false;
   /**
    * Sends transaction to the Redis server and returns response.
    * @async
    * @returns {any[]} Array of responses from the Redis server. If named results are used, this keys will be added to the array.
    */
   async execute() {
+    if (this.#sent) {
+      throw new Error("Transaction already sent");
+    }
+    this.#sent = true;
     if (this.#queue_length === 0) {
       return [];
     }
@@ -555,9 +773,9 @@ var RedisXTransaction = class {
 };
 
 // src/main.js
-var RedisXClient = class {
+class RedisXClient {
   /**
-   * @access package
+   * @protected
    */
   _redisClient;
   /**
@@ -565,7 +783,11 @@ var RedisXClient = class {
    */
   constructor(redisClient) {
     this._redisClient = redisClient;
-    this._redisClient.connect();
+    this.hash = new RedisXClientHashCommands(this);
+    this.key = new RedisXClientKeyCommands(this);
+    this.list = new RedisXClientListCommands(this);
+    this.string = new RedisXClientStringCommands(this);
+    this.tools = new RedisXClientToolsCommands(this);
   }
   /**
    * Sends a command to the Redis server.
@@ -583,7 +805,7 @@ var RedisXClient = class {
   }
   /**
    * Sends a command to the Redis server using internal generator function.
-   * @access package
+   * @protected
    * @param {Function} fn Generator function.
    * @param {any[]} args Arguments for the generator function.
    * @returns {Promise<any>} Response from the Redis server.
@@ -596,10 +818,30 @@ var RedisXClient = class {
     );
     return generator.next(result_raw).value;
   }
-  key = new RedisXClientKeyCommands(this);
-  list = new RedisXClientListCommands(this);
-  string = new RedisXClientStringCommands(this);
-  tools = new RedisXClientToolsCommands(this);
+  /**
+   * @type {RedisXClientHashCommands}
+   */
+  hash;
+  /**
+   * @type {RedisXClientKeyCommands}
+   */
+  key;
+  /**
+   * @type {RedisXClientListCommands}
+   */
+  list;
+  /**
+   * @type {RedisXClientStringCommands}
+   */
+  string;
+  /**
+   * @type {RedisXClientToolsCommands}
+   */
+  tools;
+  /**
+   * Creates a new transaction.
+   * @returns {RedisXTransaction} -
+   */
   createTransaction() {
     return new RedisXTransaction(this);
   }

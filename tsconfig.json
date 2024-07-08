@@ -1,0 +1,23 @@
+{
+	// "compileOnSave": false,
+	"compilerOptions": {
+		"outDir": "dist/",
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "node",
+		// "isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"checkJs": true,
+		"allowJs": true
+	},
+	"include": [
+		"src/"
+	],
+	"exclude": [
+		"node_modules/",
+		"dist/",
+		"**/*.test.js"
+	]
+}

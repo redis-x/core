@@ -29,21 +29,23 @@ module.exports = {
 	],
 	ignorePatterns: [
 		'dist/**/*',
+		'node_modules*/**/*',
+		'types/**/*',
 	],
 	rules: {
-		'arrow-body-style': [
-			'error',
-			'as-needed',
-			{
-				requireReturnForObjectLiteral: true,
-			},
-		],
 		'array-bracket-spacing': [
 			'warn',
 			'always',
 			{
 				arraysInArrays: false,
 				objectsInArrays: false,
+			},
+		],
+		'arrow-body-style': [
+			'error',
+			'as-needed',
+			{
+				requireReturnForObjectLiteral: true,
 			},
 		],
 		'arrow-parens': [
@@ -63,7 +65,15 @@ module.exports = {
 		'func-names': 'off',
 		'import/extensions': [
 			'error',
-			'always',
+			'ignorePackages',
+		],
+		'import/no-unresolved': [
+			'error',
+			{
+				ignore: [
+					'bun:*',
+				],
+			},
 		],
 		'import/order': [
 			'error',
@@ -85,14 +95,6 @@ module.exports = {
 			{
 				ImportDeclaration: 'off',
 				SwitchCase: 1,
-			},
-		],
-		'jsdoc/check-tag-names': [
-			'warn',
-			{
-				definedTags: [
-					'preserve',
-				],
 			},
 		],
 		'jsdoc/require-jsdoc': 'error',
@@ -119,6 +121,7 @@ module.exports = {
 		'no-unused-vars': 'warn',
 		'node/no-missing-import': 'off',
 		'node/no-unpublished-import': 'off',
+		'node/no-unsupported-features/es-syntax': 'off',
 		'object-curly-spacing': [
 			'warn',
 			'always',
@@ -172,6 +175,5 @@ module.exports = {
 			'warn',
 			'avoid',
 		],
-		'node/no-unsupported-features/es-syntax': 'off',
 	},
 };

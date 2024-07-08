@@ -7,6 +7,7 @@ export const redisClient = createClient({
 		port: 16379,
 	},
 });
+await redisClient.connect();
 
 export const redisXClient = new RedisXClient(redisClient);
 

@@ -1,4 +1,5 @@
 
 .eslintrc.cjs
 test/
+tools/
 **/*.test.js

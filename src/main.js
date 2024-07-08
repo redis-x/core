@@ -1,25 +1,48 @@
 
 /**
- * @typedef {import("./utils/arguments").RedisXCommandArgument} RedisXCommandArgument
+ * @typedef {import('./utils/arguments.js').RedisXCommandArgument} RedisXCommandArgument
  */
 
-import * as commands         from './generated/single-commands.js';
-import { RedisXTransaction } from './transaction.js';
-import { updateArguments }   from './utils/arguments.js';
+import {
+	RedisXClientHashCommands,
+	RedisXClientKeyCommands,
+	RedisXClientListCommands,
+	RedisXClientStringCommands,
+	RedisXClientToolsCommands } from './generated/single-commands.js';
+import { RedisXTransaction }    from './transaction.js';
+import { updateArguments }      from './utils/arguments.js';
 
 export class RedisXClient {
 	/**
-	 * @access package
+	 * @type {import('redis').RedisClientType<import('redis').RedisModules, import('redis').RedisFunctions>}
+	 * @protected
 	 */
 	_redisClient;
 
 	/**
-	 * @param {any} redisClient Client created from "redis" package.
+	 * @param {import('redis').RedisClientType<import('redis').RedisModules, import('redis').RedisFunctions>} redisClient Client created from "redis" package.
 	 */
 	constructor(redisClient) {
 		this._redisClient = redisClient;
 
-		this._redisClient.connect();
+		// const multi = redisClient.MULTI();
+		// multi.ZRANGE('key', 0, -1);
+		// multi.EXEC()
+        redisClient.ZINTERSTORE('key', [ 'key1', 'key2' ], { WEIGHTS: [ 2, 3 ], AGGREGATE: 'SUM' })
+			.then((result) => {
+				const value = result[0];
+				if (value) {
+					const ttt = typeof value;
+				}
+				return null;
+			})
+			.catch(console.error);
+
+		this.hash = new RedisXClientHashCommands(this);
+		this.key = new RedisXClientKeyCommands(this);
+		this.list = new RedisXClientListCommands(this);
+		this.string = new RedisXClientStringCommands(this);
+		this.tools = new RedisXClientToolsCommands(this);
 	}
 
 	/**
@@ -41,7 +64,7 @@ export class RedisXClient {
 
 	/**
 	 * Sends a command to the Redis server using internal generator function.
-	 * @access package
+	 * @protected
 	 * @param {Function} fn Generator function.
 	 * @param {any[]} args Arguments for the generator function.
 	 * @returns {Promise<any>} Response from the Redis server.
@@ -57,11 +80,31 @@ export class RedisXClient {
 		return generator.next(result_raw).value;
 	}
 
-	key = new commands.RedisXClientKeyCommands(this);
-	list = new commands.RedisXClientListCommands(this);
-	string = new commands.RedisXClientStringCommands(this);
-	tools = new commands.RedisXClientToolsCommands(this);
+	/**
+	 * @type {RedisXClientHashCommands}
+	 */
+	hash;
+	/**
+	 * @type {RedisXClientKeyCommands}
+	 */
+	key;
+	/**
+	 * @type {RedisXClientListCommands}
+	 */
+	list;
+	/**
+	 * @type {RedisXClientStringCommands}
+	 */
+	string;
+	/**
+	 * @type {RedisXClientToolsCommands}
+	 */
+	tools;
 
+	/**
+	 * Creates a new transaction.
+	 * @returns {RedisXTransaction} -
+	 */
 	createTransaction() {
 		return new RedisXTransaction(this);
 	}

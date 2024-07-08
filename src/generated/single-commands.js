@@ -1,5 +1,5 @@
 
-// This file was automatically generated at Mon, 25 Mar 2024 21:29:04 GMT by tools/compile.js
+// This file was automatically generated at Wed, 01 May 2024 13:05:57 GMT by tools/compile.js
 
 /**
  * @typedef {import("../utils/arguments.js").RedisXCommandArgument} RedisXCommandArgument
@@ -8,6 +8,9 @@
  */
 
 import * as tools_ping from '../x-commands/tools/ping.js';
+import * as hash_set from '../x-commands/hash/set.js';
+import * as hash_append from '../x-commands/hash/append.js';
+import * as hash_getAll from '../x-commands/hash/get-all.js';
 import * as key_delete from '../x-commands/key/delete.js';
 import * as key_expire from '../x-commands/key/expire.js';
 import * as list_unshift from '../x-commands/list/unshift.js';
@@ -39,6 +42,59 @@ export class RedisXClientToolsCommands {
 	}
 }
 
+export class RedisXClientHashCommands {
+	/**
+	 * @type {import("../main").RedisXClient}
+	 */
+	#parent;
+
+	constructor(parent) {
+		this.#parent = parent;
+	}
+
+	/**
+	 */
+
+	/**
+	 * Sets the value of a field in a hash.
+	 *
+	 * Complexity: O(1)
+	 * @async
+	 * @param {string} key Key name.
+	 * @param {string} field Field name.
+	 * @param {RedisXCommandArgument} value Field value.
+	 * @returns {Promise<number>} 1 if the field was added, 0 if it was updated.
+	 */
+	set(key, field, value) {
+		return this.#parent._useGenerator(hash_set.set, [ key, field, value ]);
+	}
+
+	/**
+	 * Sets the specified fields to their respective values in the hash stored at key.
+	 *
+	 * Complexity: O(1) for each field/value pair added.
+	 * @async
+	 * @param {string} key Key name.
+	 * @param {{ [key: string]: any } | Map<string, any>} values Field-value pairs.
+	 * @returns {Promise<number>} The number of fields that were added.
+	 */
+	append(key, values) {
+		return this.#parent._useGenerator(hash_append.append, [ key, values ]);
+	}
+
+	/**
+	 * Returns all fields and values of the hash stored at key.
+	 *
+	 * Complexity: O(N) where N is the size of the hash.
+	 * @async
+	 * @param {string} key Key name.
+	 * @returns {Promise<{ [key: string]: any }>} The hash stored at key.
+	 */
+	getAll(key) {
+		return this.#parent._useGenerator(hash_getAll.getAll, [ key ]);
+	}
+}
+
 export class RedisXClientKeyCommands {
 	/**
 	 * @type {import("../main").RedisXClient}
@@ -57,13 +113,13 @@ export class RedisXClientKeyCommands {
 	 *
 	 * Keyword `delete` is reserved in JavaScript, so you can use `delete_` or `remove` instead.
 	 *
-	 * O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
+	 * Complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
 	 * @async
-	 * @param {string[]} keys Key name.
+	 * @param {...string} keys Key name.
 	 * @returns {Promise<number>} The number of keys that were removed.
 	 */
-	delete_(keys) {
-		return this.#parent._useGenerator(key_delete.delete_, [ keys ]);
+	delete_(...keys) {
+		return this.#parent._useGenerator(key_delete.delete_, [ ...keys ]);
 	}
 
 	/**
@@ -71,13 +127,13 @@ export class RedisXClientKeyCommands {
 	 *
 	 * Keyword `delete` is reserved in JavaScript, so you can use `delete_` or `remove` instead.
 	 *
-	 * O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
+	 * Complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash. Removing a single key that holds a string value is O(1).
 	 * @async
-	 * @param {string[]} keys Key name.
+	 * @param {...string} keys Key name.
 	 * @returns {Promise<number>} The number of keys that were removed.
 	 */
-	remove(keys) {
-		return this.#parent._useGenerator(key_delete.remove, [ keys ]);
+	remove(...keys) {
+		return this.#parent._useGenerator(key_delete.remove, [ ...keys ]);
 	}
 
 	/**
@@ -112,7 +168,7 @@ export class RedisXClientListCommands {
 	 *
 	 * Unlike LPUSH command, multiple elements are inserted as bulk, like Array.prototype.unshift() method.
 	 *
-	 * O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
+	 * Complexity: O(1) for each element added, so O(N) to add N elements when the command is called with multiple arguments.
 	 * @async
 	 * @param {string} key Key name.
 	 * @param {RedisXCommandArgument[]} values Values to insert.

@@ -3,7 +3,7 @@
 /* eslint-disable jsdoc/require-jsdoc, max-depth */
 /* eslint-disable no-await-in-loop */
 
-import { inspect } from 'node:util';
+// import { inspect } from 'node:util';
 import { readdir } from 'node:fs/promises';
 
 const ROOT_DIR = './src/x-commands';
@@ -13,9 +13,16 @@ const [
 	Bun.file('./tools/templates/class.txt').text(),
 ]);
 
-const JSDOC_PARAM_NAME_REGEXP = /@param\s+{[^}]+}\s+(?:\[\s*)?([\d_a-z]+)/;
+const JSDOC_PARAM_NAME_REGEXP = /@param\s+{.+}\s+(?:\[\s*)?([\d_a-z]+)/;
 const JSDOC_PARAM_IS_SPREAD_REGEXP = /@param\s+{\.{3}/;
 const JSDOC_RETURNS_REGEXP = /@returns\s+{(.+)}(?:\s+([^}]+))?/;
+
+function kebabCaseToCamelCase(string) {
+	return string.replaceAll(
+		/-([a-z])/g,
+		(match, letter) => letter.toUpperCase(),
+	);
+}
 
 const DATA_BY_SECTION = new Map();
 for (const section_name of await readdir(ROOT_DIR)) {
@@ -105,7 +112,7 @@ for (const section_name of await readdir(ROOT_DIR)) {
 		section_data.files_data.set(
 			file_name,
 			{
-				import_name: `${section_name}_${file_name.slice(0, -3)}`,
+				import_name: `${section_name}_${kebabCaseToCamelCase(file_name.slice(0, -3))}`,
 				typedefs,
 				methods,
 			},
@@ -125,6 +132,7 @@ for (const section_name of await readdir(ROOT_DIR)) {
 
 // create single-commands.js
 function createFile({
+	class_suffix = '',
 	typedefs,
 	is_method_async,
 	returns,
@@ -206,7 +214,7 @@ function createFile({
 
 		lines_classes.push(
 			'',
-			`export class RedisXClient${section_name[0].toUpperCase()}${section_name.slice(1)}Commands {`,
+			`export class RedisXClient${section_name[0].toUpperCase()}${section_name.slice(1)}${class_suffix}Commands {`,
 			TEMPLATE_CLASS.trimEnd(),
 			'',
 			'\t/**',
@@ -241,6 +249,7 @@ await Promise.all([
 	Bun.write(
 		'./src/generated/transaction-commands.js',
 		createFile({
+			class_suffix: 'Transaction',
 			typedefs: {
 				RedisXTransaction: '../transaction.js',
 			},

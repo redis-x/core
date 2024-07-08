@@ -1,11 +1,16 @@
 
 /**
  * @typedef {import('./main.js').RedisXClient} RedisXClient
- * @typedef {import('./utils/arguments').RedisXCommandArgument} RedisXCommandArgument
+ * @typedef {import('./utils/arguments.js').RedisXCommandArgument} RedisXCommandArgument
  */
 
-import * as commands       from './generated/transaction-commands.js';
-import { updateArguments } from './utils/arguments.js';
+import {
+	RedisXClientHashTransactionCommands,
+	RedisXClientKeyTransactionCommands,
+	RedisXClientListTransactionCommands,
+	RedisXClientStringTransactionCommands,
+	RedisXClientToolsTransactionCommands } from './generated/transaction-commands.js';
+import { updateArguments }                 from './utils/arguments.js';
 
 export class RedisXTransaction {
 	#multi;
@@ -18,8 +23,18 @@ export class RedisXTransaction {
 	 */
 	constructor(redisXClient) {
 		this.#multi = redisXClient._redisClient.MULTI();
+
+		this.hash = new RedisXClientHashTransactionCommands(this);
+		this.key = new RedisXClientKeyTransactionCommands(this);
+		this.list = new RedisXClientListTransactionCommands(this);
+		this.string = new RedisXClientStringTransactionCommands(this);
+		this.tools = new RedisXClientToolsTransactionCommands(this);
 	}
 
+	/**
+	 * Number of commands added to the transaction.
+	 * @type {number}
+	 */
 	get queue_length() {
 		return this.#queue_length;
 	}
@@ -45,7 +60,7 @@ export class RedisXTransaction {
 
 	/**
 	 * Adds a command to the transaction using internal generator function.
-	 * @access package
+	 * @protected
 	 * @param {Function} fn Generator function.
 	 * @param {any[]} args Arguments for the generator function.
 	 * @returns {RedisXTransaction} -
@@ -61,10 +76,26 @@ export class RedisXTransaction {
 		);
 	}
 
-	key = new commands.RedisXClientKeyCommands(this);
-	list = new commands.RedisXClientListCommands(this);
-	string = new commands.RedisXClientStringCommands(this);
-	tools = new commands.RedisXClientToolsCommands(this);
+	/**
+	 * @type {RedisXClientHashTransactionCommands}
+	 */
+	hash;
+	/**
+	 * @type {RedisXClientKeyTransactionCommands}
+	 */
+	key;
+	/**
+	 * @type {RedisXClientListTransactionCommands}
+	 */
+	list;
+	/**
+	 * @type {RedisXClientStringTransactionCommands}
+	 */
+	string;
+	/**
+	 * @type {RedisXClientToolsTransactionCommands}
+	 */
+	tools;
 
 	/**
 	 * Sets custom name for the command result.
@@ -78,12 +109,19 @@ export class RedisXTransaction {
 		return this;
 	}
 
+	#sent = false;
+
 	/**
 	 * Sends transaction to the Redis server and returns response.
 	 * @async
 	 * @returns {any[]} Array of responses from the Redis server. If named results are used, this keys will be added to the array.
 	 */
 	async execute() {
+		if (this.#sent) {
+			throw new Error('Transaction already sent');
+		}
+		this.#sent = true;
+
 		if (this.#queue_length === 0) {
 			return [];
 		}
