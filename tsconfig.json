@@ -1,16 +1,25 @@
 {
-	// "compileOnSave": false,
+	"compileOnSave": false,
 	"compilerOptions": {
-		"outDir": "dist/",
+		"outDir": "dist/esm",
+		"declaration": true,
+		"declarationDir": "dist/esm",
 		"target": "esnext",
 		"module": "esnext",
-		"moduleResolution": "node",
-		// "isolatedModules": true,
+		"lib": [
+			"ES2023",
+			"ES2021.String",
+		],
+		"skipLibCheck": true,
+		"removeComments": false,
+		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
-		"noImplicitAny": true,
+		"strict": true,
+		"alwaysStrict": true,
 		"strictNullChecks": true,
-		"checkJs": true,
-		"allowJs": true
+		"strictPropertyInitialization": true,
+		"noImplicitAny": true,
+		"noUncheckedIndexedAccess": true
 	},
 	"include": [
 		"src/"
@@ -18,6 +27,6 @@
 	"exclude": [
 		"node_modules/",
 		"dist/",
-		"**/*.test.js"
+		"**/*.test.ts"
 	]
 }

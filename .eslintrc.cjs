@@ -1,7 +1,7 @@
 
 module.exports = {
 	root: true,
-	parser: '@babel/eslint-parser',
+	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 2022,
 		sourceType: 'module',
@@ -12,8 +12,9 @@ module.exports = {
 		node: true,
 	},
 	extends: [
-		'eslint:recommended',
-		'xo',
+		// 'eslint:recommended',
+		// 'xo',
+		// 'plugin:@typescript-eslint/recommended',
 		'plugin:import/recommended',
 		'plugin:jsdoc/recommended',
 		'plugin:promise/recommended',
@@ -21,6 +22,7 @@ module.exports = {
 		'plugin:node/recommended',
 	],
 	plugins: [
+		// '@typescript-eslint',
 		'import',
 		'jsdoc',
 		'promise',
@@ -28,10 +30,20 @@ module.exports = {
 		'node',
 	],
 	ignorePatterns: [
+		'.eslintrc.cjs',
 		'dist/**/*',
 		'node_modules*/**/*',
 		'types/**/*',
 	],
+	settings: {
+		'import/resolver': {
+			node: {
+				extensions: [
+					'.ts',
+				],
+			},
+		},
+	},
 	rules: {
 		'array-bracket-spacing': [
 			'warn',
@@ -63,10 +75,7 @@ module.exports = {
 			'always-multiline',
 		],
 		'func-names': 'off',
-		'import/extensions': [
-			'error',
-			'ignorePackages',
-		],
+		'import/extensions': 'off',
 		'import/no-unresolved': [
 			'error',
 			{
@@ -98,6 +107,8 @@ module.exports = {
 			},
 		],
 		'jsdoc/require-jsdoc': 'error',
+		'jsdoc/require-param-type': 'off',
+		'jsdoc/require-returns-type': 'off',
 		'new-cap': [
 			'error',
 			{
@@ -118,7 +129,7 @@ module.exports = {
 		'no-multiple-empty-lines': 'warn',
 		'no-promise-executor-return': 'off',
 		'no-trailing-spaces': 'warn',
-		'no-unused-vars': 'warn',
+		'no-unused-vars': 'off',
 		'node/no-missing-import': 'off',
 		'node/no-unpublished-import': 'off',
 		'node/no-unsupported-features/es-syntax': 'off',

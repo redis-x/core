@@ -1,0 +1,2 @@
+
+export { RedisXClient } from './client';
