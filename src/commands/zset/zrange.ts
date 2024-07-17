@@ -15,7 +15,9 @@ type ZrangeOptionsCommon =
 			BYSCORE: true,
 			BYLEX: true,
 		}>
-		& { LIMIT?: ZrangeOptionsJsdoc['LIMIT'] }
+		& {
+			LIMIT?: ZrangeOptionsJsdoc['LIMIT'],
+		}
 	>
 // type ZrangeOptionsModifierWithscores = {
 // 	WITHSCORES: Required<ZrangeOptionsJsdoc>['WITHSCORES'],

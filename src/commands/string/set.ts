@@ -10,28 +10,28 @@ import { SetOptionsJsdoc } from './set.jsdoc';
 
 type SetOptionsCommon =
 	OneOrNoneFrom<{
-		NX: true,
-		XX: true,
+		NX: SetOptionsJsdoc['NX'],
+		XX: SetOptionsJsdoc['XX'],
 	}>
 	& OneOrNoneFrom<{
-		EX: number,
-		PX: number,
-		EXAT: number,
-		PXAT: number,
-		KEEPTTL: true,
+		EX: SetOptionsJsdoc['EX'],
+		PX: SetOptionsJsdoc['PX'],
+		EXAT: SetOptionsJsdoc['EXAT'],
+		PXAT: SetOptionsJsdoc['PXAT'],
+		KEEPTTL: SetOptionsJsdoc['KEEPTTL'],
 	}>;
-type SetOptionsModifierGet = {
-	GET: true,
-};
+// type SetOptionsModifierGet = {
+// 	GET: true,
+// };
 
 export type SetOptions =
-	SetOptionsCommon
-	& Partial<Record<keyof SetOptionsModifierGet, never>>
+	& SetOptionsCommon
+	& Partial<Record<'GET', never>>
 	& SetOptionsJsdoc;
 
 export type SetOptionsWithGet =
-	SetOptionsCommon
-	& SetOptionsModifierGet
+	& SetOptionsCommon
+	& { GET: SetOptionsJsdoc['GET'] }
 	& SetOptionsJsdoc;
 
 /**
