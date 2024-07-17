@@ -4,6 +4,8 @@ import * as CommandSet from './commands/string/set';
 import { SetOptionsWithGet, SetOptions } from './commands/string/set';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
+import * as CommandExpire from './commands/keyspace/expire';
+import { ExpireOptions } from './commands/keyspace/expire';
 import * as CommandDel from './commands/keyspace/del';
 export class RedisXClient extends RedisXClientBase {
 	/**
@@ -91,6 +93,20 @@ export class RedisXClient extends RedisXClientBase {
 	async ZRANGE(key: string, start: number | string, stop: number | string): Promise<string[]>;
 	async ZRANGE(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandZrange, args);
+	}
+	/**
+	 * Set a timeout on key.
+	 * After the timeout has expired, the key will automatically be deleted.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to get.
+	 * @param seconds Time to live in seconds.
+	 * @param options Options. See ExpireOptionsJsdoc.
+	 * @returns Returns `1` if the timeout was set. Returns `0` if the timeout was not set; for example, the key doesn't exist, or the operation was skipped because of the provided arguments.
+	 */
+	async EXPIRE(key: string, seconds: number, options?: ExpireOptions): Promise<0 | 1>;
+	async EXPIRE(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandExpire, args);
 	}
 	/**
 	 * Removes the specified keys.
