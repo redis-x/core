@@ -37,6 +37,8 @@ export function stringifyLiteral(node: ts.Node | undefined): string {
 			return stringifyLiteral(
 				(node as ts.LiteralTypeNode).literal,
 			);
+		case ts.SyntaxKind.StringKeyword:
+			return 'string';
 	}
 
 	throw new Error(`Unsupported literal type: ${node?.kind}`);

@@ -176,6 +176,8 @@ module.exports = {
 			'error',
 			{
 				allowList: {
+					arg1: true,
+					arg2: true,
 					args: true,
 					env: true,
 					fn: true,

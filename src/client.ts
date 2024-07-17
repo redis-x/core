@@ -7,6 +7,9 @@ import * as CommandIncrbyfloat from './commands/string/incrbyfloat';
 import * as CommandIncrby from './commands/string/incrby';
 import * as CommandDecrby from './commands/string/decrby';
 import * as CommandDecr from './commands/string/decr';
+import * as CommandHset from './commands/hash/hset';
+import * as CommandHget from './commands/hash/hget';
+import * as CommandHmget from './commands/hash/hmget';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
 import * as CommandPexpire from './commands/keyspace/pexpire';
@@ -133,6 +136,54 @@ export class RedisXClient extends RedisXClientBase {
 		return this._sendModuleCommand(CommandDecr, args);
 	}
 	/**
+	 * Sets the specified fields to their respective values in the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Multiple field/value pairs are available since Redis 4.0.0.
+	 * - Time complexity: O(1) for each field/value pair added.
+	 * @param key Key to get.
+	 * @param field Field to set.
+	 * @param value Value to set.
+	 * @returns The number of fields that were added.
+	 */
+	async HSET(key: string, field: string, value: string | number): Promise<number>;
+	/**
+	 * Sets the specified fields to their respective values in the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Multiple field/value pairs are available since Redis 4.0.0.
+	 * - Time complexity: O(1) for each field/value pair added.
+	 * @param key Key to get.
+	 * @param pairs Object containing field/value pairs to set.
+	 * @returns The number of fields that were added.
+	 */
+	async HSET(key: string, pairs: Record<string, string | number>): Promise<number>;
+	async HSET(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandHset, args);
+	}
+	/**
+	 * Returns the value associated with field in the `<hash>` stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param field -
+	 * @returns The value associated with the field or `null` when the field is not present in the hash or key does not exist.
+	 */
+	async HGET(key: string, field: string): Promise<string | null>;
+	async HGET(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandHget, args);
+	}
+	/**
+	 * Returns the values associated with `<fields>` in the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the number of fields being requested.
+	 * @param key -
+	 * @param fields -
+	 * @returns The value associated with the field or `null` when the field is not present in the hash or key does not exist.
+	 */
+	async HMGET(key: string, fields: string[] | Set<string>): Promise<Record<string, string | null>>;
+	async HMGET(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandHmget, args);
+	}
+	/**
 	 * Returns the specified range of elements in the sorted set stored at key.
 	 * ZRANGE can perform different types of range queries: by index (rank), by the score, or by lexicographical order.
 	 * - Available since: 1.2.0.
@@ -235,9 +286,9 @@ export class RedisXClient extends RedisXClientBase {
 	 * - Available since: 1.0.0.
 	 * - Time complexity: O(N) with N being the number of keys in the database.
 	 * @param pattern Pattern to match.
-	 * @returns A list of keys matching `<pattern>`.
+	 * @returns A set of keys matching `<pattern>`.
 	 */
-	async KEYS(pattern: string): Promise<string[]>;
+	async KEYS(pattern: string): Promise<Set<string>>;
 	async KEYS(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandKeys, args);
 	}
