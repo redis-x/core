@@ -1,5 +1,6 @@
 
 .eslintrc.cjs
+compiler/
+src/
 test/
-tools/
 **/*.test.js

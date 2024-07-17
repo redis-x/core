@@ -122,18 +122,23 @@ function input2(key, value, options) {
   if (options) {
     if (options.NX) {
       command_arguments.push("NX");
-    } else if (options.XX) {
+    }
+    if (options.XX) {
       command_arguments.push("XX");
     }
     if (options.EX) {
       command_arguments.push("EX", String(options.EX));
-    } else if (options.PX) {
+    }
+    if (options.PX) {
       command_arguments.push("PX", String(options.PX));
-    } else if (options.EXAT) {
+    }
+    if (options.EXAT) {
       command_arguments.push("EXAT", String(options.EXAT));
-    } else if (options.PXAT) {
+    }
+    if (options.PXAT) {
       command_arguments.push("PXAT", String(options.PXAT));
-    } else if (options.KEEPTTL) {
+    }
+    if (options.KEEPTTL) {
       command_arguments.push("KEEPTTL");
     }
     if (options.GET) {
@@ -147,13 +152,208 @@ function input2(key, value, options) {
   ];
 }
 
+// dist/esm/commands/string/incr.js
+var incr_exports = {};
+__export(incr_exports, {
+  input: () => input3
+});
+function input3(key) {
+  return [[
+    "INCR",
+    key
+  ]];
+}
+
+// dist/esm/commands/string/incrbyfloat.js
+var incrbyfloat_exports = {};
+__export(incrbyfloat_exports, {
+  input: () => input4,
+  output: () => output
+});
+function input4(key, increment) {
+  return [[
+    "INCRBYFLOAT",
+    key,
+    String(increment)
+  ]];
+}
+function output(result) {
+  return Number.parseFloat(result);
+}
+
+// dist/esm/commands/string/incrby.js
+var incrby_exports = {};
+__export(incrby_exports, {
+  input: () => input5
+});
+function input5(key, increment) {
+  return [[
+    "INCRBY",
+    key,
+    String(increment)
+  ]];
+}
+
+// dist/esm/commands/string/decrby.js
+var decrby_exports = {};
+__export(decrby_exports, {
+  input: () => input6
+});
+function input6(key, decrement) {
+  return [[
+    "DECRBY",
+    key,
+    String(decrement)
+  ]];
+}
+
+// dist/esm/commands/string/decr.js
+var decr_exports = {};
+__export(decr_exports, {
+  input: () => input7
+});
+function input7(key) {
+  return [[
+    "DECR",
+    key
+  ]];
+}
+
+// dist/esm/commands/hash/hset.js
+var hset_exports = {};
+__export(hset_exports, {
+  input: () => input8
+});
+function input8(key, arg1, arg2) {
+  const command_arguments = ["HSET", key];
+  if (typeof arg1 === "string") {
+    command_arguments.push(arg1, String(arg2));
+  } else {
+    for (const [field, value] of Object.entries(arg1)) {
+      command_arguments.push(field, String(value));
+    }
+  }
+  return [command_arguments];
+}
+
+// dist/esm/commands/hash/hgetall.js
+var hgetall_exports = {};
+__export(hgetall_exports, {
+  input: () => input9,
+  output: () => output2
+});
+
+// dist/esm/utils.js
+function stringBulkToObject(values) {
+  const object = {};
+  for (let index = 0; index < values.length; index += 2) {
+    object[values[index]] = values[index + 1];
+  }
+  return object;
+}
+
+// dist/esm/commands/hash/hgetall.js
+function input9(key) {
+  return [[
+    "HGETALL",
+    key
+  ]];
+}
+function output2(result) {
+  return stringBulkToObject(result);
+}
+
+// dist/esm/commands/hash/hget.js
+var hget_exports = {};
+__export(hget_exports, {
+  input: () => input10
+});
+function input10(key, field) {
+  return [[
+    "HGET",
+    key,
+    field
+  ]];
+}
+
+// dist/esm/commands/hash/hmget.js
+var hmget_exports = {};
+__export(hmget_exports, {
+  input: () => input11,
+  output: () => output3
+});
+function input11(key, arg1, ...args) {
+  let fields_array = [];
+  if (typeof arg1 === "string") {
+    fields_array = args;
+    fields_array.unshift(arg1);
+  } else if (Array.isArray(arg1)) {
+    fields_array = arg1;
+  } else {
+    fields_array = [...arg1];
+  }
+  return [
+    [
+      "HMGET",
+      key,
+      ...fields_array
+    ],
+    JSON.stringify(fields_array)
+  ];
+}
+function output3(result, modificator) {
+  const fields = JSON.parse(modificator);
+  const output6 = {};
+  for (const [index, field] of fields.entries()) {
+    const value = result[index];
+    if (value !== void 0) {
+      output6[field] = value;
+    }
+  }
+  return output6;
+}
+
+// dist/esm/commands/hash/hlen.js
+var hlen_exports = {};
+__export(hlen_exports, {
+  input: () => input12
+});
+function input12(key) {
+  return [[
+    "HLEN",
+    key
+  ]];
+}
+
+// dist/esm/commands/hash/hdel.js
+var hdel_exports = {};
+__export(hdel_exports, {
+  input: () => input13
+});
+function input13(key, arg1, ...args) {
+  let fields_array = [];
+  if (typeof arg1 === "string") {
+    fields_array = args;
+    fields_array.unshift(arg1);
+  } else if (Array.isArray(arg1)) {
+    fields_array = arg1;
+  } else {
+    fields_array = [...arg1];
+  }
+  return [[
+    "HDEL",
+    key,
+    ...fields_array
+  ]];
+}
+
 // dist/esm/commands/zset/zrange.js
 var zrange_exports = {};
 __export(zrange_exports, {
-  input: () => input3,
-  output: () => output
+  input: () => input14,
+  output: () => output4
 });
-function input3(key, start, stop, options) {
+function input14(key, start, stop, options) {
   const command_arguments = [
     "ZRANGE",
     key,
@@ -165,13 +365,14 @@ function input3(key, start, stop, options) {
     if (options.REV) {
       command_arguments.push("REV");
     }
-    if (options.LIMIT) {
-      command_arguments.push("LIMIT", String(options.LIMIT[0]), String(options.LIMIT[1]));
-    }
     if (options.BYSCORE) {
       command_arguments.push("BYSCORE");
-    } else if (options.BYLEX) {
+    }
+    if (options.BYLEX) {
       command_arguments.push("BYLEX");
+    }
+    if (options.LIMIT) {
+      command_arguments.push("LIMIT", String(options.LIMIT[0]), String(options.LIMIT[1]));
     }
     if (options.WITHSCORES) {
       command_arguments.push("WITHSCORES");
@@ -183,15 +384,126 @@ function input3(key, start, stop, options) {
     modifier
   ];
 }
-function output(result, modifier) {
+function output4(result, modifier) {
   if (modifier === "WITHSCORES") {
-    const map = /* @__PURE__ */ new Map();
+    const result_withscores = [];
     for (let index = 0; index < result.length; index += 2) {
-      map.set(result[index], Number.parseFloat(result[index + 1]));
+      result_withscores.push({
+        value: result[index],
+        score: Number.parseFloat(result[index + 1])
+      });
     }
-    return map;
+    return result_withscores;
   }
   return result;
+}
+
+// dist/esm/commands/keyspace/pexpire.js
+var pexpire_exports = {};
+__export(pexpire_exports, {
+  input: () => input15
+});
+function input15(key, seconds, options) {
+  const command_arguments = [
+    "PEXPIRE",
+    key,
+    String(seconds)
+  ];
+  if (options) {
+    if (options.NX) {
+      command_arguments.push("NX");
+    }
+    if (options.XX) {
+      command_arguments.push("XX");
+    }
+    if (options.GT) {
+      command_arguments.push("GT");
+    }
+    if (options.LT) {
+      command_arguments.push("LT");
+    }
+  }
+  return [command_arguments];
+}
+
+// dist/esm/commands/keyspace/pttl.js
+var pttl_exports = {};
+__export(pttl_exports, {
+  input: () => input16
+});
+function input16(key) {
+  return [[
+    "PTTL",
+    key
+  ]];
+}
+
+// dist/esm/commands/keyspace/ttl.js
+var ttl_exports = {};
+__export(ttl_exports, {
+  input: () => input17
+});
+function input17(key) {
+  return [[
+    "TTL",
+    key
+  ]];
+}
+
+// dist/esm/commands/keyspace/expire.js
+var expire_exports = {};
+__export(expire_exports, {
+  input: () => input18
+});
+function input18(key, seconds, options) {
+  const command_arguments = [
+    "EXPIRE",
+    key,
+    String(seconds)
+  ];
+  if (options) {
+    if (options.NX) {
+      command_arguments.push("NX");
+    }
+    if (options.XX) {
+      command_arguments.push("XX");
+    }
+    if (options.GT) {
+      command_arguments.push("GT");
+    }
+    if (options.LT) {
+      command_arguments.push("LT");
+    }
+  }
+  return [command_arguments];
+}
+
+// dist/esm/commands/keyspace/keys.js
+var keys_exports = {};
+__export(keys_exports, {
+  input: () => input19,
+  output: () => output5
+});
+function input19(pattern) {
+  return [[
+    "KEYS",
+    pattern
+  ]];
+}
+function output5(result) {
+  return new Set(result);
+}
+
+// dist/esm/commands/keyspace/del.js
+var del_exports = {};
+__export(del_exports, {
+  input: () => input20
+});
+function input20(...keys) {
+  return [[
+    "DEL",
+    ...keys
+  ]];
 }
 
 // dist/esm/transaction.js
@@ -202,8 +514,59 @@ var RedisXTransaction = class extends RedisXTransactionBase {
   SET(...args) {
     return this._addModuleCommand(set_exports, args);
   }
+  INCR(...args) {
+    return this._addModuleCommand(incr_exports, args);
+  }
+  INCRBYFLOAT(...args) {
+    return this._addModuleCommand(incrbyfloat_exports, args);
+  }
+  INCRBY(...args) {
+    return this._addModuleCommand(incrby_exports, args);
+  }
+  DECRBY(...args) {
+    return this._addModuleCommand(decrby_exports, args);
+  }
+  DECR(...args) {
+    return this._addModuleCommand(decr_exports, args);
+  }
+  HSET(...args) {
+    return this._addModuleCommand(hset_exports, args);
+  }
+  HGETALL(...args) {
+    return this._addModuleCommand(hgetall_exports, args);
+  }
+  HGET(...args) {
+    return this._addModuleCommand(hget_exports, args);
+  }
+  HMGET(...args) {
+    return this._addModuleCommand(hmget_exports, args);
+  }
+  HLEN(...args) {
+    return this._addModuleCommand(hlen_exports, args);
+  }
+  HDEL(...args) {
+    return this._addModuleCommand(hdel_exports, args);
+  }
   ZRANGE(...args) {
     return this._addModuleCommand(zrange_exports, args);
+  }
+  PEXPIRE(...args) {
+    return this._addModuleCommand(pexpire_exports, args);
+  }
+  PTTL(...args) {
+    return this._addModuleCommand(pttl_exports, args);
+  }
+  TTL(...args) {
+    return this._addModuleCommand(ttl_exports, args);
+  }
+  EXPIRE(...args) {
+    return this._addModuleCommand(expire_exports, args);
+  }
+  KEYS(...args) {
+    return this._addModuleCommand(keys_exports, args);
+  }
+  DEL(...args) {
+    return this._addModuleCommand(del_exports, args);
   }
 };
 
@@ -252,8 +615,59 @@ var RedisXClient = class extends RedisXClientBase {
   async SET(...args) {
     return this._sendModuleCommand(set_exports, args);
   }
+  async INCR(...args) {
+    return this._sendModuleCommand(incr_exports, args);
+  }
+  async INCRBYFLOAT(...args) {
+    return this._sendModuleCommand(incrbyfloat_exports, args);
+  }
+  async INCRBY(...args) {
+    return this._sendModuleCommand(incrby_exports, args);
+  }
+  async DECRBY(...args) {
+    return this._sendModuleCommand(decrby_exports, args);
+  }
+  async DECR(...args) {
+    return this._sendModuleCommand(decr_exports, args);
+  }
+  async HSET(...args) {
+    return this._sendModuleCommand(hset_exports, args);
+  }
+  async HGETALL(...args) {
+    return this._sendModuleCommand(hgetall_exports, args);
+  }
+  async HGET(...args) {
+    return this._sendModuleCommand(hget_exports, args);
+  }
+  async HMGET(...args) {
+    return this._sendModuleCommand(hmget_exports, args);
+  }
+  async HLEN(...args) {
+    return this._sendModuleCommand(hlen_exports, args);
+  }
+  async HDEL(...args) {
+    return this._sendModuleCommand(hdel_exports, args);
+  }
   async ZRANGE(...args) {
     return this._sendModuleCommand(zrange_exports, args);
+  }
+  async PEXPIRE(...args) {
+    return this._sendModuleCommand(pexpire_exports, args);
+  }
+  async PTTL(...args) {
+    return this._sendModuleCommand(pttl_exports, args);
+  }
+  async TTL(...args) {
+    return this._sendModuleCommand(ttl_exports, args);
+  }
+  async EXPIRE(...args) {
+    return this._sendModuleCommand(expire_exports, args);
+  }
+  async KEYS(...args) {
+    return this._sendModuleCommand(keys_exports, args);
+  }
+  async DEL(...args) {
+    return this._sendModuleCommand(del_exports, args);
   }
 };
 // Annotate the CommonJS export names for ESM import in node:

@@ -36,14 +36,12 @@
 		"redis": "^4"
 	},
 	"scripts": {
-		"build": "bun run compile && rm -rf dist && bun run build-cjs && bun run tools/fix-esbuild.js",
-		"lint": "eslint . && bunx tsc --skipLibCheck --noemit",
-		"npm-publish": "bun run build && bunx eslint . && bun run test && bun run types && npm publish --tag latest ; bun run types-delete ; bun run redis-down",
-		"npm-publish-beta": "bun run build && bunx eslint . && bun run test && bun run types && npm publish --tag beta ; bun run types-delete ; bun run redis-down",
-		"----------------------------------": "----------------------------------",
+		"build": "bun run build:commands && bun run compile:ts && bun run build:cjs",
 		"build:commands": "bun run compiler/main.ts && bunx eslint src/client.ts --fix && bunx eslint src/transaction.ts --fix",
 		"build:cjs": "bunx esbuild --bundle --platform=node --format=cjs --packages=external --outfile=dist/main.cjs dist/esm/main.js",
 		"compile:ts": "rm -rf dist/esm types ; tsc",
+		"lint": "eslint . && bunx tsc --skipLibCheck --noemit",
+		"publish:npm": "bun run lint && bun run build && bun run test && npm publish",
 		"redis:down": "docker stop test-redis || true",
 		"redis:up": "docker ps | grep test-redis >/dev/null || docker run --rm -d -p 16379:6379 --name test-redis redis:7-alpine",
 		"test": "export REDIS_PORT=16379 ; bun run redis:up && npm run test:vitest && bun test --coverage",

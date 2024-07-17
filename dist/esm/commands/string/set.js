@@ -13,22 +13,22 @@ export function input(key, value, options) {
         if (options.NX) {
             command_arguments.push('NX');
         }
-        else if (options.XX) {
+        if (options.XX) {
             command_arguments.push('XX');
         }
         if (options.EX) {
             command_arguments.push('EX', String(options.EX));
         }
-        else if (options.PX) {
+        if (options.PX) {
             command_arguments.push('PX', String(options.PX));
         }
-        else if (options.EXAT) {
+        if (options.EXAT) {
             command_arguments.push('EXAT', String(options.EXAT));
         }
-        else if (options.PXAT) {
+        if (options.PXAT) {
             command_arguments.push('PXAT', String(options.PXAT));
         }
-        else if (options.KEEPTTL) {
+        if (options.KEEPTTL) {
             command_arguments.push('KEEPTTL');
         }
         if (options.GET) {

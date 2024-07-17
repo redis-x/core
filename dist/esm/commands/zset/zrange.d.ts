@@ -1,22 +1,19 @@
-import { OnlyOneFrom, InputReturnType } from '../../types';
+import { ExactlyOneFrom, TheseFieldsOrNone, InputReturnType } from '../../types';
 import { ZrangeOptionsJsdoc } from './zrange.jsdoc';
 type ZrangeOptionsCommon = {
     REV?: true;
-    LIMIT?: [
-        number | string,
-        number | string
-    ];
-} & OnlyOneFrom<{
+} & TheseFieldsOrNone<ExactlyOneFrom<{
     BYSCORE: true;
     BYLEX: true;
+}> & {
+    LIMIT?: ZrangeOptionsJsdoc['LIMIT'];
 }>;
-type ZrangeOptionsModifierWithscores = {
-    WITHSCORES: true;
-};
-export type ZrangeOptions = ZrangeOptionsCommon & Partial<Record<keyof ZrangeOptionsModifierWithscores, never>> & ZrangeOptionsJsdoc;
-export type ZrangeOptionsWithWithscores = ZrangeOptionsCommon & ZrangeOptionsModifierWithscores & ZrangeOptionsJsdoc;
+export type ZrangeOptions = ZrangeOptionsCommon & Partial<Record<'WITHSCORES', never>> & ZrangeOptionsJsdoc;
+export type ZrangeOptionsWithWithscores = ZrangeOptionsCommon & {
+    WITHSCORES: Required<ZrangeOptionsJsdoc>['WITHSCORES'];
+} & ZrangeOptionsJsdoc;
 /**
- * Returns the specified range of elements in the sorted set stored at <key>.
+ * Returns the specified range of elements in the sorted set stored at key.
  * ZRANGE can perform different types of range queries: by index (rank), by the score, or by lexicographical order.
  * - Available since: 1.2.0.
  * - Time complexity: O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.
@@ -52,5 +49,8 @@ export declare function output(result: string[]): string[];
  * @param modifier -
  * @returns Returns a Map of members in the specified range as keys and scores as values.
  */
-export declare function output(result: string[], modifier: 'WITHSCORES'): Map<string, number>;
+export declare function output(result: string[], modifier: 'WITHSCORES'): {
+    value: string;
+    score: number;
+}[];
 export {};

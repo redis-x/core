@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-empty-file */
 
 module.exports = {
 	root: true,
@@ -30,7 +31,7 @@ module.exports = {
 		'node',
 	],
 	ignorePatterns: [
-		'.eslintrc.cjs',
+		// '.eslintrc.cjs',
 		'dist/**/*',
 		'node_modules*/**/*',
 		'types/**/*',

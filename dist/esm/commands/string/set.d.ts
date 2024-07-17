@@ -1,20 +1,19 @@
-import { OnlyOneFrom, InputReturnType } from '../../types';
+import { OneOrNoneFrom, InputReturnType } from '../../types';
 import { SetOptionsJsdoc } from './set.jsdoc';
-type SetOptionsCommon = OnlyOneFrom<{
-    NX: true;
-    XX: true;
-}> & OnlyOneFrom<{
-    EX: number;
-    PX: number;
-    EXAT: number;
-    PXAT: number;
-    KEEPTTL: true;
+type SetOptionsCommon = OneOrNoneFrom<{
+    NX: SetOptionsJsdoc['NX'];
+    XX: SetOptionsJsdoc['XX'];
+}> & OneOrNoneFrom<{
+    EX: SetOptionsJsdoc['EX'];
+    PX: SetOptionsJsdoc['PX'];
+    EXAT: SetOptionsJsdoc['EXAT'];
+    PXAT: SetOptionsJsdoc['PXAT'];
+    KEEPTTL: SetOptionsJsdoc['KEEPTTL'];
 }>;
-type SetOptionsModifierGet = {
-    GET: true;
-};
-export type SetOptions = SetOptionsCommon & Partial<Record<keyof SetOptionsModifierGet, never>> & SetOptionsJsdoc;
-export type SetOptionsWithGet = SetOptionsCommon & SetOptionsModifierGet & SetOptionsJsdoc;
+export type SetOptions = SetOptionsCommon & Partial<Record<'GET', never>> & SetOptionsJsdoc;
+export type SetOptionsWithGet = SetOptionsCommon & {
+    GET: SetOptionsJsdoc['GET'];
+} & SetOptionsJsdoc;
 /**
  * Set the string value of a key.
  * - Available since: 1.0.0.
