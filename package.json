@@ -1,12 +1,22 @@
 {
 	"name": "@redis-x/client",
 	"version": "0.2.0-beta.1",
-	"author": "Daniil Kirichenko (https://twitter.com/kirickme)",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/redis-x/client.git"
+	"description": "Enhanced redis client build on top of \"redis\" package.",
+	"publishConfig": {
+		"access": "public"
 	},
+	"type": "module",
 	"main": "dist/esm/main.js",
+	"types": "dist/esm/main.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/esm/main.js",
+			"require": "./dist/main.cjs"
+		}
+	},
+	"engines": {
+		"node": ">=12.0.0"
+	},
 	"devDependencies": {
 		"@types/bun": "^1.1.6",
 		"@types/node": "^20.14.10",
@@ -25,30 +35,6 @@
 	"peerDependencies": {
 		"redis": "^4"
 	},
-	"exports": {
-		".": {
-			"import": "./dist/esm/main.js",
-			"require": "./dist/main.cjs"
-		}
-	},
-	"bugs": {
-		"url": "https://github.com/redis-x/client/issues"
-	},
-	"description": "Enhanced redis client build on top of \"redis\" package.",
-	"engines": {
-		"node": ">=12.0.0"
-	},
-	"homepage": "https://github.com/redis-x/client#readme",
-	"keywords": [
-		"redis",
-		"client",
-		"transaction",
-		"multi"
-	],
-	"license": "MIT",
-	"publishConfig": {
-		"access": "public"
-	},
 	"scripts": {
 		"build": "bun run compile && rm -rf dist && bun run build-cjs && bun run tools/fix-esbuild.js",
 		"lint": "eslint . && bunx tsc --skipLibCheck --noemit",
@@ -63,6 +49,20 @@
 		"test": "export REDIS_PORT=16379 ; bun run redis:up && npm run test:vitest && bun test --coverage",
 		"test:vitest": "vitest run --no-file-parallelism"
 	},
-	"type": "module",
-	"types": "dist/esm/main.d.ts"
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/redis-x/client.git"
+	},
+	"keywords": [
+		"redis",
+		"client",
+		"transaction",
+		"multi"
+	],
+	"author": "Daniil Kirichenko (https://twitter.com/kirickme)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/redis-x/client/issues"
+	},
+	"homepage": "https://github.com/redis-x/client#readme"
 }
