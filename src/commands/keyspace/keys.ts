@@ -16,6 +16,9 @@ export function input(pattern: string): InputReturnType {
 }
 
 /**
- * @returns A list of keys matching `<pattern>`.
+ * @param result -
+ * @returns A set of keys matching `<pattern>`.
  */
-declare function output(): string[];
+export function output(result: string[]): Set<string> {
+	return new Set(result);
+}

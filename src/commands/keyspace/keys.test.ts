@@ -17,7 +17,7 @@ test('command', async () => {
 });
 
 test('execution', async () => {
-	const expected_result = [ 'bar', 'baz' ];
+	const expected_result = new Set([ 'bar', 'baz' ]);
 
 	await redisXClient.sendCommand(
 		'MSET',
