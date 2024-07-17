@@ -2,6 +2,11 @@ import { RedisXClientBase } from './client.base';
 import * as CommandGet from './commands/string/get';
 import * as CommandSet from './commands/string/set';
 import { SetOptionsWithGet, SetOptions } from './commands/string/set';
+import * as CommandIncr from './commands/string/incr';
+import * as CommandIncrbyfloat from './commands/string/incrbyfloat';
+import * as CommandIncrby from './commands/string/incrby';
+import * as CommandDecrby from './commands/string/decrby';
+import * as CommandDecr from './commands/string/decr';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
 import * as CommandPexpire from './commands/keyspace/pexpire';
@@ -57,6 +62,75 @@ export class RedisXClient extends RedisXClientBase {
 	async SET(key: string, value: string): Promise<'OK' | null>;
 	async SET(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandSet, args);
+	}
+	/**
+	 * Increments the number stored at `<key>` by one.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to increment.
+	 * @returns The value of the key after the operation.
+	 */
+	async INCR(key: string): Promise<number>;
+	async INCR(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandIncr, args);
+	}
+	/**
+	 * Increment the string representing a floating point number stored at `<key>` by `<increment>`.
+	 * By using a negative increment value, the result is that the value stored at the `<key>` is decremented.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that is not parsable as a double precision floating point number.
+	 * - Available since: 2.6.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param increment -
+	 * @returns The value of the key after the operation.
+	 */
+	async INCRBYFLOAT(key: string, increment: number): Promise<number>;
+	async INCRBYFLOAT(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandIncrbyfloat, args);
+	}
+	/**
+	 * Increments the number stored at `<key>` by `<increment>`.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param increment -
+	 * @returns The value of the key after the operation.
+	 */
+	async INCRBY(key: string, increment: number): Promise<number>;
+	async INCRBY(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandIncrby, args);
+	}
+	/**
+	 * Decrements the number stored at `<key>` by `<decrement>`.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param decrement -
+	 * @returns The value of the key after the operation.
+	 */
+	async DECRBY(key: string, decrement: number): Promise<number>;
+	async DECRBY(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandDecrby, args);
+	}
+	/**
+	 * Decrements the number stored at `<key>` by one.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to decrement.
+	 * @returns The value of the key after the operation.
+	 */
+	async DECR(key: string): Promise<number>;
+	async DECR(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandDecr, args);
 	}
 	/**
 	 * Returns the specified range of elements in the sorted set stored at key.

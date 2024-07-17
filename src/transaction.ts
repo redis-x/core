@@ -2,6 +2,11 @@ import { RedisXTransactionBase } from './transaction.base';
 import * as CommandGet from './commands/string/get';
 import * as CommandSet from './commands/string/set';
 import { SetOptionsWithGet, SetOptions } from './commands/string/set';
+import * as CommandIncr from './commands/string/incr';
+import * as CommandIncrbyfloat from './commands/string/incrbyfloat';
+import * as CommandIncrby from './commands/string/incrby';
+import * as CommandDecrby from './commands/string/decrby';
+import * as CommandDecr from './commands/string/decr';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
 import * as CommandPexpire from './commands/keyspace/pexpire';
@@ -70,6 +75,90 @@ export class RedisXTransaction<L extends any[] = [
 	], F, U>;
 	SET(...args: unknown[]) {
 		return this._addModuleCommand(CommandSet, args);
+	}
+	/**
+	 * Increments the number stored at `<key>` by one.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to increment.
+	 * @returns The value of the key after the operation.
+	 */
+	INCR(key: string): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	INCR(...args: unknown[]) {
+		return this._addModuleCommand(CommandIncr, args);
+	}
+	/**
+	 * Increment the string representing a floating point number stored at `<key>` by `<increment>`.
+	 * By using a negative increment value, the result is that the value stored at the `<key>` is decremented.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that is not parsable as a double precision floating point number.
+	 * - Available since: 2.6.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param increment -
+	 * @returns The value of the key after the operation.
+	 */
+	INCRBYFLOAT(key: string, increment: number): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	INCRBYFLOAT(...args: unknown[]) {
+		return this._addModuleCommand(CommandIncrbyfloat, args);
+	}
+	/**
+	 * Increments the number stored at `<key>` by `<increment>`.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param increment -
+	 * @returns The value of the key after the operation.
+	 */
+	INCRBY(key: string, increment: number): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	INCRBY(...args: unknown[]) {
+		return this._addModuleCommand(CommandIncrby, args);
+	}
+	/**
+	 * Decrements the number stored at `<key>` by `<decrement>`.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @param decrement -
+	 * @returns The value of the key after the operation.
+	 */
+	DECRBY(key: string, decrement: number): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	DECRBY(...args: unknown[]) {
+		return this._addModuleCommand(CommandDecrby, args);
+	}
+	/**
+	 * Decrements the number stored at `<key>` by one.
+	 * If the key does not exist, it is set to `0` before performing the operation.
+	 * An error is returned if the key contains a value of the wrong type or contains a string that can not be represented as integer.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to decrement.
+	 * @returns The value of the key after the operation.
+	 */
+	DECR(key: string): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	DECR(...args: unknown[]) {
+		return this._addModuleCommand(CommandDecr, args);
 	}
 	/**
 	 * Returns the specified range of elements in the sorted set stored at key.
