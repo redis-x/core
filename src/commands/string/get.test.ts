@@ -6,7 +6,7 @@ import { redisXClient }    from '../../../test/client';
 import { createRandomKey } from '../../../test/utils';
 import { input }           from './get';
 
-test(async () => {
+test('GET', async () => {
 	const KEY = createRandomKey();
 	const VALUE = 'foo';
 

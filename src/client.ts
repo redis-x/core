@@ -6,6 +6,8 @@ import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
 import * as CommandPexpire from './commands/keyspace/pexpire';
 import { PexpireOptions } from './commands/keyspace/pexpire';
+import * as CommandPttl from './commands/keyspace/pttl';
+import * as CommandTtl from './commands/keyspace/ttl';
 import * as CommandExpire from './commands/keyspace/expire';
 import { ExpireOptions } from './commands/keyspace/expire';
 import * as CommandDel from './commands/keyspace/del';
@@ -108,6 +110,36 @@ export class RedisXClient extends RedisXClientBase {
 	async PEXPIRE(key: string, seconds: number, options?: PexpireOptions): Promise<0 | 1>;
 	async PEXPIRE(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandPexpire, args);
+	}
+	/**
+	 * Like TTL this command returns the remaining time to live of a key that has an expire set, with the sole difference that TTL returns the amount of remaining time in seconds while PTTL returns it in milliseconds.
+	 * - Available since: 2.6.0.
+	 * - Time complexity: O(1).
+	 *
+	 * Command can return negative values:
+	 * - in Redis 2.8 or newer, the command returns `-2` if the key does not exist and `-1` if the key exists but has no associated expire;
+	 * - in Redis 2.6 or older the command returns `-1` if the key does not exist or if the key exist but has no associated expire.
+	 * @param key Key to get time-to-live of.
+	 * @returns TTL in seconds or special negative value.
+	 */
+	async PTTL(key: string): Promise<string | null>;
+	async PTTL(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandPttl, args);
+	}
+	/**
+	 * Returns the remaining time to live of a key that has a timeout.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 *
+	 * Command can return negative values:
+	 * - in Redis 2.8 or newer, the command returns `-2` if the key does not exist and `-1` if the key exists but has no associated expire;
+	 * - in Redis 2.6 or older the command returns `-1` if the key does not exist or if the key exist but has no associated expire.
+	 * @param key Key to get time-to-live of.
+	 * @returns TTL in seconds or special negative value.
+	 */
+	async TTL(key: string): Promise<string | null>;
+	async TTL(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandTtl, args);
 	}
 	/**
 	 * Set a timeout on key.
