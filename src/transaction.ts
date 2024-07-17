@@ -10,6 +10,7 @@ import * as CommandDecr from './commands/string/decr';
 import * as CommandHset from './commands/hash/hset';
 import * as CommandHget from './commands/hash/hget';
 import * as CommandHmget from './commands/hash/hmget';
+import * as CommandHdel from './commands/hash/hdel';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
 import * as CommandPexpire from './commands/keyspace/pexpire';
@@ -216,12 +217,51 @@ export class RedisXTransaction<L extends any[] = [
 	 * @param fields -
 	 * @returns The value associated with the field or `null` when the field is not present in the hash or key does not exist.
 	 */
+	HMGET(key: string, ...fields: string[]): RedisXTransaction<[
+		...L,
+		Record<string, string | null>
+	], F, U>;
+	/**
+	 * Returns the values associated with `<fields>` in the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the number of fields being requested.
+	 * @param key -
+	 * @param fields -
+	 * @returns The value associated with the field or `null` when the field is not present in the hash or key does not exist.
+	 */
 	HMGET(key: string, fields: string[] | Set<string>): RedisXTransaction<[
 		...L,
 		Record<string, string | null>
 	], F, U>;
 	HMGET(...args: unknown[]) {
 		return this._addModuleCommand(CommandHmget, args);
+	}
+	/**
+	 * Removes the specified `<fields>` from the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the number of fields to be removed.
+	 * @param key -
+	 * @param fields -
+	 * @returns The number of fields that were removed from the hash, excluding any specified but non-existing fields.
+	 */
+	HDEL(key: string, ...fields: string[]): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	/**
+	 * Removes the specified `<fields>` from the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the number of fields to be removed.
+	 * @param key -
+	 * @param fields -
+	 * @returns The number of fields that were removed from the hash, excluding any specified but non-existing fields.
+	 */
+	HDEL(key: string, fields: string[] | Set<string>): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	HDEL(...args: unknown[]) {
+		return this._addModuleCommand(CommandHdel, args);
 	}
 	/**
 	 * Returns the specified range of elements in the sorted set stored at key.

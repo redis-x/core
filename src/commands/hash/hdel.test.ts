@@ -1,30 +1,29 @@
+/* eslint-disable jsdoc/require-jsdoc */
 
 import {
-	beforeAll,
-	describe,
 	test,
 	expect }               from 'vitest';
 import { redisXClient }    from '../../../test/client';
 import { createRandomKey } from '../../../test/utils';
-import { input }           from './hmget';
+import { input }           from './hdel';
 
 const KEY = createRandomKey();
 
-beforeAll(async () => {
+async function fill() {
 	await redisXClient.sendCommand('HSET', KEY, 'apple', 'fruit', 'beet', 'vegetable');
-});
+}
 
 test('command', () => {
 	expect(
 		input('foo', 'apple')[0],
 	).toStrictEqual(
-		[ 'HMGET', 'foo', 'apple' ],
+		[ 'HDEL', 'foo', 'apple' ],
 	);
 
 	expect(
 		input('foo', 'apple', 'banana')[0],
 	).toStrictEqual(
-		[ 'HMGET', 'foo', 'apple', 'banana' ],
+		[ 'HDEL', 'foo', 'apple', 'banana' ],
 	);
 
 	expect(
@@ -33,7 +32,7 @@ test('command', () => {
 			[ 'apple', 'banana' ],
 		)[0],
 	).toStrictEqual(
-		[ 'HMGET', 'foo', 'apple', 'banana' ],
+		[ 'HDEL', 'foo', 'apple', 'banana' ],
 	);
 
 	expect(
@@ -42,23 +41,22 @@ test('command', () => {
 			new Set([ 'apple', 'banana' ]),
 		)[0],
 	).toStrictEqual(
-		[ 'HMGET', 'foo', 'apple', 'banana' ],
+		[ 'HDEL', 'foo', 'apple', 'banana' ],
 	);
 });
 
 test('execution', async () => {
-	const expected_result = {
-		apple: 'fruit',
-		banana: null,
-	};
+	const expected_result = 1;
 
+	await fill();
 	await expect(
-		redisXClient.HMGET(KEY, [ 'apple', 'banana' ]),
+		redisXClient.HDEL(KEY, 'apple', 'banana'),
 	).resolves.toStrictEqual(expected_result);
 
+	await fill();
 	await expect(
 		redisXClient.createTransaction()
-			.HMGET(KEY, [ 'apple', 'banana' ])
+			.HDEL(KEY, 'apple', 'banana')
 			.execute(),
 	).resolves.toStrictEqual([ expected_result ]);
 });

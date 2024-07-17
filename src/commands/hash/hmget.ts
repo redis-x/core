@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 
 import { InputReturnType } from '../../types';
 
@@ -9,12 +10,25 @@ import { InputReturnType } from '../../types';
  * @param fields -
  * @returns -
  */
-export function input(key: string, fields: string[] | Set<string>): InputReturnType<string> {
-	const command_arguments = [ 'HMGET', key ];
-
-	const fields_array = Array.isArray(fields)
-		? fields
-		: [ ...fields ];
+export function input(key: string, ...fields: string[]): InputReturnType<string>;
+/**
+ * @param key -
+ * @param fields -
+ * @returns -
+ */
+export function input(key: string, fields: string[] | Set<string>): InputReturnType<string>;
+export function input(key: string, arg1: string | string[] | Set<string>, ...args: string[]): InputReturnType<string> {
+	let fields_array: string[] = [];
+	if (typeof arg1 === 'string') {
+		fields_array = args;
+		fields_array.unshift(arg1);
+	}
+	else if (Array.isArray(arg1)) {
+		fields_array = arg1;
+	}
+	else {
+		fields_array = [ ...arg1 ];
+	}
 
 	return [
 		[
