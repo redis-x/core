@@ -8,8 +8,10 @@ import * as CommandIncrby from './commands/string/incrby';
 import * as CommandDecrby from './commands/string/decrby';
 import * as CommandDecr from './commands/string/decr';
 import * as CommandHset from './commands/hash/hset';
+import * as CommandHgetall from './commands/hash/hgetall';
 import * as CommandHget from './commands/hash/hget';
 import * as CommandHmget from './commands/hash/hmget';
+import * as CommandHlen from './commands/hash/hlen';
 import * as CommandHdel from './commands/hash/hdel';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
@@ -195,6 +197,20 @@ export class RedisXTransaction<L extends any[] = [
 		return this._addModuleCommand(CommandHset, args);
 	}
 	/**
+	 * Returns all fields and values of the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the size of the hash.
+	 * @param key -
+	 * @returns Value of the key.
+	 */
+	HGETALL(key: string): RedisXTransaction<[
+		...L,
+		Record<string, string>
+	], F, U>;
+	HGETALL(...args: unknown[]) {
+		return this._addModuleCommand(CommandHgetall, args);
+	}
+	/**
 	 * Returns the value associated with field in the `<hash>` stored at `<key>`.
 	 * - Available since: 2.0.0.
 	 * - Time complexity: O(1).
@@ -235,6 +251,20 @@ export class RedisXTransaction<L extends any[] = [
 	], F, U>;
 	HMGET(...args: unknown[]) {
 		return this._addModuleCommand(CommandHmget, args);
+	}
+	/**
+	 * Returns the number of fields contained in the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @returns Value of the key.
+	 */
+	HLEN(key: string): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	HLEN(...args: unknown[]) {
+		return this._addModuleCommand(CommandHlen, args);
 	}
 	/**
 	 * Removes the specified `<fields>` from the hash stored at `<key>`.

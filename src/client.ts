@@ -8,8 +8,10 @@ import * as CommandIncrby from './commands/string/incrby';
 import * as CommandDecrby from './commands/string/decrby';
 import * as CommandDecr from './commands/string/decr';
 import * as CommandHset from './commands/hash/hset';
+import * as CommandHgetall from './commands/hash/hgetall';
 import * as CommandHget from './commands/hash/hget';
 import * as CommandHmget from './commands/hash/hmget';
+import * as CommandHlen from './commands/hash/hlen';
 import * as CommandHdel from './commands/hash/hdel';
 import * as CommandZrange from './commands/zset/zrange';
 import { ZrangeOptionsWithWithscores, ZrangeOptions } from './commands/zset/zrange';
@@ -161,6 +163,17 @@ export class RedisXClient extends RedisXClientBase {
 		return this._sendModuleCommand(CommandHset, args);
 	}
 	/**
+	 * Returns all fields and values of the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the size of the hash.
+	 * @param key -
+	 * @returns Value of the key.
+	 */
+	async HGETALL(key: string): Promise<Record<string, string>>;
+	async HGETALL(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandHgetall, args);
+	}
+	/**
 	 * Returns the value associated with field in the `<hash>` stored at `<key>`.
 	 * - Available since: 2.0.0.
 	 * - Time complexity: O(1).
@@ -192,6 +205,17 @@ export class RedisXClient extends RedisXClientBase {
 	async HMGET(key: string, fields: string[] | Set<string>): Promise<Record<string, string | null>>;
 	async HMGET(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandHmget, args);
+	}
+	/**
+	 * Returns the number of fields contained in the hash stored at `<key>`.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(1).
+	 * @param key -
+	 * @returns Value of the key.
+	 */
+	async HLEN(key: string): Promise<number>;
+	async HLEN(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandHlen, args);
 	}
 	/**
 	 * Removes the specified `<fields>` from the hash stored at `<key>`.
