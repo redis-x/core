@@ -10,6 +10,7 @@ import * as CommandPttl from './commands/keyspace/pttl';
 import * as CommandTtl from './commands/keyspace/ttl';
 import * as CommandExpire from './commands/keyspace/expire';
 import { ExpireOptions } from './commands/keyspace/expire';
+import * as CommandKeys from './commands/keyspace/keys';
 import * as CommandDel from './commands/keyspace/del';
 export class RedisXClient extends RedisXClientBase {
 	/**
@@ -122,7 +123,7 @@ export class RedisXClient extends RedisXClientBase {
 	 * @param key Key to get time-to-live of.
 	 * @returns TTL in seconds or special negative value.
 	 */
-	async PTTL(key: string): Promise<string | null>;
+	async PTTL(key: string): Promise<number>;
 	async PTTL(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandPttl, args);
 	}
@@ -137,7 +138,7 @@ export class RedisXClient extends RedisXClientBase {
 	 * @param key Key to get time-to-live of.
 	 * @returns TTL in seconds or special negative value.
 	 */
-	async TTL(key: string): Promise<string | null>;
+	async TTL(key: string): Promise<number>;
 	async TTL(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandTtl, args);
 	}
@@ -154,6 +155,17 @@ export class RedisXClient extends RedisXClientBase {
 	async EXPIRE(key: string, seconds: number, options?: ExpireOptions): Promise<0 | 1>;
 	async EXPIRE(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandExpire, args);
+	}
+	/**
+	 * Returns all keys matching `<pattern>`.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(N) with N being the number of keys in the database.
+	 * @param pattern Pattern to match.
+	 * @returns A list of keys matching `<pattern>`.
+	 */
+	async KEYS(pattern: string): Promise<string[]>;
+	async KEYS(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandKeys, args);
 	}
 	/**
 	 * Removes the specified keys.

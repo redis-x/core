@@ -10,6 +10,7 @@ import * as CommandPttl from './commands/keyspace/pttl';
 import * as CommandTtl from './commands/keyspace/ttl';
 import * as CommandExpire from './commands/keyspace/expire';
 import { ExpireOptions } from './commands/keyspace/expire';
+import * as CommandKeys from './commands/keyspace/keys';
 import * as CommandDel from './commands/keyspace/del';
 export class RedisXTransaction<L extends any[] = [
 ], F = {}, U = undefined> extends RedisXTransactionBase<L, F, U> {
@@ -149,7 +150,7 @@ export class RedisXTransaction<L extends any[] = [
 	 */
 	PTTL(key: string): RedisXTransaction<[
 		...L,
-		string | null
+		number
 	], F, U>;
 	PTTL(...args: unknown[]) {
 		return this._addModuleCommand(CommandPttl, args);
@@ -167,7 +168,7 @@ export class RedisXTransaction<L extends any[] = [
 	 */
 	TTL(key: string): RedisXTransaction<[
 		...L,
-		string | null
+		number
 	], F, U>;
 	TTL(...args: unknown[]) {
 		return this._addModuleCommand(CommandTtl, args);
@@ -188,6 +189,20 @@ export class RedisXTransaction<L extends any[] = [
 	], F, U>;
 	EXPIRE(...args: unknown[]) {
 		return this._addModuleCommand(CommandExpire, args);
+	}
+	/**
+	 * Returns all keys matching `<pattern>`.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(N) with N being the number of keys in the database.
+	 * @param pattern Pattern to match.
+	 * @returns A list of keys matching `<pattern>`.
+	 */
+	KEYS(pattern: string): RedisXTransaction<[
+		...L,
+		string[]
+	], F, U>;
+	KEYS(...args: unknown[]) {
+		return this._addModuleCommand(CommandKeys, args);
 	}
 	/**
 	 * Removes the specified keys.
