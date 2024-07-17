@@ -21,9 +21,9 @@ export function input(key: string, increment: number): InputReturnType {
 }
 
 /**
- * @param value -
+ * @param result -
  * @returns The value of the key after the operation.
  */
-export function output(value: string): number {
-	return Number.parseFloat(value);
+export function output(result: string): number {
+	return Number.parseFloat(result);
 }
