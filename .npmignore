@@ -1,6 +1,8 @@
 
-.eslintrc.cjs
+**/*.test.js
+biome.json
 compiler/
+eslint.config.*
 src/
 test/
-**/*.test.js
+tsconfig.json

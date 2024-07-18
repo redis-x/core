@@ -23,8 +23,8 @@ import * as CommandExpire from './commands/keyspace/expire';
 import { ExpireOptions } from './commands/keyspace/expire';
 import * as CommandKeys from './commands/keyspace/keys';
 import * as CommandDel from './commands/keyspace/del';
-export class RedisXTransaction<L extends any[] = [
-], F = {}, U = undefined> extends RedisXTransactionBase<L, F, U> {
+export class RedisXTransaction<L extends unknown[] = [
+], F = unknown, U = undefined> extends RedisXTransactionBase<L, F, U> {
 	/**
 	 * Get the value of key.
 	 * If the key does not exist `null` is returned.
@@ -363,7 +363,7 @@ export class RedisXTransaction<L extends any[] = [
 	 * Like TTL this command returns the remaining time to live of a key that has an expire set, with the sole difference that TTL returns the amount of remaining time in seconds while PTTL returns it in milliseconds.
 	 * - Available since: 2.6.0.
 	 * - Time complexity: O(1).
-	 *
+	 * 
 	 * Command can return negative values:
 	 * - in Redis 2.8 or newer, the command returns `-2` if the key does not exist and `-1` if the key exists but has no associated expire;
 	 * - in Redis 2.6 or older the command returns `-1` if the key does not exist or if the key exist but has no associated expire.
@@ -381,7 +381,7 @@ export class RedisXTransaction<L extends any[] = [
 	 * Returns the remaining time to live of a key that has a timeout.
 	 * - Available since: 1.0.0.
 	 * - Time complexity: O(1).
-	 *
+	 * 
 	 * Command can return negative values:
 	 * - in Redis 2.8 or newer, the command returns `-2` if the key does not exist and `-1` if the key exists but has no associated expire;
 	 * - in Redis 2.6 or older the command returns `-1` if the key does not exist or if the key exist but has no associated expire.

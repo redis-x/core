@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Decrements the number stored at `<key>` by `<decrement>`.
  * If the key does not exist, it is set to `0` before performing the operation.
@@ -10,3 +10,7 @@ import { InputReturnType } from '../../types';
  * @returns -
  */
 export declare function input(key: string, decrement: number): InputReturnType;
+/**
+ * @returns The value of the key after the operation.
+ */
+export declare function output(): number;

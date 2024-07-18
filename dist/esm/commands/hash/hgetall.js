@@ -1,4 +1,4 @@
-import { stringBulkToObject } from '../../utils';
+import { stringBulkToObject } from "../../utils";
 /**
  * Returns all fields and values of the hash stored at `<key>`.
  * - Available since: 2.0.0.
@@ -7,15 +7,12 @@ import { stringBulkToObject } from '../../utils';
  * @returns -
  */
 export function input(key) {
-    return [[
-            'HGETALL',
-            key,
-        ]];
+	return [["HGETALL", key]];
 }
 /**
  * @param result -
  * @returns Value of the key.
  */
 export function output(result) {
-    return stringBulkToObject(result);
+	return stringBulkToObject(result);
 }

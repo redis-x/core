@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Get the value of key.
  * If the key does not exist `null` is returned.
@@ -9,3 +9,7 @@ import { InputReturnType } from '../../types';
  * @returns -
  */
 export declare function input(key: string): InputReturnType;
+/**
+ * @returns Value of the key.
+ */
+export declare function output(): string | null;

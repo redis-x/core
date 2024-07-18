@@ -1,33 +1,8 @@
-/* eslint-disable unicorn/no-useless-undefined */
-/* eslint-disable jsdoc/require-jsdoc */
 
 import ts                 from 'typescript';
 import {
 	processCommandModule,
 	finalizeClass }       from './generator';
-
-async function parseFile(path: string): Promise<ts.Statement[]> {
-	const code = await Bun.file(path).text();
-	const ast = ts.createSourceFile(
-		'file.ts',
-		code,
-		ts.ScriptTarget.Latest,
-	);
-
-	return [ ...ast.statements ];
-}
-
-// const client_ast = await parseFile('src/_client.template.ts');
-// const client_class_ast = client_ast.find((node) => ts.isClassDeclaration(node)) as ts.ClassDeclaration | undefined;
-// if (!client_class_ast) {
-// 	throw new Error('Invalid client template.');
-// }
-
-// const transaction_ast = await parseFile('src/_transaction.template.ts');
-// const transaction_class_ast = transaction_ast.find((node) => ts.isClassDeclaration(node)) as ts.ClassDeclaration | undefined;
-// if (!transaction_class_ast) {
-// 	throw new Error('Invalid client template.');
-// }
 
 const imports_ast: ts.ImportDeclaration[] = [];
 const client_membets_node_list: ts.Node[] = [];

@@ -1,16 +1,14 @@
 /* eslint-disable jsdoc/require-jsdoc */
 
-import ts from 'typescript';
-import {
-	dirname,
-	join as joinPath } from 'node:path';
+import ts       from 'typescript';
+import nodePath from 'node:path';
 
 export function pathFromMetaUrl(
 	import_meta_url: string,
 	...paths: string[]
 ): string {
-	return joinPath(
-		dirname(
+	return nodePath.join(
+		nodePath.dirname(
 			new URL(import_meta_url).pathname,
 		),
 		...paths,

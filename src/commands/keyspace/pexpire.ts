@@ -50,4 +50,4 @@ export function input(key: string, seconds: number, options?: PexpireOptions): I
 /**
  * @returns Returns `1` if the timeout was set. Returns `0` if the timeout was not set; for example, the key doesn't exist, or the operation was skipped because of the provided arguments.
  */
-declare function output(): 0 | 1;
+export declare function output(): 0 | 1;

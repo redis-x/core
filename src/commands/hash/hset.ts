@@ -43,4 +43,4 @@ export function input(key: string, arg1: string | Record<string, string | number
 /**
  * @returns The number of fields that were added.
  */
-declare function output(): number;
+export declare function output(): number;

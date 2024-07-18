@@ -10,8 +10,5 @@
  * @returns -
  */
 export function input(key) {
-    return [[
-            'PTTL',
-            key,
-        ]];
+	return [["PTTL", key]];
 }

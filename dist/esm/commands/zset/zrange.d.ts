@@ -1,16 +1,24 @@
-import { ExactlyOneFrom, TheseFieldsOrNone, InputReturnType } from '../../types';
-import { ZrangeOptionsJsdoc } from './zrange.jsdoc';
+import {
+	ExactlyOneFrom,
+	TheseFieldsOrNone,
+	InputReturnType,
+} from "../../types";
+import { ZrangeOptionsJsdoc } from "./zrange.jsdoc";
 type ZrangeOptionsCommon = {
-    REV?: true;
-} & TheseFieldsOrNone<ExactlyOneFrom<{
-    BYSCORE: true;
-    BYLEX: true;
-}> & {
-    LIMIT?: ZrangeOptionsJsdoc['LIMIT'];
-}>;
-export type ZrangeOptions = ZrangeOptionsCommon & Partial<Record<'WITHSCORES', never>> & ZrangeOptionsJsdoc;
+	REV?: true;
+} & TheseFieldsOrNone<
+	ExactlyOneFrom<{
+		BYSCORE: true;
+		BYLEX: true;
+	}> & {
+		LIMIT?: ZrangeOptionsJsdoc["LIMIT"];
+	}
+>;
+export type ZrangeOptions = ZrangeOptionsCommon &
+	Partial<Record<"WITHSCORES", never>> &
+	ZrangeOptionsJsdoc;
 export type ZrangeOptionsWithWithscores = ZrangeOptionsCommon & {
-    WITHSCORES: Required<ZrangeOptionsJsdoc>['WITHSCORES'];
+	WITHSCORES: Required<ZrangeOptionsJsdoc>["WITHSCORES"];
 } & ZrangeOptionsJsdoc;
 /**
  * Returns the specified range of elements in the sorted set stored at key.
@@ -23,7 +31,12 @@ export type ZrangeOptionsWithWithscores = ZrangeOptionsCommon & {
  * @param options Options. See ZrangeOptionsJsdoc.
  * @returns -
  */
-export declare function input(key: string, start: number | string, stop: number | string, options: ZrangeOptionsWithWithscores): InputReturnType<'WITHSCORES'>;
+export declare function input(
+	key: string,
+	start: number | string,
+	stop: number | string,
+	options: ZrangeOptionsWithWithscores,
+): InputReturnType<"WITHSCORES">;
 /**
  * @param key -
  * @param start -
@@ -31,14 +44,23 @@ export declare function input(key: string, start: number | string, stop: number 
  * @param options -
  * @returns -
  */
-export declare function input(key: string, start: number | string, stop: number | string, options: ZrangeOptions): InputReturnType;
+export declare function input(
+	key: string,
+	start: number | string,
+	stop: number | string,
+	options: ZrangeOptions,
+): InputReturnType;
 /**
  * @param key -
  * @param start -
  * @param stop -
  * @returns -
  */
-export declare function input(key: string, start: number | string, stop: number | string): InputReturnType;
+export declare function input(
+	key: string,
+	start: number | string,
+	stop: number | string,
+): InputReturnType;
 /**
  * @param result -
  * @returns Returns a list of members in the specified range.
@@ -49,8 +71,11 @@ export declare function output(result: string[]): string[];
  * @param modifier -
  * @returns Returns a Map of members in the specified range as keys and scores as values.
  */
-export declare function output(result: string[], modifier: 'WITHSCORES'): {
-    value: string;
-    score: number;
+export declare function output(
+	result: string[],
+	modifier: "WITHSCORES",
+): {
+	value: string;
+	score: number;
 }[];
 export {};

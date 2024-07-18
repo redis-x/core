@@ -2,9 +2,6 @@
 
 import ts from 'typescript';
 import {
-	printNode,
-	stringifyLiteral } from './printer';
-import {
 	processInputJsdoc,
 	getReturnModifier } from './traverse/input';
 import {
@@ -29,6 +26,7 @@ export function traverse(ast_list: ts.Statement[]): TraverseResult {
 		if (ts.isFunctionDeclaration(statement_ast)) {
 			const function_name = statement_ast.name?.text;
 
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const jsdoc_ast = (statement_ast as any).jsDoc?.[0] as ts.JSDoc | undefined;
 			if (!jsdoc_ast) {
 				continue;

@@ -1,5 +1,4 @@
 /* eslint-disable jsdoc/require-jsdoc */
-/* eslint-disable unicorn/no-useless-undefined */
 
 import ts from 'typescript';
 
@@ -7,8 +6,7 @@ export function addClassMembers(
 	class_node: ts.ClassDeclaration,
 	...member_node_list: ts.Node[]
 ) {
-	// @ts-ignore
-	class_node.members.push(...member_node_list);
+	(class_node.members as unknown as ts.Node[]).push(...member_node_list);
 
 	// ---------------------------------------------------------
 

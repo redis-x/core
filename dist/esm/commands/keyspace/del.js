@@ -7,8 +7,5 @@
  * @returns -
  */
 export function input(...keys) {
-    return [[
-            'DEL',
-            ...keys,
-        ]];
+	return [["DEL", ...keys]];
 }

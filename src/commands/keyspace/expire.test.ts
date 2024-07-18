@@ -1,6 +1,5 @@
 
 import {
-	beforeAll,
 	describe,
 	test,
 	expect }                  from 'vitest';

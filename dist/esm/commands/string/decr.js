@@ -8,8 +8,5 @@
  * @returns -
  */
 export function input(key) {
-    return [[
-            'DECR',
-            key,
-        ]];
+	return [["DECR", key]];
 }

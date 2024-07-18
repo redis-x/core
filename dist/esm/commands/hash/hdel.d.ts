@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Removes the specified `<fields>` from the hash stored at `<key>`.
  * - Available since: 2.0.0.
@@ -7,10 +7,20 @@ import { InputReturnType } from '../../types';
  * @param fields -
  * @returns -
  */
-export declare function input(key: string, ...fields: string[]): InputReturnType;
+export declare function input(
+	key: string,
+	...fields: string[]
+): InputReturnType;
 /**
  * @param key -
  * @param fields -
  * @returns -
  */
-export declare function input(key: string, fields: string[] | Set<string>): InputReturnType;
+export declare function input(
+	key: string,
+	fields: string[] | Set<string>,
+): InputReturnType;
+/**
+ * @returns The number of fields that were removed from the hash, excluding any specified but non-existing fields.
+ */
+export declare function output(): number;

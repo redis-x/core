@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-useless-undefined */
 /* eslint-disable jsdoc/require-jsdoc */
 
 import ts from 'typescript';

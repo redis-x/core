@@ -1,7 +1,3 @@
-/* eslint-disable no-redeclare */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-dupe-class-members */
-/* eslint-disable jsdoc/require-jsdoc */
 
 import {
 	OneOrNoneFrom,
@@ -57,6 +53,7 @@ export function input(key: string, value: string, options: SetOptions): InputRet
  * @returns -
  */
 export function input(key: string, value: string): InputReturnType;
+// eslint-disable-next-line jsdoc/require-jsdoc
 export function input(key: string, value: string, options?: SetOptions | SetOptionsWithGet): InputReturnType<void | 'GET'> {
 	const command_arguments: string[] = [
 		'SET',
@@ -117,10 +114,10 @@ export function input(key: string, value: string, options?: SetOptions | SetOpti
  * @param result -
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
-declare function output(result: unknown): 'OK' | null;
+export declare function output(result: unknown): 'OK' | null;
 /**
  * @param result -
  * @param modifier -
  * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
  */
-declare function output(result: unknown, modifier: 'GET'): string | null;
+export declare function output(result: unknown, modifier: 'GET'): string | null;

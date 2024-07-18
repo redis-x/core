@@ -9,24 +9,20 @@
  * @returns -
  */
 export function input(key, seconds, options) {
-    const command_arguments = [
-        'EXPIRE',
-        key,
-        String(seconds),
-    ];
-    if (options) {
-        if (options.NX) {
-            command_arguments.push('NX');
-        }
-        if (options.XX) {
-            command_arguments.push('XX');
-        }
-        if (options.GT) {
-            command_arguments.push('GT');
-        }
-        if (options.LT) {
-            command_arguments.push('LT');
-        }
-    }
-    return [command_arguments];
+	const command_arguments = ["EXPIRE", key, String(seconds)];
+	if (options) {
+		if (options.NX) {
+			command_arguments.push("NX");
+		}
+		if (options.XX) {
+			command_arguments.push("XX");
+		}
+		if (options.GT) {
+			command_arguments.push("GT");
+		}
+		if (options.LT) {
+			command_arguments.push("LT");
+		}
+	}
+	return [command_arguments];
 }

@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Returns the values associated with `<fields>` in the hash stored at `<key>`.
  * - Available since: 2.0.0.
@@ -7,16 +7,25 @@ import { InputReturnType } from '../../types';
  * @param fields -
  * @returns -
  */
-export declare function input(key: string, ...fields: string[]): InputReturnType<string>;
+export declare function input(
+	key: string,
+	...fields: string[]
+): InputReturnType<string>;
 /**
  * @param key -
  * @param fields -
  * @returns -
  */
-export declare function input(key: string, fields: string[] | Set<string>): InputReturnType<string>;
+export declare function input(
+	key: string,
+	fields: string[] | Set<string>,
+): InputReturnType<string>;
 /**
  * @param result -
  * @param modificator -
  * @returns The value associated with the field or `null` when the field is not present in the hash or key does not exist.
  */
-export declare function output(result: (string | null)[], modificator: string): Record<string, string | null>;
+export declare function output(
+	result: (string | null)[],
+	modificator: string,
+): Record<string, string | null>;

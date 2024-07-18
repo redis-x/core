@@ -1,1 +1,1 @@
-export { RedisXClient } from './client';
+export { RedisXClient } from "./client";

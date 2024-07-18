@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Returns all keys matching `<pattern>`.
  * - Available since: 1.0.0.

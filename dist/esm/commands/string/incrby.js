@@ -9,9 +9,5 @@
  * @returns -
  */
 export function input(key, increment) {
-    return [[
-            'INCRBY',
-            key,
-            String(increment),
-        ]];
+	return [["INCRBY", key, String(increment)]];
 }

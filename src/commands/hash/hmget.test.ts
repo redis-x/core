@@ -1,7 +1,6 @@
 
 import {
 	beforeAll,
-	describe,
 	test,
 	expect }               from 'vitest';
 import { redisXClient }    from '../../../test/client';

@@ -6,8 +6,5 @@
  * @returns -
  */
 export function input(key) {
-    return [[
-            'HLEN',
-            key,
-        ]];
+	return [["HLEN", key]];
 }

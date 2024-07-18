@@ -19,4 +19,4 @@ export function input(...keys: string[]): InputReturnType {
 /**
  * @returns The number of keys that were removed.
  */
-declare function output(): number;
+export declare function output(): number;

@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Like TTL this command returns the remaining time to live of a key that has an expire set, with the sole difference that TTL returns the amount of remaining time in seconds while PTTL returns it in milliseconds.
  * - Available since: 2.6.0.
@@ -11,3 +11,7 @@ import { InputReturnType } from '../../types';
  * @returns -
  */
 export declare function input(key: string): InputReturnType;
+/**
+ * @returns TTL in seconds or special negative value.
+ */
+export declare function output(): number;

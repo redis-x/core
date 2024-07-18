@@ -22,4 +22,4 @@ export function input(key: string): InputReturnType {
 /**
  * @returns TTL in seconds or special negative value.
  */
-declare function output(): number;
+export declare function output(): number;

@@ -7,9 +7,5 @@
  * @returns -
  */
 export function input(key, field) {
-    return [[
-            'HGET',
-            key,
-            field,
-        ]];
+	return [["HGET", key, field]];
 }

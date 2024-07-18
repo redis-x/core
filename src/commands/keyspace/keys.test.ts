@@ -3,7 +3,6 @@ import {
 	test,
 	expect }               from 'vitest';
 import { redisXClient }    from '../../../test/client';
-import { createRandomKey } from '../../../test/utils';
 import { input }           from './keys';
 
 const PATTERN = 'ba*';

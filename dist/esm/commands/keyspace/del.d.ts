@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Removes the specified keys.
  * A key is ignored if it does not exist.
@@ -8,3 +8,7 @@ import { InputReturnType } from '../../types';
  * @returns -
  */
 export declare function input(...keys: string[]): InputReturnType;
+/**
+ * @returns The number of keys that were removed.
+ */
+export declare function output(): number;

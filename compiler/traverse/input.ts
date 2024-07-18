@@ -1,12 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
 
-import ts from 'typescript';
-import {
-	printNode,
-	stringifyLiteral } from '../printer';
+import ts                   from 'typescript';
+import { stringifyLiteral } from '../printer';
 import {
 	TraverseInputJsdoc,
-	TraverseInputState } from './types';
+	TraverseInputState }    from './types';
 
 export function processInputJsdoc(
 	context: TraverseInputState['jsdoc'],
@@ -21,7 +19,7 @@ export function processInputJsdoc(
 	if (jsdoc_ast.tags) {
 		for (const jsdoc_tag_ast of jsdoc_ast.tags) {
 			if (ts.isJSDocParameterTag(jsdoc_tag_ast)) {
-				let parameter_name = stringifyLiteral(jsdoc_tag_ast.name);
+				const parameter_name = stringifyLiteral(jsdoc_tag_ast.name);
 				let parameter_comment: string | undefined;
 				if (typeof jsdoc_tag_ast.comment === 'string') {
 					if (jsdoc_tag_ast.comment !== '-') {

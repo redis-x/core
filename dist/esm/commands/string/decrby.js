@@ -9,9 +9,5 @@
  * @returns -
  */
 export function input(key, decrement) {
-    return [[
-            'DECRBY',
-            key,
-            String(decrement),
-        ]];
+	return [["DECRBY", key, String(decrement)]];
 }

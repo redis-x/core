@@ -1,0 +1,35 @@
+{
+	"organizeImports": {
+		"enabled": false
+	},
+	"linter": {
+		"enabled": false
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"include": [
+			"dist/esm/"
+		],
+		"attributePosition": "auto",
+		"indentStyle": "tab",
+		"lineWidth": 80,
+		"lineEnding": "lf"
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "always",
+			"attributePosition": "multiline",
+			"bracketSameLine": false,
+			"bracketSpacing": true,
+			"quoteProperties": "asNeeded",
+			"semicolons": "always",
+			"trailingCommas": "all"
+		}
+	},
+	"json": {
+		"formatter": {
+			"trailingCommas": "none"
+		}
+	}
+}

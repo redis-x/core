@@ -6,15 +6,12 @@
  * @returns -
  */
 export function input(pattern) {
-    return [[
-            'KEYS',
-            pattern,
-        ]];
+	return [["KEYS", pattern]];
 }
 /**
  * @param result -
  * @returns A set of keys matching `<pattern>`.
  */
 export function output(result) {
-    return new Set(result);
+	return new Set(result);
 }

@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Returns the remaining time to live of a key that has a timeout.
  * - Available since: 1.0.0.
@@ -11,3 +11,7 @@ import { InputReturnType } from '../../types';
  * @returns -
  */
 export declare function input(key: string): InputReturnType;
+/**
+ * @returns TTL in seconds or special negative value.
+ */
+export declare function output(): number;

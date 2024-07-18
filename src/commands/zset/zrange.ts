@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 
 import {
 	ExactlyOneFrom,
@@ -60,6 +59,7 @@ export function input(key: string, start: number | string, stop: number | string
  * @returns -
  */
 export function input(key: string, start: number | string, stop: number | string): InputReturnType;
+// eslint-disable-next-line jsdoc/require-jsdoc
 export function input(key: string, start: number | string, stop: number | string, options?: ZrangeOptions | ZrangeOptionsWithWithscores): InputReturnType<void | 'WITHSCORES'> {
 	const command_arguments: string[] = [
 		'ZRANGE',
@@ -112,6 +112,7 @@ export function output(result: string[]): string[];
  * @returns Returns a Map of members in the specified range as keys and scores as values.
  */
 export function output(result: string[], modifier: 'WITHSCORES'): { value: string, score: number }[];
+// eslint-disable-next-line jsdoc/require-jsdoc
 export function output(result: string[], modifier?: 'WITHSCORES'): string[] | { value: string, score: number }[] {
 	if (modifier === 'WITHSCORES') {
 		const result_withscores: { value: string, score: number }[] = [];

@@ -44,7 +44,11 @@ var RedisXTransactionBase = class {
    * @returns Command result.
    */
   addCommand(...command_arguments) {
-    this.redisTransaction.addCommand(command_arguments.map((value) => typeof value === "string" ? value : String(value)));
+    this.redisTransaction.addCommand(
+      command_arguments.map(
+        (value) => typeof value === "string" ? value : String(value)
+      )
+    );
     this.#commands.push({});
     return this;
   }
@@ -101,10 +105,7 @@ __export(get_exports, {
   input: () => input
 });
 function input(key) {
-  return [[
-    "GET",
-    key
-  ]];
+  return [["GET", key]];
 }
 
 // dist/esm/commands/string/set.js
@@ -113,11 +114,7 @@ __export(set_exports, {
   input: () => input2
 });
 function input2(key, value, options) {
-  const command_arguments = [
-    "SET",
-    key,
-    value
-  ];
+  const command_arguments = ["SET", key, value];
   let modifier;
   if (options) {
     if (options.NX) {
@@ -146,10 +143,7 @@ function input2(key, value, options) {
       modifier = "GET";
     }
   }
-  return [
-    command_arguments,
-    modifier
-  ];
+  return [command_arguments, modifier];
 }
 
 // dist/esm/commands/string/incr.js
@@ -158,10 +152,7 @@ __export(incr_exports, {
   input: () => input3
 });
 function input3(key) {
-  return [[
-    "INCR",
-    key
-  ]];
+  return [["INCR", key]];
 }
 
 // dist/esm/commands/string/incrbyfloat.js
@@ -171,11 +162,7 @@ __export(incrbyfloat_exports, {
   output: () => output
 });
 function input4(key, increment) {
-  return [[
-    "INCRBYFLOAT",
-    key,
-    String(increment)
-  ]];
+  return [["INCRBYFLOAT", key, String(increment)]];
 }
 function output(result) {
   return Number.parseFloat(result);
@@ -187,11 +174,7 @@ __export(incrby_exports, {
   input: () => input5
 });
 function input5(key, increment) {
-  return [[
-    "INCRBY",
-    key,
-    String(increment)
-  ]];
+  return [["INCRBY", key, String(increment)]];
 }
 
 // dist/esm/commands/string/decrby.js
@@ -200,11 +183,7 @@ __export(decrby_exports, {
   input: () => input6
 });
 function input6(key, decrement) {
-  return [[
-    "DECRBY",
-    key,
-    String(decrement)
-  ]];
+  return [["DECRBY", key, String(decrement)]];
 }
 
 // dist/esm/commands/string/decr.js
@@ -213,10 +192,7 @@ __export(decr_exports, {
   input: () => input7
 });
 function input7(key) {
-  return [[
-    "DECR",
-    key
-  ]];
+  return [["DECR", key]];
 }
 
 // dist/esm/commands/hash/hset.js
@@ -254,10 +230,7 @@ function stringBulkToObject(values) {
 
 // dist/esm/commands/hash/hgetall.js
 function input9(key) {
-  return [[
-    "HGETALL",
-    key
-  ]];
+  return [["HGETALL", key]];
 }
 function output2(result) {
   return stringBulkToObject(result);
@@ -269,11 +242,7 @@ __export(hget_exports, {
   input: () => input10
 });
 function input10(key, field) {
-  return [[
-    "HGET",
-    key,
-    field
-  ]];
+  return [["HGET", key, field]];
 }
 
 // dist/esm/commands/hash/hmget.js
@@ -292,14 +261,7 @@ function input11(key, arg1, ...args) {
   } else {
     fields_array = [...arg1];
   }
-  return [
-    [
-      "HMGET",
-      key,
-      ...fields_array
-    ],
-    JSON.stringify(fields_array)
-  ];
+  return [["HMGET", key, ...fields_array], JSON.stringify(fields_array)];
 }
 function output3(result, modificator) {
   const fields = JSON.parse(modificator);
@@ -319,10 +281,7 @@ __export(hlen_exports, {
   input: () => input12
 });
 function input12(key) {
-  return [[
-    "HLEN",
-    key
-  ]];
+  return [["HLEN", key]];
 }
 
 // dist/esm/commands/hash/hdel.js
@@ -340,11 +299,7 @@ function input13(key, arg1, ...args) {
   } else {
     fields_array = [...arg1];
   }
-  return [[
-    "HDEL",
-    key,
-    ...fields_array
-  ]];
+  return [["HDEL", key, ...fields_array]];
 }
 
 // dist/esm/commands/zset/zrange.js
@@ -354,12 +309,7 @@ __export(zrange_exports, {
   output: () => output4
 });
 function input14(key, start, stop, options) {
-  const command_arguments = [
-    "ZRANGE",
-    key,
-    String(start),
-    String(stop)
-  ];
+  const command_arguments = ["ZRANGE", key, String(start), String(stop)];
   let modifier;
   if (options) {
     if (options.REV) {
@@ -372,17 +322,18 @@ function input14(key, start, stop, options) {
       command_arguments.push("BYLEX");
     }
     if (options.LIMIT) {
-      command_arguments.push("LIMIT", String(options.LIMIT[0]), String(options.LIMIT[1]));
+      command_arguments.push(
+        "LIMIT",
+        String(options.LIMIT[0]),
+        String(options.LIMIT[1])
+      );
     }
     if (options.WITHSCORES) {
       command_arguments.push("WITHSCORES");
       modifier = "WITHSCORES";
     }
   }
-  return [
-    command_arguments,
-    modifier
-  ];
+  return [command_arguments, modifier];
 }
 function output4(result, modifier) {
   if (modifier === "WITHSCORES") {
@@ -404,11 +355,7 @@ __export(pexpire_exports, {
   input: () => input15
 });
 function input15(key, seconds, options) {
-  const command_arguments = [
-    "PEXPIRE",
-    key,
-    String(seconds)
-  ];
+  const command_arguments = ["PEXPIRE", key, String(seconds)];
   if (options) {
     if (options.NX) {
       command_arguments.push("NX");
@@ -432,10 +379,7 @@ __export(pttl_exports, {
   input: () => input16
 });
 function input16(key) {
-  return [[
-    "PTTL",
-    key
-  ]];
+  return [["PTTL", key]];
 }
 
 // dist/esm/commands/keyspace/ttl.js
@@ -444,10 +388,7 @@ __export(ttl_exports, {
   input: () => input17
 });
 function input17(key) {
-  return [[
-    "TTL",
-    key
-  ]];
+  return [["TTL", key]];
 }
 
 // dist/esm/commands/keyspace/expire.js
@@ -456,11 +397,7 @@ __export(expire_exports, {
   input: () => input18
 });
 function input18(key, seconds, options) {
-  const command_arguments = [
-    "EXPIRE",
-    key,
-    String(seconds)
-  ];
+  const command_arguments = ["EXPIRE", key, String(seconds)];
   if (options) {
     if (options.NX) {
       command_arguments.push("NX");
@@ -485,10 +422,7 @@ __export(keys_exports, {
   output: () => output5
 });
 function input19(pattern) {
-  return [[
-    "KEYS",
-    pattern
-  ]];
+  return [["KEYS", pattern]];
 }
 function output5(result) {
   return new Set(result);
@@ -500,10 +434,7 @@ __export(del_exports, {
   input: () => input20
 });
 function input20(...keys) {
-  return [[
-    "DEL",
-    ...keys
-  ]];
+  return [["DEL", ...keys]];
 }
 
 // dist/esm/transaction.js
@@ -582,7 +513,11 @@ var RedisXClientBase = class {
    * @returns Command result.
    */
   sendCommand(...command_arguments) {
-    return this.redisClient.sendCommand(command_arguments.map((value) => typeof value === "string" ? value : String(value)));
+    return this.redisClient.sendCommand(
+      command_arguments.map(
+        (value) => typeof value === "string" ? value : String(value)
+      )
+    );
   }
   /**
    * Creates a transaction.

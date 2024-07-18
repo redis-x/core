@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Returns all fields and values of the hash stored at `<key>`.
  * - Available since: 2.0.0.

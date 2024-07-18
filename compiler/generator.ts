@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-useless-undefined */
 /* eslint-disable jsdoc/require-jsdoc */
 
 import ts                                  from 'typescript';
@@ -11,7 +10,6 @@ import { generateJsdoc }                   from './generator/jsdoc';
 import {
 	createClientTransactionOverloadMethod,
 	createClientTransactionMethod }        from './generator/transaction/method';
-import { addClassMembers }                 from './generator/update-class';
 import { printNode }                       from './printer';
 import { traverse }                        from './traverse';
 import {
@@ -25,7 +23,7 @@ export async function processCommandModule(
 	transaction_membets_node_list: ts.Node[],
 ) {
 	const {
-		command,
+		// command,
 		command_uppercase,
 		// command_capitalized,
 		import_namespace,
@@ -144,7 +142,7 @@ export async function finalizeClass(
 					ts.factory.createIdentifier('L'),
 					ts.factory.createArrayTypeNode(
 						ts.factory.createKeywordTypeNode(
-							ts.SyntaxKind.AnyKeyword,
+							ts.SyntaxKind.UnknownKeyword,
 						),
 					),
 					ts.factory.createTupleTypeNode([]),
@@ -153,7 +151,9 @@ export async function finalizeClass(
 					undefined,
 					ts.factory.createIdentifier('F'),
 					undefined,
-					ts.factory.createTypeLiteralNode([]),
+					ts.factory.createKeywordTypeNode(
+						ts.SyntaxKind.UnknownKeyword,
+					),
 				),
 				ts.factory.createTypeParameterDeclaration(
 					undefined,

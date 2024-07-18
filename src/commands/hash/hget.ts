@@ -20,4 +20,4 @@ export function input(key: string, field: string): InputReturnType {
 /**
  * @returns The value associated with the field or `null` when the field is not present in the hash or key does not exist.
  */
-declare function output(): string | null;
+export declare function output(): string | null;

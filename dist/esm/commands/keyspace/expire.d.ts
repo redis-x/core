@@ -1,11 +1,12 @@
-import { OneOrNoneFrom, InputReturnType } from '../../types';
-import { ExpireOptionsJsdoc } from './expire.jsdoc';
+import { OneOrNoneFrom, InputReturnType } from "../../types";
+import { ExpireOptionsJsdoc } from "./expire.jsdoc";
 export type ExpireOptions = OneOrNoneFrom<{
-    NX: ExpireOptionsJsdoc['NX'];
-    XX: ExpireOptionsJsdoc['XX'];
-    GT: ExpireOptionsJsdoc['GT'];
-    LT: ExpireOptionsJsdoc['LT'];
-}> & ExpireOptionsJsdoc;
+	NX: ExpireOptionsJsdoc["NX"];
+	XX: ExpireOptionsJsdoc["XX"];
+	GT: ExpireOptionsJsdoc["GT"];
+	LT: ExpireOptionsJsdoc["LT"];
+}> &
+	ExpireOptionsJsdoc;
 /**
  * Set a timeout on key.
  * After the timeout has expired, the key will automatically be deleted.
@@ -16,4 +17,12 @@ export type ExpireOptions = OneOrNoneFrom<{
  * @param options Options. See ExpireOptionsJsdoc.
  * @returns -
  */
-export declare function input(key: string, seconds: number, options?: ExpireOptions): InputReturnType;
+export declare function input(
+	key: string,
+	seconds: number,
+	options?: ExpireOptions,
+): InputReturnType;
+/**
+ * @returns Returns `1` if the timeout was set. Returns `0` if the timeout was not set; for example, the key doesn't exist, or the operation was skipped because of the provided arguments.
+ */
+export declare function output(): 0 | 1;

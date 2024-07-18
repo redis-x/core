@@ -10,16 +10,12 @@
  * @returns -
  */
 export function input(key, increment) {
-    return [[
-            'INCRBYFLOAT',
-            key,
-            String(increment),
-        ]];
+	return [["INCRBYFLOAT", key, String(increment)]];
 }
 /**
  * @param result -
  * @returns The value of the key after the operation.
  */
 export function output(result) {
-    return Number.parseFloat(result);
+	return Number.parseFloat(result);
 }

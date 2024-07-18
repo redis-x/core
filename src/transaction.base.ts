@@ -15,7 +15,7 @@ interface CommandInQueue {
 
 type StrictTuple<T extends unknown[]> = never[] & T;
 
-export class RedisXTransactionBase<L extends any[] = [], F = {}, U = undefined> {
+export class RedisXTransactionBase<L extends unknown[] = [], F = unknown, U = undefined> {
 	protected redisTransaction;
 
 	#commands: CommandInQueue[] = [];

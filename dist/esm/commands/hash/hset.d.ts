@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Sets the specified fields to their respective values in the hash stored at `<key>`.
  * - Available since: 2.0.0.
@@ -9,10 +9,21 @@ import { InputReturnType } from '../../types';
  * @param value Value to set.
  * @returns -
  */
-export declare function input(key: string, field: string, value: string | number): InputReturnType;
+export declare function input(
+	key: string,
+	field: string,
+	value: string | number,
+): InputReturnType;
 /**
  * @param key -
  * @param pairs Object containing field/value pairs to set.
  * @returns -
  */
-export declare function input(key: string, pairs: Record<string, string | number>): InputReturnType;
+export declare function input(
+	key: string,
+	pairs: Record<string, string | number>,
+): InputReturnType;
+/**
+ * @returns The number of fields that were added.
+ */
+export declare function output(): number;

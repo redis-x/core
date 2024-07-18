@@ -1,6 +1,5 @@
 
-import { InputReturnType }    from '../../types';
-import { stringBulkToObject } from '../../utils';
+import { InputReturnType } from '../../types';
 
 /**
  * Returns the number of fields contained in the hash stored at `<key>`.
@@ -19,4 +18,4 @@ export function input(key: string): InputReturnType {
 /**
  * @returns Value of the key.
  */
-declare function output(): number;
+export declare function output(): number;

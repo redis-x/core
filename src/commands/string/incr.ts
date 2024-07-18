@@ -20,4 +20,4 @@ export function input(key: string): InputReturnType {
 /**
  * @returns The value of the key after the operation.
  */
-declare function output(): number;
+export declare function output(): number;

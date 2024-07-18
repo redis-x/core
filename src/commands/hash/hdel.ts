@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 
 import { InputReturnType } from '../../types';
 
@@ -17,6 +16,7 @@ export function input(key: string, ...fields: string[]): InputReturnType;
  * @returns -
  */
 export function input(key: string, fields: string[] | Set<string>): InputReturnType;
+// eslint-disable-next-line jsdoc/require-jsdoc
 export function input(key: string, arg1: string | string[] | Set<string>, ...args: string[]): InputReturnType {
 	let fields_array: string[] = [];
 	if (typeof arg1 === 'string') {
@@ -40,4 +40,4 @@ export function input(key: string, arg1: string | string[] | Set<string>, ...arg
 /**
  * @returns The number of fields that were removed from the hash, excluding any specified but non-existing fields.
  */
-declare function output(): number;
+export declare function output(): number;

@@ -1,4 +1,4 @@
-import { InputReturnType } from '../../types';
+import { InputReturnType } from "../../types";
 /**
  * Increment the string representing a floating point number stored at `<key>` by `<increment>`.
  * By using a negative increment value, the result is that the value stored at the `<key>` is decremented.

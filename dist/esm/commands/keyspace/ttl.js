@@ -10,8 +10,5 @@
  * @returns -
  */
 export function input(key) {
-    return [[
-            'TTL',
-            key,
-        ]];
+	return [["TTL", key]];
 }
