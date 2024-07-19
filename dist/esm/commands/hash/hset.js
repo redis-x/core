@@ -1,4 +1,4 @@
-/* eslint-disable jsdoc/require-jsdoc */
+// eslint-disable-next-line jsdoc/require-jsdoc
 export function input(key, arg1, arg2) {
 	const command_arguments = ["HSET", key];
 	if (typeof arg1 === "string") {

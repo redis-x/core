@@ -7,6 +7,7 @@ import * as CommandIncrbyfloat from './commands/string/incrbyfloat';
 import * as CommandIncrby from './commands/string/incrby';
 import * as CommandDecrby from './commands/string/decrby';
 import * as CommandDecr from './commands/string/decr';
+import * as CommandLpush from './commands/list/lpush';
 import * as CommandHset from './commands/hash/hset';
 import * as CommandHgetall from './commands/hash/hgetall';
 import * as CommandHget from './commands/hash/hget';
@@ -165,6 +166,37 @@ export class RedisXTransaction<L extends unknown[] = [
 	], F, U>;
 	DECR(...args: unknown[]) {
 		return this._addModuleCommand(CommandDecr, args);
+	}
+	/**
+	 * Insert all the specified `<elements>` at the head of the list stored at `<key>`.
+	 * If `<key>` does not exist, it is created as empty list before performing the push operations.
+	 * - Available since: 1.0.0.
+	 * - Multiple field/value pairs are available since Redis 2.4.0.
+	 * - Time complexity: O(1) for each element added.
+	 * @param key -
+	 * @param elements -
+	 * @returns The length of the list after the push operation.
+	 */
+	LPUSH(key: string, ...elements: string[]): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	/**
+	 * Insert all the specified `<elements>` at the head of the list stored at `<key>`.
+	 * If `<key>` does not exist, it is created as empty list before performing the push operations.
+	 * - Available since: 1.0.0.
+	 * - Multiple field/value pairs are available since Redis 2.4.0.
+	 * - Time complexity: O(1) for each element added.
+	 * @param key -
+	 * @param elements -
+	 * @returns The length of the list after the push operation.
+	 */
+	LPUSH(key: string, elements: string[] | Set<string>): RedisXTransaction<[
+		...L,
+		number
+	], F, U>;
+	LPUSH(...args: unknown[]) {
+		return this._addModuleCommand(CommandLpush, args);
 	}
 	/**
 	 * Sets the specified fields to their respective values in the hash stored at `<key>`.

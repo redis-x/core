@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 
 import { InputReturnType } from '../../types';
 
@@ -19,6 +18,7 @@ export function input(key: string, field: string, value: string | number): Input
  * @returns -
  */
 export function input(key: string, pairs: Record<string, string | number>): InputReturnType;
+// eslint-disable-next-line jsdoc/require-jsdoc
 export function input(key: string, arg1: string | Record<string, string | number>, arg2?: string | number): InputReturnType {
 	const command_arguments = [ 'HSET', key ];
 

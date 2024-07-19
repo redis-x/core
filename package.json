@@ -1,6 +1,6 @@
 {
 	"name": "@redis-x/client",
-	"version": "0.2.0-beta.1",
+	"version": "0.2.0-beta.2",
 	"description": "Enhanced redis client build on top of \"redis\" package.",
 	"publishConfig": {
 		"access": "public"

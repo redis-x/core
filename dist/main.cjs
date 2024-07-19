@@ -195,12 +195,30 @@ function input7(key) {
   return [["DECR", key]];
 }
 
+// dist/esm/commands/list/lpush.js
+var lpush_exports = {};
+__export(lpush_exports, {
+  input: () => input8
+});
+function input8(key, arg1, ...args) {
+  let elements = [];
+  if (typeof arg1 === "string") {
+    elements = args;
+    elements.unshift(arg1);
+  } else if (Array.isArray(arg1)) {
+    elements = arg1;
+  } else {
+    elements = [...arg1];
+  }
+  return [["LPUSH", key, ...elements]];
+}
+
 // dist/esm/commands/hash/hset.js
 var hset_exports = {};
 __export(hset_exports, {
-  input: () => input8
+  input: () => input9
 });
-function input8(key, arg1, arg2) {
+function input9(key, arg1, arg2) {
   const command_arguments = ["HSET", key];
   if (typeof arg1 === "string") {
     command_arguments.push(arg1, String(arg2));
@@ -215,7 +233,7 @@ function input8(key, arg1, arg2) {
 // dist/esm/commands/hash/hgetall.js
 var hgetall_exports = {};
 __export(hgetall_exports, {
-  input: () => input9,
+  input: () => input10,
   output: () => output2
 });
 
@@ -229,7 +247,7 @@ function stringBulkToObject(values) {
 }
 
 // dist/esm/commands/hash/hgetall.js
-function input9(key) {
+function input10(key) {
   return [["HGETALL", key]];
 }
 function output2(result) {
@@ -239,19 +257,19 @@ function output2(result) {
 // dist/esm/commands/hash/hget.js
 var hget_exports = {};
 __export(hget_exports, {
-  input: () => input10
+  input: () => input11
 });
-function input10(key, field) {
+function input11(key, field) {
   return [["HGET", key, field]];
 }
 
 // dist/esm/commands/hash/hmget.js
 var hmget_exports = {};
 __export(hmget_exports, {
-  input: () => input11,
+  input: () => input12,
   output: () => output3
 });
-function input11(key, arg1, ...args) {
+function input12(key, arg1, ...args) {
   let fields_array = [];
   if (typeof arg1 === "string") {
     fields_array = args;
@@ -278,18 +296,18 @@ function output3(result, modificator) {
 // dist/esm/commands/hash/hlen.js
 var hlen_exports = {};
 __export(hlen_exports, {
-  input: () => input12
+  input: () => input13
 });
-function input12(key) {
+function input13(key) {
   return [["HLEN", key]];
 }
 
 // dist/esm/commands/hash/hdel.js
 var hdel_exports = {};
 __export(hdel_exports, {
-  input: () => input13
+  input: () => input14
 });
-function input13(key, arg1, ...args) {
+function input14(key, arg1, ...args) {
   let fields_array = [];
   if (typeof arg1 === "string") {
     fields_array = args;
@@ -305,10 +323,10 @@ function input13(key, arg1, ...args) {
 // dist/esm/commands/zset/zrange.js
 var zrange_exports = {};
 __export(zrange_exports, {
-  input: () => input14,
+  input: () => input15,
   output: () => output4
 });
-function input14(key, start, stop, options) {
+function input15(key, start, stop, options) {
   const command_arguments = ["ZRANGE", key, String(start), String(stop)];
   let modifier;
   if (options) {
@@ -352,9 +370,9 @@ function output4(result, modifier) {
 // dist/esm/commands/keyspace/pexpire.js
 var pexpire_exports = {};
 __export(pexpire_exports, {
-  input: () => input15
+  input: () => input16
 });
-function input15(key, seconds, options) {
+function input16(key, seconds, options) {
   const command_arguments = ["PEXPIRE", key, String(seconds)];
   if (options) {
     if (options.NX) {
@@ -376,27 +394,27 @@ function input15(key, seconds, options) {
 // dist/esm/commands/keyspace/pttl.js
 var pttl_exports = {};
 __export(pttl_exports, {
-  input: () => input16
+  input: () => input17
 });
-function input16(key) {
+function input17(key) {
   return [["PTTL", key]];
 }
 
 // dist/esm/commands/keyspace/ttl.js
 var ttl_exports = {};
 __export(ttl_exports, {
-  input: () => input17
+  input: () => input18
 });
-function input17(key) {
+function input18(key) {
   return [["TTL", key]];
 }
 
 // dist/esm/commands/keyspace/expire.js
 var expire_exports = {};
 __export(expire_exports, {
-  input: () => input18
+  input: () => input19
 });
-function input18(key, seconds, options) {
+function input19(key, seconds, options) {
   const command_arguments = ["EXPIRE", key, String(seconds)];
   if (options) {
     if (options.NX) {
@@ -418,10 +436,10 @@ function input18(key, seconds, options) {
 // dist/esm/commands/keyspace/keys.js
 var keys_exports = {};
 __export(keys_exports, {
-  input: () => input19,
+  input: () => input20,
   output: () => output5
 });
-function input19(pattern) {
+function input20(pattern) {
   return [["KEYS", pattern]];
 }
 function output5(result) {
@@ -431,9 +449,9 @@ function output5(result) {
 // dist/esm/commands/keyspace/del.js
 var del_exports = {};
 __export(del_exports, {
-  input: () => input20
+  input: () => input21
 });
-function input20(...keys) {
+function input21(...keys) {
   return [["DEL", ...keys]];
 }
 
@@ -459,6 +477,9 @@ var RedisXTransaction = class extends RedisXTransactionBase {
   }
   DECR(...args) {
     return this._addModuleCommand(decr_exports, args);
+  }
+  LPUSH(...args) {
+    return this._addModuleCommand(lpush_exports, args);
   }
   HSET(...args) {
     return this._addModuleCommand(hset_exports, args);
@@ -564,6 +585,9 @@ var RedisXClient = class extends RedisXClientBase {
   }
   async DECR(...args) {
     return this._sendModuleCommand(decr_exports, args);
+  }
+  async LPUSH(...args) {
+    return this._sendModuleCommand(lpush_exports, args);
   }
   async HSET(...args) {
     return this._sendModuleCommand(hset_exports, args);

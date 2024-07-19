@@ -6,6 +6,7 @@ import * as CommandIncrbyfloat from "./commands/string/incrbyfloat";
 import * as CommandIncrby from "./commands/string/incrby";
 import * as CommandDecrby from "./commands/string/decrby";
 import * as CommandDecr from "./commands/string/decr";
+import * as CommandLpush from "./commands/list/lpush";
 import * as CommandHset from "./commands/hash/hset";
 import * as CommandHgetall from "./commands/hash/hgetall";
 import * as CommandHget from "./commands/hash/hget";
@@ -40,6 +41,9 @@ export class RedisXTransaction extends RedisXTransactionBase {
 	}
 	DECR(...args) {
 		return this._addModuleCommand(CommandDecr, args);
+	}
+	LPUSH(...args) {
+		return this._addModuleCommand(CommandLpush, args);
 	}
 	HSET(...args) {
 		return this._addModuleCommand(CommandHset, args);

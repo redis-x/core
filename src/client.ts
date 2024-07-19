@@ -7,6 +7,7 @@ import * as CommandIncrbyfloat from './commands/string/incrbyfloat';
 import * as CommandIncrby from './commands/string/incrby';
 import * as CommandDecrby from './commands/string/decrby';
 import * as CommandDecr from './commands/string/decr';
+import * as CommandLpush from './commands/list/lpush';
 import * as CommandHset from './commands/hash/hset';
 import * as CommandHgetall from './commands/hash/hgetall';
 import * as CommandHget from './commands/hash/hget';
@@ -137,6 +138,31 @@ export class RedisXClient extends RedisXClientBase {
 	async DECR(key: string): Promise<number>;
 	async DECR(...args: unknown[]): Promise<unknown> {
 		return this._sendModuleCommand(CommandDecr, args);
+	}
+	/**
+	 * Insert all the specified `<elements>` at the head of the list stored at `<key>`.
+	 * If `<key>` does not exist, it is created as empty list before performing the push operations.
+	 * - Available since: 1.0.0.
+	 * - Multiple field/value pairs are available since Redis 2.4.0.
+	 * - Time complexity: O(1) for each element added.
+	 * @param key -
+	 * @param elements -
+	 * @returns The length of the list after the push operation.
+	 */
+	async LPUSH(key: string, ...elements: string[]): Promise<number>;
+	/**
+	 * Insert all the specified `<elements>` at the head of the list stored at `<key>`.
+	 * If `<key>` does not exist, it is created as empty list before performing the push operations.
+	 * - Available since: 1.0.0.
+	 * - Multiple field/value pairs are available since Redis 2.4.0.
+	 * - Time complexity: O(1) for each element added.
+	 * @param key -
+	 * @param elements -
+	 * @returns The length of the list after the push operation.
+	 */
+	async LPUSH(key: string, elements: string[] | Set<string>): Promise<number>;
+	async LPUSH(...args: unknown[]): Promise<unknown> {
+		return this._sendModuleCommand(CommandLpush, args);
 	}
 	/**
 	 * Sets the specified fields to their respective values in the hash stored at `<key>`.
