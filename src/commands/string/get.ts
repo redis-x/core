@@ -1,5 +1,11 @@
 
-import { InputReturnType } from '../../types';
+import { type BaseSchema }     from '../../types';
+import { dummyReplyTransform } from '../../utils';
+
+export interface GetSchema extends BaseSchema {
+	args: [ 'GET', string ];
+	replyTransform: () => string | null;
+}
 
 /**
  * Get the value of key.
@@ -8,16 +14,14 @@ import { InputReturnType } from '../../types';
  * - Available since: 1.0.0.
  * - Time complexity: O(1).
  * @param key Key to get.
- * @returns -
+ * @returns The value of key, or `null` when key does not exist.
  */
-export function input(key: string): InputReturnType {
-	return [[
-		'GET',
-		key,
-	]];
+export function GET(key: string): GetSchema {
+	return {
+		args: [
+			'GET',
+			key,
+		],
+		replyTransform: dummyReplyTransform,
+	};
 }
-
-/**
- * @returns Value of the key.
- */
-export declare function output(): string | null;

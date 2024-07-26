@@ -23,10 +23,7 @@
 		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
-		"alwaysStrict": true,
-		"strictNullChecks": true,
-		"strictPropertyInitialization": true,
-		"noImplicitAny": true,
-		"noUncheckedIndexedAccess": true
+		"allowJs": true,
+		"checkJs": true
 	}
 }
