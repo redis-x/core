@@ -18,6 +18,7 @@ export interface GetSchema extends BaseSchema {
  */
 export function GET(key: string): GetSchema {
 	return {
+		kind: '#schema',
 		args: [
 			'GET',
 			key,

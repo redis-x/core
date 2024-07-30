@@ -4,6 +4,7 @@ import { dummyReplyTransform } from './utils';
 
 export * from './commands/string';
 
+export type { BaseSchema } from './types';
 /**
  * Executes a custom command.
  * @param command Command to execute.
@@ -11,17 +12,11 @@ export * from './commands/string';
  * @returns Command result
  */
 export function custom(command: string, ...args: (string | number)[]): BaseSchema {
-	const args_strings: string[] = [];
-	for (const [ index, value ] of args.entries()) {
-		if (typeof value === 'number') {
-			args[index] = String(value);
-		}
-	}
-
 	return {
+		kind: '#schema',
 		args: [
 			command,
-			...args_strings,
+			...args.map((value) => typeof value === 'string' ? value : String(value)),
 		],
 		replyTransform: dummyReplyTransform,
 	}

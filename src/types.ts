@@ -1,16 +1,21 @@
 
-// export type InputReturnType<T extends (string | void) = void> = [ string[], T? ];
-// export type CommandModule = {
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	input: (...args: any[]) => InputReturnType<any>,
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	output?: (result: any, modificator?: any) => unknown,
-// }
+import { isPlainObject } from './utils';
 
 export interface BaseSchema {
+	kind: '#schema';
 	args: string[];
 	replyTransform: (result: unknown) => unknown;
 }
+
+/**
+ * Checks if a value is a schema.
+ * @param value Value to check.
+ */
+export function isSchema(value: unknown): value is BaseSchema {
+	return isPlainObject(value)
+		&& value.kind === '#schema';
+}
+
 export type InferReply<T extends BaseSchema> = T['replyTransform'] extends Required<BaseSchema>['replyTransform'] ? ReturnType<T['replyTransform']> : never;
 
 export type Mutable<T> = {

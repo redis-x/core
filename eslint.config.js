@@ -67,6 +67,8 @@ export default [
 						args: true,
 						env: true,
 						fn: true,
+						prop: true,
+						thisArg: true,
 					},
 				},
 			],

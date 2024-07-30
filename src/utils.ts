@@ -1,5 +1,18 @@
 
 /**
+ * Checks if a value is a plain object.
+ * @param value Value to check.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isPlainObject(value: unknown): value is Record<string, any> {
+	return typeof value === 'object'
+		&& value !== null
+		&& Array.isArray(value) !== true
+		&& value.constructor === Object
+		&& Object.getPrototypeOf(value) === Object.prototype;
+}
+
+/**
  * Dummy function to use to trick TypeScript types.
  * @param result -
  */
