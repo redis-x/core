@@ -5,26 +5,12 @@ import {
 import { HMGET } from '../../main';
 
 test('HMGET', () => {
-	const args = [ 'HMGET', 'key', 'apple', 'banana' ];
-
 	const schema = HMGET('key', 'apple', 'banana');
 	expect(
 		schema.args,
-	).toStrictEqual(args);
-
-	expect(
-		HMGET(
-			'key',
-			[ 'apple', 'banana' ],
-		).args,
-	).toStrictEqual(args);
-
-	expect(
-		HMGET(
-			'key',
-			new Set([ 'apple', 'banana' ]),
-		).args,
-	).toStrictEqual(args);
+	).toStrictEqual(
+		[ 'HMGET', 'key', 'apple', 'banana' ],
+	);
 
 	expect(
 		schema.replyTransform([

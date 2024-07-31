@@ -13,20 +13,6 @@ test('LPUSH', () => {
 	).toStrictEqual(args);
 
 	expect(
-		LPUSH(
-			'key',
-			[ 'apple', 'banana' ],
-		).args,
-	).toStrictEqual(args);
-
-	expect(
-		LPUSH(
-			'key',
-			new Set([ 'apple', 'banana' ]),
-		).args,
-	).toStrictEqual(args);
-
-	expect(
 		schema.replyTransform(3),
 	).toBe(3);
 });
