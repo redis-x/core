@@ -2,6 +2,7 @@
 import type { BaseSchema }     from './types';
 import { dummyReplyTransform } from './utils';
 
+export * from './commands/hash';
 export * from './commands/list';
 export * from './commands/string';
 export * from './commands/zset';
@@ -21,5 +22,5 @@ export function custom(command: string, ...args: (string | number)[]): BaseSchem
 			...args.map((value) => typeof value === 'string' ? value : String(value)),
 		],
 		replyTransform: dummyReplyTransform,
-	}
+	};
 }

@@ -4,7 +4,7 @@ import { dummyReplyTransform } from '../../utils';
 
 export interface LpushSchema extends BaseSchema {
 	args: [ 'LPUSH', string, ...string[] ];
-	replyTransform: (value: unknown) => number;
+	replyTransform: (value: number) => number;
 }
 
 /**
@@ -19,7 +19,7 @@ export interface LpushSchema extends BaseSchema {
  * @returns The length of the list after the push operation.
  */
 export function LPUSH<
-	T extends [
+	const T extends [
 		string | number,
 		...(string | number)[],
 	]
@@ -57,7 +57,10 @@ export function LPUSH(
 	...args: (string | number)[]
 ): LpushSchema {
 	let elements: (string | number)[] = [];
-	if (typeof arg1 === 'string' || typeof arg1 === 'number') {
+	if (
+		typeof arg1 === 'string'
+		|| typeof arg1 === 'number'
+	) {
 		elements = args;
 		elements.unshift(arg1);
 	}
