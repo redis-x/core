@@ -1,6 +1,6 @@
 {
 	"name": "@redis-x/client",
-	"version": "0.2.0-beta.2",
+	"version": "0.2.0-beta.2b",
 	"description": "Enhanced redis client build on top of \"redis\" package.",
 	"publishConfig": {
 		"access": "public"
@@ -34,11 +34,10 @@
 		"redis": "^4"
 	},
 	"scripts": {
-		"build": "bun run build:commands && bun run build:ts && bun run build:cjs",
+		"build": "bun run build:ts && bun run build:cjs",
 		"build:cjs": "bunx esbuild --bundle --platform=node --format=cjs --packages=external --outfile=dist/main.cjs dist/esm/main.js",
-		"build:commands": "bun run compiler/main.ts && bunx eslint src/client.ts --fix && bunx eslint src/transaction.ts --fix",
 		"build:ts": "rm -rf dist/esm types ; tsc && biome format --fix dist/esm",
-		"lint": "eslint . && bunx tsc --skipLibCheck --noemit",
+		"lint": "eslint . && tsc --skipLibCheck --noemit",
 		"publish:npm": "bun run build && bun run lint && bun run test && npm publish",
 		"redis:down": "docker stop test-redis || true",
 		"redis:up": "docker ps | grep test-redis >/dev/null || docker run --rm -d -p 16379:6379 --name test-redis redis:7-alpine",

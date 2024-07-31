@@ -5,7 +5,7 @@ export interface BaseSchema {
 	kind: '#schema';
 	args: string[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	replyTransform: (result: any) => any;
+	replyTransform: (result: any) => unknown;
 }
 
 /**
