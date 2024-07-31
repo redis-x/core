@@ -58,20 +58,7 @@ export default [
 				},
 			],
 			'unicorn/prefer-ternary': 'off',
-			'unicorn/prevent-abbreviations': [
-				'error',
-				{
-					allowList: {
-						arg1: true,
-						arg2: true,
-						args: true,
-						env: true,
-						fn: true,
-						prop: true,
-						thisArg: true,
-					},
-				},
-			],
+			'unicorn/prevent-abbreviations': 'off',
 			'unicorn/switch-case-braces': [
 				'warn',
 				'avoid',
