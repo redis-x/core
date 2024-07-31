@@ -4,7 +4,8 @@ import { isPlainObject } from './utils';
 export interface BaseSchema {
 	kind: '#schema';
 	args: string[];
-	replyTransform: (result: unknown) => unknown;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	replyTransform: (result: any) => any;
 }
 
 /**

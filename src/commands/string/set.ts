@@ -33,11 +33,11 @@ export type SetOptionsWithGet =
 
 export interface SetSchema extends BaseSchema {
 	args: [ 'SET', string, string, ...string[] ];
-	replyTransform: (value: unknown) => 'OK' | null;
+	replyTransform: (value: string | null) => 'OK' | null;
 }
 export interface SetWithGetSchema extends BaseSchema {
 	args: [ 'SET', string, string, ...string[] ];
-	replyTransform: (value: unknown) => string | null;
+	replyTransform: (value: string | null) => string | null;
 }
 
 /**

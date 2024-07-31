@@ -4,6 +4,7 @@ import { dummyReplyTransform } from './utils';
 
 export * from './commands/list';
 export * from './commands/string';
+export * from './commands/zset';
 
 export type { BaseSchema } from './types';
 /**

@@ -2,8 +2,9 @@
 import {
 	ExactlyOneFrom,
 	TheseFieldsOrNone,
-	InputReturnType }         from '../../types';
-import { ZrangeOptionsJsdoc } from './zrange.jsdoc';
+	BaseSchema }               from '../../types';
+import { dummyReplyTransform } from '../../utils';
+import { ZrangeOptionsJsdoc }  from './zrange.jsdoc';
 
 type ZrangeOptionsCommon =
 	{
@@ -32,8 +33,54 @@ export type ZrangeOptionsWithWithscores =
 	& { WITHSCORES: Required<ZrangeOptionsJsdoc>['WITHSCORES'] }
 	& ZrangeOptionsJsdoc;
 
+export interface ZrangeSchema extends BaseSchema {
+	args: [ 'ZRANGE', string, string, string, ...string[] ];
+	replyTransform: (value: string[]) => string[];
+}
+export interface ZrangeWithscoresSchema extends BaseSchema {
+	args: [ 'ZRANGE', string, string, string, ...string[] ];
+	replyTransform: typeof replyWithscoresTransform;
+}
+
 /**
  * Returns the specified range of elements in the sorted set stored at key.
+ *
+ * ZRANGE can perform different types of range queries: by index (rank), by the score, or by lexicographical order.
+ * - Available since: 1.2.0.
+ * - Time complexity: O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.
+ * @param key -
+ * @param start -
+ * @param stop -
+ * @returns Returns a list of members in the specified range.
+ */
+export function ZRANGE(
+	key: string,
+	start: number | string,
+	stop: number | string,
+): ZrangeSchema;
+
+/**
+ * Returns the specified range of elements in the sorted set stored at key.
+ *
+ * ZRANGE can perform different types of range queries: by index (rank), by the score, or by lexicographical order.
+ * - Available since: 1.2.0.
+ * - Time complexity: O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.
+ * @param key -
+ * @param start -
+ * @param stop -
+ * @param options -
+ * @returns Returns a list of members in the specified range.
+ */
+export function ZRANGE(
+	key: string,
+	start: number | string,
+	stop: number | string,
+	options: ZrangeOptions,
+): ZrangeSchema;
+
+/**
+ * Returns the specified range of elements in the sorted set stored at key.
+ *
  * ZRANGE can perform different types of range queries: by index (rank), by the score, or by lexicographical order.
  * - Available since: 1.2.0.
  * - Time complexity: O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.
@@ -41,48 +88,38 @@ export type ZrangeOptionsWithWithscores =
  * @param start Start index for index-based ranges. If negative, it is an offset from the end of the sorted set. For score-based ranges (`BYSCORE` option), it is the minimum score. For lexicographical ranges (`BYLEX` option), it is the minimum value.
  * @param stop Stop index for index-based ranges. If negative, it is an offset from the end of the sorted set. For score-based ranges (`BYSCORE` option), it is the maximum score. For lexicographical ranges (`BYLEX` option), it is the maximum value.
  * @param options Options. See ZrangeOptionsJsdoc.
- * @returns -
+ * @returns Returns a Map of members in the specified range as keys and scores as values.
  */
-export function input(key: string, start: number | string, stop: number | string, options: ZrangeOptionsWithWithscores): InputReturnType<'WITHSCORES'>;
-/**
- * @param key -
- * @param start -
- * @param stop -
- * @param options -
- * @returns -
- */
-export function input(key: string, start: number | string, stop: number | string, options: ZrangeOptions): InputReturnType;
-/**
- * @param key -
- * @param start -
- * @param stop -
- * @returns -
- */
-export function input(key: string, start: number | string, stop: number | string): InputReturnType;
+export function ZRANGE(
+	key: string,
+	start: number | string,
+	stop: number | string,
+	options: ZrangeOptionsWithWithscores,
+): ZrangeWithscoresSchema;
+
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function input(key: string, start: number | string, stop: number | string, options?: ZrangeOptions | ZrangeOptionsWithWithscores): InputReturnType<void | 'WITHSCORES'> {
-	const command_arguments: string[] = [
-		'ZRANGE',
-		key,
-		String(start),
-		String(stop),
-	];
-	let modifier: 'WITHSCORES' | undefined;
+export function ZRANGE(
+	key: string,
+	start: number | string,
+	stop: number | string,
+	options?: ZrangeOptions | ZrangeOptionsWithWithscores,
+): ZrangeSchema | ZrangeWithscoresSchema {
+	const args_options: string[] = [];
 
 	if (options) {
 		if (options.REV) {
-			command_arguments.push('REV');
+			args_options.push('REV');
 		}
 
 		if (options.BYSCORE) {
-			command_arguments.push('BYSCORE');
+			args_options.push('BYSCORE');
 		}
 		if (options.BYLEX) {
-			command_arguments.push('BYLEX');
+			args_options.push('BYLEX');
 		}
 
 		if (options.LIMIT) {
-			command_arguments.push(
+			args_options.push(
 				'LIMIT',
 				String(options.LIMIT[0]),
 				String(options.LIMIT[1]),
@@ -90,48 +127,41 @@ export function input(key: string, start: number | string, stop: number | string
 		}
 
 		if (options.WITHSCORES) {
-			command_arguments.push('WITHSCORES');
-			modifier = 'WITHSCORES';
+			args_options.push('WITHSCORES');
 		}
 	}
 
-	return [
-		command_arguments,
-		modifier,
-	];
+	return {
+		kind: '#schema',
+		args: [
+			'ZRANGE',
+			key,
+			String(start),
+			String(stop),
+			...args_options,
+		],
+		replyTransform: options?.WITHSCORES
+			? replyWithscoresTransform
+			: dummyReplyTransform,
+	};
 }
 
-/**
- * @param result -
- * @returns Returns a list of members in the specified range.
- */
-export function output(result: string[]): string[];
-/**
- * @param result -
- * @param modifier -
- * @returns Returns a Map of members in the specified range as keys and scores as values.
- */
-export function output(result: string[], modifier: 'WITHSCORES'): { value: string, score: number }[];
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function output(result: string[], modifier?: 'WITHSCORES'): string[] | { value: string, score: number }[] {
-	if (modifier === 'WITHSCORES') {
-		const result_withscores: { value: string, score: number }[] = [];
+function replyWithscoresTransform(value: string[]) {
+	const result_withscores: { value: string, score: number }[] = [];
 
-		for (
-			let index = 0;
-			index < result.length;
-			index += 2
-		) {
-			result_withscores.push({
-				value: result[index]!,
-				score: Number.parseFloat(
-					result[index + 1]!,
-				),
-			});
-		}
-
-		return result_withscores;
+	for (
+		let index = 0;
+		index < value.length;
+		index += 2
+	) {
+		result_withscores.push({
+			value: value[index]!,
+			score: Number.parseFloat(
+				value[index + 1]!,
+			),
+		});
 	}
 
-	return result;
+	return result_withscores;
 }

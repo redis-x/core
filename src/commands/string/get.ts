@@ -4,7 +4,7 @@ import { dummyReplyTransform } from '../../utils';
 
 export interface GetSchema extends BaseSchema {
 	args: [ 'GET', string ];
-	replyTransform: (value: unknown) => string | null;
+	replyTransform: (value: string | null) => string | null;
 }
 
 /**
