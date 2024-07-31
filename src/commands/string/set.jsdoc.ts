@@ -5,16 +5,16 @@ export type SetOptionsJsdoc = {
 	 * - Incompatible with option `XX`.
 	 * - Incompatible with option `GET` before 7.0.0.
 	 * - Available since: 2.6.12.
-	 * @type {true}
+	 * @type {boolean}
 	 */
-	NX?: true,
+	NX?: boolean,
 	/**
 	 * Only set the key if it already exist.
 	 * - Incompatible with option `NX`.
 	 * - Available since: 2.6.12.
-	 * @type {true}
+	 * @type {boolean}
 	 */
-	XX?: true,
+	XX?: boolean,
 	/**
 	 * Set the specified expire time, in *seconds*.
 	 * - Incompatible with options `PX`, `EXAT`, `PXAT` and `KEEPTTL`.
@@ -47,9 +47,9 @@ export type SetOptionsJsdoc = {
 	 * Retain the time to live associated with the key.
 	 * - Incompatible with options `EX`, `PX`, `EXAT` and `PXAT`.
 	 * - Available since: 6.0.0.
-	 * @type {true}
+	 * @type {boolean}
 	 */
-	KEEPTTL?: true,
+	KEEPTTL?: boolean,
 	/**
 	 * Get the value of the key before the SET operation.
 	 * - Incompatible with option `NX` before 7.0.0.

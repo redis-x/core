@@ -1,15 +1,17 @@
 
-import { type BaseSchema }     from '../../types';
+import type { BaseSchema }     from '../../types';
 import { dummyReplyTransform } from '../../utils';
 
 export interface GetSchema extends BaseSchema {
 	args: [ 'GET', string ];
-	replyTransform: () => string | null;
+	replyTransform: (value: unknown) => string | null;
 }
 
 /**
  * Get the value of key.
+ *
  * If the key does not exist `null` is returned.
+ *
  * An error is returned if the value stored at key is not a string, because GET only handles string values.
  * - Available since: 1.0.0.
  * - Time complexity: O(1).

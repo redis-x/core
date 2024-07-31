@@ -1,8 +1,9 @@
 
-import {
+import type {
 	OneOrNoneFrom,
-	InputReturnType }      from '../../types';
-import { SetOptionsJsdoc } from './set.jsdoc';
+	BaseSchema }               from '../../types';
+import { dummyReplyTransform } from '../../utils';
+import { SetOptionsJsdoc }     from './set.jsdoc';
 
 type SetOptionsCommon =
 	OneOrNoneFrom<{
@@ -30,6 +31,24 @@ export type SetOptionsWithGet =
 	& { GET: SetOptionsJsdoc['GET'] }
 	& SetOptionsJsdoc;
 
+export interface SetSchema extends BaseSchema {
+	args: [ 'SET', string, string, ...string[] ];
+	replyTransform: (value: unknown) => 'OK' | null;
+}
+export interface SetWithGetSchema extends BaseSchema {
+	args: [ 'SET', string, string, ...string[] ];
+	replyTransform: (value: unknown) => string | null;
+}
+
+/**
+ * Set the string value of a key.
+ * - Available since: 1.0.0.
+ * - Time complexity: O(1).
+ * @param key Key to set.
+ * @param value Value to set.
+ * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
+ */
+export function SET(key: string, value: string): SetSchema;
 /**
  * Set the string value of a key.
  * - Available since: 1.0.0.
@@ -37,87 +56,72 @@ export type SetOptionsWithGet =
  * @param key Key to set.
  * @param value Value to set.
  * @param options Options. See SetOptionsJsdoc.
- * @returns -
+ * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
-export function input(key: string, value: string, options: SetOptionsWithGet): InputReturnType<'GET'>;
+export function SET(key: string, value: string, options: SetOptions): SetSchema;
 /**
- * @param key -
- * @param value -
- * @param options -
- * @returns -
+ * Set the string value of a key.
+ * - Available since: 1.0.0.
+ * - Time complexity: O(1).
+ * @param key Key to set.
+ * @param value Value to set.
+ * @param options Options. See SetOptionsJsdoc.
+ * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
  */
-export function input(key: string, value: string, options: SetOptions): InputReturnType;
-/**
- * @param key -
- * @param value -
- * @returns -
- */
-export function input(key: string, value: string): InputReturnType;
+export function SET(key: string, value: string, options: SetOptionsWithGet): SetWithGetSchema;
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function input(key: string, value: string, options?: SetOptions | SetOptionsWithGet): InputReturnType<void | 'GET'> {
-	const command_arguments: string[] = [
-		'SET',
-		key,
-		value,
-	];
-	let modifier: 'GET' | undefined;
+export function SET(key: string, value: string, options?: SetOptions | SetOptionsWithGet): SetSchema | SetWithGetSchema {
+	const args_options: string[] = [];
 
 	if (options) {
 		if (options.NX) {
-			command_arguments.push('NX');
+			args_options.push('NX');
 		}
 		if (options.XX) {
-			command_arguments.push('XX');
+			args_options.push('XX');
 		}
 
 		if (options.EX) {
-			command_arguments.push(
+			args_options.push(
 				'EX',
 				String(options.EX),
 			);
 		}
 		if (options.PX) {
-			command_arguments.push(
+			args_options.push(
 				'PX',
 				String(options.PX),
 			);
 		}
 		if (options.EXAT) {
-			command_arguments.push(
+			args_options.push(
 				'EXAT',
 				String(options.EXAT),
 			);
 		}
 		if (options.PXAT) {
-			command_arguments.push(
+			args_options.push(
 				'PXAT',
 				String(options.PXAT),
 			);
 		}
 		if (options.KEEPTTL) {
-			command_arguments.push('KEEPTTL');
+			args_options.push('KEEPTTL');
 		}
 
 		if (options.GET) {
-			command_arguments.push('GET');
-			modifier = 'GET';
+			args_options.push('GET');
 		}
 	}
 
-	return [
-		command_arguments,
-		modifier,
-	];
+	return {
+		kind: '#schema',
+		args: [
+			'SET',
+			key,
+			value,
+			...args_options,
+		],
+		replyTransform: dummyReplyTransform,
+	}
 }
-
-/**
- * @param result -
- * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
- */
-export declare function output(result: unknown): 'OK' | null;
-/**
- * @param result -
- * @param modifier -
- * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
- */
-export declare function output(result: unknown, modifier: 'GET'): string | null;
