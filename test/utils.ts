@@ -4,5 +4,9 @@
  * @returns Random key.
  */
 export function createRandomKey(): string {
-	return 'key:' + Math.random().toString(36).slice(2, 12);
+	const random_id = Math.random()
+		.toString(36)
+		.slice(2, 12);
+
+	return `key:${random_id}`;
 }

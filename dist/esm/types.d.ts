@@ -6,6 +6,7 @@ export interface BaseSchema {
 /**
  * Checks if a value is a schema.
  * @param value Value to check.
+ * @returns Returns `true` if the value is a schema, otherwise `false`.
  */
 export declare function isSchema(value: unknown): value is BaseSchema;
 export type InferReply<T extends BaseSchema> =

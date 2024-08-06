@@ -27,7 +27,7 @@ export declare class RedisXTransaction<const T extends TransactionData> {
 	 * @param schema Command schema.
 	 * @returns TransactionCommand object to assign it to the transaction data.
 	 */
-	add<const T extends BaseSchema>(schema: T): TransactionCommand<T>;
+	add<const S extends BaseSchema>(schema: S): TransactionCommand<S>;
 	/**
 	 * Adds multiple commands to the transaction.
 	 * @param schemas Commands schemas.
@@ -36,11 +36,12 @@ export declare class RedisXTransaction<const T extends TransactionData> {
 	add(...schemas: BaseSchema[]): void;
 	/**
 	 * Gets the number of commands in the transaction.
+	 * @returns -
 	 */
 	get queue_length(): number;
 	/**
 	 * Send the transaction to the Redis server.
-	 * @returns Data from the transaction.
+	 * @returns Transaction result.
 	 */
 	execute(): Promise<InferTransactionData<T>>;
 }

@@ -49,7 +49,7 @@ export function HSET(
 			string,
 			string | number
 		>,
-	arg2?: string | number
+	arg2?: string | number,
 ): HsetSchema {
 	const pairs: string[] = [];
 
@@ -76,5 +76,5 @@ export function HSET(
 			...pairs,
 		],
 		replyTransform: dummyReplyTransform,
-	}
+	};
 }

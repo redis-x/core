@@ -20,7 +20,11 @@ export function custom(command: string, ...args: (string | number)[]): BaseSchem
 		kind: '#schema',
 		args: [
 			command,
-			...args.map((value) => typeof value === 'string' ? value : String(value)),
+			...args.map((value) => (
+				typeof value === 'string'
+					? value
+					: String(value)
+			)),
 		],
 		replyTransform: dummyReplyTransform,
 	};

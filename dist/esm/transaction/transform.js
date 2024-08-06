@@ -4,6 +4,7 @@ import { TransactionCommand } from "./command";
  * Transformes transaction data.
  * @param data Data to transform.
  * @param result Transaction result.
+ * @returns Transformed data.
  */
 export function transformData(data, result) {
 	const data_transformed = {};
@@ -17,24 +18,29 @@ export function transformData(data, result) {
  * Transformes single element of transaction data.
  * @param element Element to transform.
  * @param result Transaction result.
+ * @returns Transformed data.
  */
 function transformDataElement(element, result) {
 	if (element === undefined) {
 		return undefined;
-	} else if (element instanceof TransactionCommand) {
+	}
+	if (element instanceof TransactionCommand) {
 		return element.schema.replyTransform(result[element.index]);
-	} else if (Array.isArray(element)) {
+	}
+	if (Array.isArray(element)) {
 		return element.map((element_nested) =>
 			transformDataElement(element_nested, result),
 		);
-	} else if (element instanceof Map) {
+	}
+	if (element instanceof Map) {
 		return new Map(
 			[...element.entries()].map(([key, element_nested]) => [
 				key,
 				transformDataElement(element_nested, result),
 			]),
 		);
-	} else if (isPlainObject(element)) {
+	}
+	if (isPlainObject(element)) {
 		return Object.fromEntries(
 			Object.entries(element).map(([key, element_nested]) => [
 				key,

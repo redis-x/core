@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }    from 'vitest';
+	expect,
+}               from 'vitest';
 import { HDEL } from '../../main';
 
 test('HDEL', () => {
@@ -9,7 +11,12 @@ test('HDEL', () => {
 	expect(
 		schema.args,
 	).toStrictEqual(
-		[ 'HDEL', 'key', 'apple', 'banana' ]
+		[
+			'HDEL',
+			'key',
+			'apple',
+			'banana',
+		],
 	);
 
 	expect(

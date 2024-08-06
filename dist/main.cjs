@@ -38,6 +38,7 @@ __export(main_exports, {
   LPUSH: () => LPUSH,
   PEXPIRE: () => PEXPIRE,
   PTTL: () => PTTL,
+  RedisXClient: () => RedisXClient,
   SET: () => SET,
   TTL: () => TTL,
   ZRANGE: () => ZRANGE,
@@ -105,11 +106,11 @@ function createProxyPlain(target, handler) {
     }
   }
   return new Proxy(target, {
-    set(target2, prop, value, receiver) {
+    set(setTarget, prop, value, receiver) {
       return Reflect.set(
-        target2,
+        setTarget,
         prop,
-        processValue(value, Reflect.get(target2, prop), handler) ?? value,
+        processValue(value, Reflect.get(setTarget, prop), handler) ?? value,
         receiver
       );
     }
@@ -123,18 +124,18 @@ function createProxyMap(target, handler) {
     }
   }
   return new Proxy(target, {
-    get(target2, prop, receiver) {
+    get(getTarget, prop, receiver) {
       if (prop === "set") {
         return function(key, value2) {
-          return target2.set(
+          return getTarget.set(
             key,
-            processValue(value2, target2.get(prop), handler) ?? value2
+            processValue(value2, getTarget.get(prop), handler) ?? value2
           );
         };
       }
-      const value = Reflect.get(target2, prop, receiver);
+      const value = Reflect.get(getTarget, prop, receiver);
       if (typeof value === "function") {
-        return value.bind(target2);
+        return value.bind(getTarget);
       }
       return value;
     }
@@ -166,20 +167,24 @@ function transformData(data, result) {
 function transformDataElement(element, result) {
   if (element === void 0) {
     return void 0;
-  } else if (element instanceof TransactionCommand) {
+  }
+  if (element instanceof TransactionCommand) {
     return element.schema.replyTransform(result[element.index]);
-  } else if (Array.isArray(element)) {
+  }
+  if (Array.isArray(element)) {
     return element.map(
       (element_nested) => transformDataElement(element_nested, result)
     );
-  } else if (element instanceof Map) {
+  }
+  if (element instanceof Map) {
     return new Map(
       [...element.entries()].map(([key, element_nested]) => [
         key,
         transformDataElement(element_nested, result)
       ])
     );
-  } else if (isPlainObject(element)) {
+  }
+  if (isPlainObject(element)) {
     return Object.fromEntries(
       Object.entries(element).map(([key, element_nested]) => [
         key,
@@ -215,13 +220,14 @@ var RedisXTransaction = class {
   }
   /**
    * Gets the number of commands in the transaction.
+   * @returns -
    */
   get queue_length() {
     return this.#commands.length;
   }
   /**
    * Send the transaction to the Redis server.
-   * @returns Data from the transaction.
+   * @returns Transaction result.
    */
   async execute() {
     const result = await this.#transaction.exec();
@@ -613,6 +619,7 @@ function createClient(redisClient) {
   LPUSH,
   PEXPIRE,
   PTTL,
+  RedisXClient,
   SET,
   TTL,
   ZRANGE,

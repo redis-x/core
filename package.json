@@ -1,7 +1,7 @@
 {
 	"name": "@redis-x/client",
-	"version": "0.2.0-beta.2b",
-	"description": "Enhanced redis client build on top of \"redis\" package.",
+	"version": "0.2.0-beta.3",
+	"description": "Enhanced redis client built on top of \"redis\" package.",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -19,19 +19,15 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"@eslint/js": "9.7.0",
+		"@kirick/eslint-config": "^0.1.13",
 		"@types/bun": "^1.1.6",
-		"@types/node": "^20.14.10",
-		"@typescript-eslint/parser": "^7.15.0",
-		"eslint": "9.7.0",
-		"eslint-plugin-jsdoc": "^48.7.0",
-		"eslint-plugin-unicorn": "^54.0.0",
-		"typescript": "^5.5.3",
-		"typescript-eslint": "^7.16.1",
+		"@types/node": "^20.14.14",
+		"eslint": "9.8.0",
+		"typescript": "^5.5.4",
 		"vitest": "1.3.1"
 	},
 	"peerDependencies": {
-		"redis": "^4"
+		"redis": "^4.6.13"
 	},
 	"scripts": {
 		"build": "bun run build:ts && bun run build:cjs",
@@ -39,7 +35,6 @@
 		"build:ts": "rm -rf dist/esm types ; tsc && biome format --fix dist/esm",
 		"lint": "eslint . && tsc --skipLibCheck --noemit",
 		"publish:npm": "bun run build && bun run lint && bun run test && npm publish",
-		"redis:down": "docker stop test-redis || true",
 		"redis:up": "docker ps | grep test-redis >/dev/null || docker run --rm -d -p 16379:6379 --name test-redis redis:7-alpine",
 		"test": "export REDIS_PORT=16379 ; bun run redis:up && npm run test:vitest && bun test --coverage",
 		"test:vitest": "vitest run --no-file-parallelism"

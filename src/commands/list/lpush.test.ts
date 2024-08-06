@@ -1,11 +1,18 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }     from 'vitest';
+	expect,
+}                from 'vitest';
 import { LPUSH } from '../../main';
 
 test('LPUSH', () => {
-	const args = [ 'LPUSH', 'key', 'apple', 'banana' ];
+	const args = [
+		'LPUSH',
+		'key',
+		'apple',
+		'banana',
+	];
 
 	const schema = LPUSH('key', 'apple', 'banana');
 	expect(

@@ -1,10 +1,11 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { isSchema } from "../types";
 import { isPlainObject } from "../utils";
 import { TransactionCommand } from "./command";
+// eslint-disable-next-line jsdoc/require-jsdoc
 function isStructure(value) {
 	return isStructurePlain(value) || value instanceof Map;
 }
+// eslint-disable-next-line jsdoc/require-jsdoc
 function isStructurePlain(value) {
 	return Array.isArray(value) || isPlainObject(value);
 }
@@ -13,6 +14,7 @@ function isStructurePlain(value) {
  * @param target Target object.
  * @param handler Handler object.
  * @param handler.schema Function to handle schema objects.
+ * @returns Returns the proxy object.
  */
 export function createProxy(target, handler) {
 	if (isStructurePlain(target)) {
@@ -23,6 +25,7 @@ export function createProxy(target, handler) {
 	}
 	throw new TypeError("Invalid structure type.");
 }
+// eslint-disable-next-line jsdoc/require-jsdoc
 function createProxyPlain(target, handler) {
 	for (const key of Reflect.ownKeys(target)) {
 		const value_new = processValue(
@@ -35,16 +38,17 @@ function createProxyPlain(target, handler) {
 		}
 	}
 	return new Proxy(target, {
-		set(target, prop, value, receiver) {
+		set(setTarget, prop, value, receiver) {
 			return Reflect.set(
-				target,
+				setTarget,
 				prop,
-				processValue(value, Reflect.get(target, prop), handler) ?? value,
+				processValue(value, Reflect.get(setTarget, prop), handler) ?? value,
 				receiver,
 			);
 		},
 	});
 }
+// eslint-disable-next-line jsdoc/require-jsdoc
 function createProxyMap(target, handler) {
 	for (const [key, value] of target.entries()) {
 		const value_new = processValue(value, undefined, handler);
@@ -53,27 +57,30 @@ function createProxyMap(target, handler) {
 		}
 	}
 	return new Proxy(target, {
-		get(target, prop, receiver) {
+		get(getTarget, prop, receiver) {
 			if (prop === "set") {
 				return function (key, value) {
-					return target.set(
+					return getTarget.set(
 						key,
-						processValue(value, target.get(prop), handler) ?? value,
+						processValue(value, getTarget.get(prop), handler) ?? value,
 					);
 				};
 			}
-			const value = Reflect.get(target, prop, receiver);
+			const value = Reflect.get(getTarget, prop, receiver);
 			if (typeof value === "function") {
-				return value.bind(target);
+				return value.bind(getTarget);
 			}
 			return value;
 		},
 	});
 }
+// eslint-disable-next-line jsdoc/require-jsdoc
 function processValue(value, value_old, handler) {
 	if (value_old instanceof TransactionCommand) {
 		throw new TypeError(
-			"Do not delete commands already added to transaction. When you delete a command from transaction data, you might think that the command would not be executed, but this is not true. Because of this, doing so might lead to unexpected results.",
+			"Do not delete commands already added to transaction." +
+				" When you delete a command from transaction data, you might think that the command would not be executed, but this is not true." +
+				" Because of this, doing so might lead to unexpected results.",
 		);
 	}
 	if (isSchema(value)) {

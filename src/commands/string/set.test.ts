@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }   from 'vitest';
+	expect,
+}              from 'vitest';
 import { SET } from '../../main';
 
 test('SET', () => {
@@ -25,13 +27,30 @@ test('SET', () => {
 for (const option of [ 'NX', 'XX', 'KEEPTTL' ]) {
 	test(`SET ${option}`, () => {
 		expect(
-			SET('key', 'value', { [option]: true }).args,
+			SET(
+				'key',
+				'value',
+				{
+					[option]: true,
+				},
+			).args,
 		).toStrictEqual(
-			[ 'SET', 'key', 'value', option ],
+			[
+				'SET',
+				'key',
+				'value',
+				option,
+			],
 		);
 
 		expect(
-			SET('key', 'value', { [option]: false }).args,
+			SET(
+				'key',
+				'value',
+				{
+					[option]: false,
+				},
+			).args,
 		).toStrictEqual(
 			[ 'SET', 'key', 'value' ],
 		);
@@ -41,23 +60,47 @@ for (const option of [ 'NX', 'XX', 'KEEPTTL' ]) {
 	});
 }
 
-for (const option of [ 'EX', 'PX', 'EXAT', 'PXAT' ]) {
+for (const option of [
+	'EX',
+	'PX',
+	'EXAT',
+	'PXAT',
+]) {
 	test(`SET ${option}`, () => {
 		expect(
-			SET('key', 'value', { [option]: 1000 }).args,
+			SET(
+				'key',
+				'value',
+				{
+					[option]: 1000,
+				},
+			).args,
 		).toStrictEqual(
-			[ 'SET', 'key', 'value', option, '1000' ],
+			[
+				'SET',
+				'key',
+				'value',
+				option,
+				'1000',
+			],
 		);
 	});
 }
 
 test('SET GET', () => {
-	const schema = SET('key', 'value', { GET: true });
+	const schema = SET('key', 'value', {
+		GET: true,
+	});
 
 	expect(
 		schema.args,
 	).toStrictEqual(
-		[ 'SET', 'key', 'value', 'GET' ],
+		[
+			'SET',
+			'key',
+			'value',
+			'GET',
+		],
 	);
 
 	expect(

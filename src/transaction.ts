@@ -3,23 +3,24 @@ import {
 	RedisClientType,
 	RedisFunctions,
 	RedisModules,
-	RedisScripts }            from 'redis';
+	RedisScripts,
+}                             from 'redis';
 import { TransactionCommand } from './transaction/command';
 import { createProxy }        from './transaction/proxy';
 import { transformData }      from './transaction/transform';
 import type {
 	TransactionData,
-	InferTransactionData }    from './transaction/types';
+	InferTransactionData,
+}                             from './transaction/types';
 import {
 	type BaseSchema,
-	type Mutable }            from './types';
+	type Mutable,
+}                             from './types';
 
 export class RedisXTransaction<const T extends TransactionData> {
 	protected redisClient: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
-
 	#transaction: ReturnType<RedisClientType<RedisModules, RedisFunctions, RedisScripts>['MULTI']>;
 	#commands: TransactionCommand<BaseSchema>[] = [];
-
 	data: Mutable<T>;
 
 	constructor(
@@ -42,14 +43,16 @@ export class RedisXTransaction<const T extends TransactionData> {
 	 * @param schema Command schema.
 	 * @returns TransactionCommand object to assign it to the transaction data.
 	 */
-	add<const T extends BaseSchema>(schema: T): TransactionCommand<T>;
+	add<const S extends BaseSchema>(schema: S): TransactionCommand<S>;
+
 	/**
 	 * Adds multiple commands to the transaction.
 	 * @param schemas Commands schemas.
 	 * @returns Returns no value.
 	 */
 	add(...schemas: BaseSchema[]): void;
-	add<const T extends BaseSchema[]>(...schemas: T): TransactionCommand<T[0]> | void {
+
+	add<const S extends BaseSchema[]>(...schemas: S): TransactionCommand<S[0]> | void {
 		for (const schema of schemas) {
 			this.#transaction.addCommand(
 				schema.args,
@@ -59,7 +62,7 @@ export class RedisXTransaction<const T extends TransactionData> {
 				new TransactionCommand(
 					this.#commands.length,
 					schema,
-				)
+				),
 			);
 		}
 
@@ -70,6 +73,7 @@ export class RedisXTransaction<const T extends TransactionData> {
 
 	/**
 	 * Gets the number of commands in the transaction.
+	 * @returns -
 	 */
 	get queue_length(): number {
 		return this.#commands.length;
@@ -77,7 +81,7 @@ export class RedisXTransaction<const T extends TransactionData> {
 
 	/**
 	 * Send the transaction to the Redis server.
-	 * @returns Data from the transaction.
+	 * @returns Transaction result.
 	 */
 	async execute(): Promise<InferTransactionData<T>> {
 		const result = await this.#transaction.exec();

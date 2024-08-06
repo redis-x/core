@@ -3,12 +3,13 @@ import {
 	beforeAll,
 	describe,
 	test,
-	expect }               from 'vitest';
+	expect,
+}                          from 'vitest';
 import { redisXClient }    from '../test/client';
 import { createRandomKey } from '../test/utils';
 import * as redisX         from './main';
 
-const PREFIX = createRandomKey() + ':';
+const PREFIX = createRandomKey();
 
 beforeAll(async () => {
 	const commands: redisX.BaseSchema[] = [];
@@ -17,7 +18,7 @@ beforeAll(async () => {
 		commands.push(
 			redisX.custom(
 				'SET',
-				PREFIX + commands.length,
+				`${PREFIX}:${commands.length}`,
 				commands.length,
 			),
 		);
@@ -32,9 +33,9 @@ describe('data types', () => {
 			value?: redisX.GetSchema,
 		}>({});
 
-		transaction.add(redisX.GET(PREFIX + '0'));
+		transaction.add(redisX.GET(`${PREFIX}:0`));
 
-		transaction.data.value = redisX.GET(PREFIX + '2');
+		transaction.data.value = redisX.GET(`${PREFIX}:2`);
 
 		await expect(
 			transaction.execute(),
@@ -51,8 +52,8 @@ describe('data types', () => {
 		});
 
 		transaction.data.values.push(
-			redisX.GET(PREFIX + '1'),
-			redisX.GET(PREFIX + '3'),
+			redisX.GET(`${PREFIX}:1`),
+			redisX.GET(`${PREFIX}:3`),
 		);
 
 		await expect(
@@ -75,8 +76,8 @@ describe('data types', () => {
 			values: {},
 		});
 
-		transaction.data.values.value_2 = redisX.GET(PREFIX + '2');
-		transaction.data.values.value_3 = redisX.GET(PREFIX + '3');
+		transaction.data.values.value_2 = redisX.GET(`${PREFIX}:2`);
+		transaction.data.values.value_3 = redisX.GET(`${PREFIX}:3`);
 
 		await expect(
 			transaction.execute(),
@@ -90,18 +91,18 @@ describe('data types', () => {
 
 	test('map', async () => {
 		const transaction = redisXClient.createTransaction<{
-			values: Map<string, redisX.GetSchema>
+			values: Map<string, redisX.GetSchema>,
 		}>({
 			values: new Map(),
 		});
 
 		transaction.data.values.set(
 			'value_0',
-			redisX.GET(PREFIX + '0'),
+			redisX.GET(`${PREFIX}:0`),
 		);
 		transaction.data.values.set(
 			'value_4',
-			redisX.GET(PREFIX + '4'),
+			redisX.GET(`${PREFIX}:4`),
 		);
 
 		await expect(
@@ -115,7 +116,7 @@ describe('data types', () => {
 	});
 });
 
-test('queue_length', async () => {
+test('queue_length', () => {
 	const transaction = redisXClient.createTransaction({});
 
 	expect(

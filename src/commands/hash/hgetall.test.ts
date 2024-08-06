@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }       from 'vitest';
+	expect,
+}                  from 'vitest';
 import { HGETALL } from '../../main';
 
 test('HGETALL', () => {
@@ -15,8 +17,10 @@ test('HGETALL', () => {
 
 	expect(
 		schema.replyTransform([
-			'key1', 'value1',
-			'key2', 'value2',
+			'key1',
+			'value1',
+			'key2',
+			'value2',
 		]),
 	).toStrictEqual({
 		key1: 'value1',

@@ -26,13 +26,14 @@ export class RedisXTransaction {
 	}
 	/**
 	 * Gets the number of commands in the transaction.
+	 * @returns -
 	 */
 	get queue_length() {
 		return this.#commands.length;
 	}
 	/**
 	 * Send the transaction to the Redis server.
-	 * @returns Data from the transaction.
+	 * @returns Transaction result.
 	 */
 	async execute() {
 		const result = await this.#transaction.exec();

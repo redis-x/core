@@ -18,7 +18,7 @@ export function HMGET<
 	const T extends [
 		string | number,
 		...(string | number)[],
-	]
+	],
 >(
 	key: string,
 	...fields: T

@@ -1,6 +1,7 @@
 /**
  * Checks if a value is a plain object.
  * @param value Value to check.
+ * @returns -
  */
 export declare function isPlainObject(
 	value: unknown,
@@ -8,6 +9,7 @@ export declare function isPlainObject(
 /**
  * Dummy function to use to trick TypeScript types.
  * @param result -
+ * @returns -
  */
 export declare function dummyReplyTransform(result?: any): any;
 /**

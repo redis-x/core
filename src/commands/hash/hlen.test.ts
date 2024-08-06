@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }    from 'vitest';
+	expect,
+}               from 'vitest';
 import { HLEN } from '../../main';
 
 test('HLEN', () => {

@@ -19,7 +19,7 @@ export function HDEL<
 	const T extends [
 		string | number,
 		...(string | number)[],
-	]
+	],
 >(
 	key: string,
 	...fields: T

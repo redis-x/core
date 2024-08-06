@@ -1,7 +1,8 @@
 
 import {
 	OneOrNoneFrom,
-	BaseSchema }               from '../../types';
+	BaseSchema,
+}                              from '../../types';
 import { dummyReplyTransform } from '../../utils';
 import { ExpireOptionsJsdoc }  from './expire.jsdoc';
 
@@ -37,12 +38,15 @@ export function EXPIRE(key: string, seconds: number, options?: ExpireOptions): E
 		if (options.NX) {
 			args_options.push('NX');
 		}
+
 		if (options.XX) {
 			args_options.push('XX');
 		}
+
 		if (options.GT) {
 			args_options.push('GT');
 		}
+
 		if (options.LT) {
 			args_options.push('LT');
 		}

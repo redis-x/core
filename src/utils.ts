@@ -2,8 +2,8 @@
 /**
  * Checks if a value is a plain object.
  * @param value Value to check.
+ * @returns -
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isPlainObject(value: unknown): value is Record<string, any> {
 	return typeof value === 'object'
 		&& value !== null
@@ -15,8 +15,8 @@ export function isPlainObject(value: unknown): value is Record<string, any> {
 /**
  * Dummy function to use to trick TypeScript types.
  * @param result -
+ * @returns -
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function dummyReplyTransform(result?: any) {
 	return result;
 }

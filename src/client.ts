@@ -3,12 +3,14 @@ import {
 	RedisClientType,
 	RedisFunctions,
 	RedisModules,
-	RedisScripts }              from 'redis';
+	RedisScripts,
+}                               from 'redis';
 import { RedisXTransaction }    from './transaction';
 import type { TransactionData } from './transaction/types';
 import type {
 	BaseSchema,
-	InferReply }                from './types';
+	InferReply,
+}                               from './types';
 
 type ExecuteReturnType<L extends (BaseSchema | undefined)[]> =
 	L extends [ infer T extends BaseSchema | undefined, ...infer R extends (BaseSchema | undefined)[] ]
@@ -16,7 +18,7 @@ type ExecuteReturnType<L extends (BaseSchema | undefined)[]> =
 			? []
 			: [
 				InferReply<Exclude<T, undefined>>,
-				...ExecuteReturnType<R>
+				...ExecuteReturnType<R>,
 			]
 		: [];
 
@@ -37,6 +39,7 @@ export class RedisXClient {
 	>(
 		command: T
 	): Promise<InferReply<T>>;
+
 	/**
 	 * Executes commands as a transaction.
 	 * @param commands Commands to execute.
@@ -49,6 +52,7 @@ export class RedisXClient {
 	): Promise<
 		ExecuteReturnType<T>
 	>;
+
 	/**
 	 * Executes commands as a transaction.
 	 * @param commands Commands to execute.
@@ -59,13 +63,16 @@ export class RedisXClient {
 	>(
 		...commands: T[]
 	): Promise<unknown[]>;
+
 	async execute(...commands: BaseSchema[]): Promise<unknown> {
 		if (commands.length === 1) {
 			if (commands[0]) {
-				const [{
-					args,
-					replyTransform,
-				}] = commands;
+				const [
+					{
+						args,
+						replyTransform,
+					},
+				] = commands;
 
 				const result = await this.#redisClient.sendCommand(args);
 

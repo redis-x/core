@@ -4,6 +4,10 @@
 		"src/"
 	],
 	"exclude": [
+		"dist/",
+		"node_modules/",
+		"test/",
+		"**/*.test.js",
 		"**/*.test.ts"
 	],
 	"compilerOptions": {
@@ -16,12 +20,10 @@
 			"ES2023",
 			"ES2021.String",
 		],
-		"skipLibCheck": true,
-		"removeComments": false,
-		"moduleResolution": "bundler",
+		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
 		"strict": true,
-		"allowJs": true,
-		"checkJs": true
+		"removeComments": false
 	}
 }

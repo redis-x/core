@@ -2,7 +2,8 @@
 import {
 	ExactlyOneFrom,
 	TheseFieldsOrNone,
-	BaseSchema }               from '../../types';
+	BaseSchema,
+}                              from '../../types';
 import { dummyReplyTransform } from '../../utils';
 import { ZrangeOptionsJsdoc }  from './zrange.jsdoc';
 
@@ -18,7 +19,7 @@ type ZrangeOptionsCommon =
 		& {
 			LIMIT?: ZrangeOptionsJsdoc['LIMIT'],
 		}
-	>
+	>;
 // type ZrangeOptionsModifierWithscores = {
 // 	WITHSCORES: Required<ZrangeOptionsJsdoc>['WITHSCORES'],
 // };
@@ -114,6 +115,7 @@ export function ZRANGE(
 		if (options.BYSCORE) {
 			args_options.push('BYSCORE');
 		}
+
 		if (options.BYLEX) {
 			args_options.push('BYLEX');
 		}
@@ -148,7 +150,10 @@ export function ZRANGE(
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 function replyWithscoresTransform(value: string[]) {
-	const result_withscores: { value: string, score: number }[] = [];
+	const result_withscores: {
+		value: string,
+		score: number,
+	}[] = [];
 
 	for (
 		let index = 0;

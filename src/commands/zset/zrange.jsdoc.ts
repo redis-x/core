@@ -14,7 +14,7 @@ export type ZrangeOptionsJsdoc = {
 	 * - Available since: 6.2.0.
 	 * @type {[ number, number ]}
 	 */
-	LIMIT?: [ number, number ],
+	LIMIT?: [number, number],
 	/**
 	 * Makes the command behave like ZRANGEBYSCORE and returns the range of elements from the sorted set having scores equal or between <start> and <stop>.
 	 * - Available since: 6.2.0.
@@ -32,4 +32,4 @@ export type ZrangeOptionsJsdoc = {
 	 * @type {true}
 	 */
 	WITHSCORES?: true,
-}
+};

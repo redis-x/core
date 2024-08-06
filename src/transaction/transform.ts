@@ -3,12 +3,14 @@ import { isPlainObject }      from '../utils';
 import { TransactionCommand } from './command';
 import type {
 	TransactionData,
-	InferTransactionData }    from './types';
+	InferTransactionData,
+}                             from './types';
 
 /**
  * Transformes transaction data.
  * @param data Data to transform.
  * @param result Transaction result.
+ * @returns Transformed data.
  */
 export function transformData<const T extends TransactionData>(data: T, result: unknown[]) {
 	const data_transformed: Record<string, unknown> = {};
@@ -26,17 +28,20 @@ export function transformData<const T extends TransactionData>(data: T, result: 
  * Transformes single element of transaction data.
  * @param element Element to transform.
  * @param result Transaction result.
+ * @returns Transformed data.
  */
 function transformDataElement(element: TransactionData[string], result: unknown[]): unknown {
 	if (element === undefined) {
 		return undefined;
 	}
-	else if (element instanceof TransactionCommand) {
+
+	if (element instanceof TransactionCommand) {
 		return element.schema.replyTransform(
 			result[element.index],
 		);
 	}
-	else if (Array.isArray(element)) {
+
+	if (Array.isArray(element)) {
 		return element.map(
 			(element_nested) => transformDataElement(
 				element_nested,
@@ -44,25 +49,26 @@ function transformDataElement(element: TransactionData[string], result: unknown[
 			),
 		);
 	}
-	else if (element instanceof Map) {
+
+	if (element instanceof Map) {
 		return new Map(
-			[
-				...element.entries(),
-			].map(
-				([
-					key,
-					element_nested,
-				]) => [
-					key,
-					transformDataElement(
+			[ ...element.entries() ]
+				.map(
+					([
+						key,
 						element_nested,
-						result,
-					),
-				],
-			),
+					]) => [
+						key,
+						transformDataElement(
+							element_nested,
+							result,
+						),
+					],
+				),
 		);
 	}
-	else if (isPlainObject(element)) {
+
+	if (isPlainObject(element)) {
 		return Object.fromEntries(
 			Object.entries(element).map(
 				([

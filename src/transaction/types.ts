@@ -1,7 +1,8 @@
 
 import type {
 	BaseSchema,
-	InferReply } from '../types';
+	InferReply,
+} from '../types';
 
 export type TransactionData = Record<
 	string,
@@ -21,7 +22,7 @@ export type TransactionData = Record<
 export type InferTransactionData<T extends TransactionData> = {
 	[K in keyof T]: undefined extends T[K]
 		? InferTransactionDataElement<Exclude<T[K], undefined>> | undefined
-		: InferTransactionDataElement<T[K]>
+		: InferTransactionDataElement<T[K]>;
 };
 type InferTransactionDataElement<T extends TransactionData[string]> =
 	T extends BaseSchema
@@ -32,4 +33,4 @@ type InferTransactionDataElement<T extends TransactionData[string]> =
 				? Map<string, InferTransactionDataElement<V>>
 				: T extends TransactionData
 					? InferTransactionData<T>
-					: never
+					: never;

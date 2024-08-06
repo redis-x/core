@@ -12,6 +12,7 @@ type Handler = {
  * @param target Target object.
  * @param handler Handler object.
  * @param handler.schema Function to handle schema objects.
+ * @returns Returns the proxy object.
  */
 export declare function createProxy<const T extends Structure>(
 	target: T,

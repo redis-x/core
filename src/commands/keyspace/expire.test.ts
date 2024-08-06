@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }      from 'vitest';
+	expect,
+}                 from 'vitest';
 import { EXPIRE } from '../../main';
 
 test('EXPIRE', () => {
@@ -18,16 +20,30 @@ test('EXPIRE', () => {
 	).toBe(1);
 });
 
-for (const option of [ 'NX', 'XX', 'GT', 'LT' ]) {
+for (const option of [
+	'NX',
+	'XX',
+	'GT',
+	'LT',
+]) {
 	test(`EXPIRE ${option}`, () => {
 		expect(
-			EXPIRE('key', 10, { [option]: true }).args,
+			EXPIRE('key', 10, {
+				[option]: true,
+			}).args,
 		).toStrictEqual(
-			[ 'EXPIRE', 'key', '10', option ],
+			[
+				'EXPIRE',
+				'key',
+				'10',
+				option,
+			],
 		);
 
 		expect(
-			EXPIRE('key', 10, { [option]: false }).args,
+			EXPIRE('key', 10, {
+				[option]: false,
+			}).args,
 		).toStrictEqual(
 			[ 'EXPIRE', 'key', '10' ],
 		);

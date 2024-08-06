@@ -1,8 +1,8 @@
-/* eslint-disable jsdoc/require-jsdoc */
 
 import {
 	type BaseSchema,
-	isSchema }                from '../types';
+	isSchema,
+}                             from '../types';
 import { isPlainObject }      from '../utils';
 import { TransactionCommand } from './command';
 import { TransactionData }    from './types';
@@ -21,13 +21,16 @@ type Structure =
 	| StructureMap;
 
 type Handler = {
-	schema: (value: BaseSchema) => TransactionCommand<BaseSchema>;
+	schema: (value: BaseSchema) => TransactionCommand<BaseSchema>,
 };
 
+// eslint-disable-next-line jsdoc/require-jsdoc
 function isStructure(value: unknown): value is Structure {
 	return isStructurePlain(value)
 		|| value instanceof Map;
 }
+
+// eslint-disable-next-line jsdoc/require-jsdoc
 function isStructurePlain(value: unknown): value is StructurePlain {
 	return Array.isArray(value)
 		|| isPlainObject(value);
@@ -38,9 +41,10 @@ function isStructurePlain(value: unknown): value is StructurePlain {
  * @param target Target object.
  * @param handler Handler object.
  * @param handler.schema Function to handle schema objects.
+ * @returns Returns the proxy object.
  */
 export function createProxy<
-	const T extends Structure
+	const T extends Structure,
 >(
 	target: T,
 	handler: Handler,
@@ -62,7 +66,10 @@ export function createProxy<
 	throw new TypeError('Invalid structure type.');
 }
 
-function createProxyPlain<const T extends unknown[] | Record<string, unknown>>(
+// eslint-disable-next-line jsdoc/require-jsdoc
+function createProxyPlain<
+	const T extends unknown[] | Record<string, unknown>,
+>(
 	target: T,
 	handler: Handler,
 ): T {
@@ -85,13 +92,13 @@ function createProxyPlain<const T extends unknown[] | Record<string, unknown>>(
 	return new Proxy(
 		target,
 		{
-			set(target, prop, value, receiver) {
+			set(opTarget, prop, value, receiver) {
 				return Reflect.set(
-					target,
+					opTarget,
 					prop,
 					processValue(
 						value,
-						Reflect.get(target, prop),
+						Reflect.get(opTarget, prop),
 						handler,
 					) ?? value,
 					receiver,
@@ -101,7 +108,10 @@ function createProxyPlain<const T extends unknown[] | Record<string, unknown>>(
 	);
 }
 
-function createProxyMap<const T extends Map<string | symbol, unknown>>(
+// eslint-disable-next-line jsdoc/require-jsdoc
+function createProxyMap<
+	const T extends Map<string | symbol, unknown>,
+>(
 	target: T,
 	handler: Handler,
 ): T {
@@ -123,23 +133,26 @@ function createProxyMap<const T extends Map<string | symbol, unknown>>(
 	return new Proxy(
 		target,
 		{
-			get(target, prop, receiver) {
+			get(opTarget, prop, receiver) {
 				if (prop === 'set') {
-					return function(key: string, value: BaseSchema) {
-						return target.set(
+					return function (
+						key: string,
+						value: BaseSchema,
+					) {
+						return opTarget.set(
 							key,
 							processValue(
 								value,
-								target.get(prop),
+								opTarget.get(prop),
 								handler,
 							) ?? value,
 						);
 					};
 				}
 
-				const value = Reflect.get(target, prop, receiver);
+				const value = Reflect.get(opTarget, prop, receiver);
 				if (typeof value === 'function') {
-					return value.bind(target);
+					return value.bind(opTarget);
 				}
 
 				return value;
@@ -148,13 +161,18 @@ function createProxyMap<const T extends Map<string | symbol, unknown>>(
 	) as T;
 }
 
+// eslint-disable-next-line jsdoc/require-jsdoc
 function processValue(
 	value: unknown,
 	value_old: unknown,
 	handler: Handler,
 ) {
 	if (value_old instanceof TransactionCommand) {
-		throw new TypeError('Do not delete commands already added to transaction. When you delete a command from transaction data, you might think that the command would not be executed, but this is not true. Because of this, doing so might lead to unexpected results.');
+		throw new TypeError(
+			'Do not delete commands already added to transaction.'
+			+ ' When you delete a command from transaction data, you might think that the command would not be executed, but this is not true.'
+			+ ' Because of this, doing so might lead to unexpected results.',
+		);
 	}
 
 	if (isSchema(value)) {

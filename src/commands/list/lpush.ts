@@ -22,7 +22,7 @@ export function LPUSH<
 	T extends [
 		string | number,
 		...(string | number)[],
-	]
+	],
 >(
 	key: string,
 	...elements: T

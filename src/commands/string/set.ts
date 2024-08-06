@@ -1,7 +1,8 @@
 
 import type {
 	OneOrNoneFrom,
-	BaseSchema }               from '../../types';
+	BaseSchema,
+}                              from '../../types';
 import { dummyReplyTransform } from '../../utils';
 import { SetOptionsJsdoc }     from './set.jsdoc';
 
@@ -49,6 +50,7 @@ export interface SetWithGetSchema extends BaseSchema {
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
 export function SET(key: string, value: string): SetSchema;
+
 /**
  * Set the string value of a key.
  * - Available since: 1.0.0.
@@ -59,6 +61,7 @@ export function SET(key: string, value: string): SetSchema;
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
 export function SET(key: string, value: string, options: SetOptions): SetSchema;
+
 /**
  * Set the string value of a key.
  * - Available since: 1.0.0.
@@ -69,6 +72,7 @@ export function SET(key: string, value: string, options: SetOptions): SetSchema;
  * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
  */
 export function SET(key: string, value: string, options: SetOptionsWithGet): SetWithGetSchema;
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 export function SET(key: string, value: string, options?: SetOptions | SetOptionsWithGet): SetSchema | SetWithGetSchema {
 	const args_options: string[] = [];
@@ -77,6 +81,7 @@ export function SET(key: string, value: string, options?: SetOptions | SetOption
 		if (options.NX) {
 			args_options.push('NX');
 		}
+
 		if (options.XX) {
 			args_options.push('XX');
 		}
@@ -87,24 +92,28 @@ export function SET(key: string, value: string, options?: SetOptions | SetOption
 				String(options.EX),
 			);
 		}
+
 		if (options.PX) {
 			args_options.push(
 				'PX',
 				String(options.PX),
 			);
 		}
+
 		if (options.EXAT) {
 			args_options.push(
 				'EXAT',
 				String(options.EXAT),
 			);
 		}
+
 		if (options.PXAT) {
 			args_options.push(
 				'PXAT',
 				String(options.PXAT),
 			);
 		}
+
 		if (options.KEEPTTL) {
 			args_options.push('KEEPTTL');
 		}
@@ -123,5 +132,5 @@ export function SET(key: string, value: string, options?: SetOptions | SetOption
 			...args_options,
 		],
 		replyTransform: dummyReplyTransform,
-	}
+	};
 }

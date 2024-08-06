@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 
 import {
 	test,
-	expect }      from 'vitest';
+	expect,
+}                  from 'vitest';
 import { PEXPIRE } from '../../main';
 
 test('PEXPIRE', () => {
@@ -18,16 +20,38 @@ test('PEXPIRE', () => {
 	).toBe(1);
 });
 
-for (const option of [ 'NX', 'XX', 'GT', 'LT' ]) {
+for (const option of [
+	'NX',
+	'XX',
+	'GT',
+	'LT',
+]) {
 	test(`PEXPIRE ${option}`, () => {
 		expect(
-			PEXPIRE('key', 10, { [option]: true }).args,
+			PEXPIRE(
+				'key',
+				10,
+				{
+					[option]: true,
+				},
+			).args,
 		).toStrictEqual(
-			[ 'PEXPIRE', 'key', '10', option ],
+			[
+				'PEXPIRE',
+				'key',
+				'10',
+				option,
+			],
 		);
 
 		expect(
-			PEXPIRE('key', 10, { [option]: false }).args,
+			PEXPIRE(
+				'key',
+				10,
+				{
+					[option]: false,
+				},
+			).args,
 		).toStrictEqual(
 			[ 'PEXPIRE', 'key', '10' ],
 		);

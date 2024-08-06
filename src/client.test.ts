@@ -1,7 +1,8 @@
 import {
 	describe,
 	test,
-	expect }               from 'vitest';
+	expect,
+}                          from 'vitest';
 import { redisXClient }    from '../test/client';
 import { createRandomKey } from '../test/utils';
 import * as redisX         from './main';

@@ -1,7 +1,8 @@
 
 import {
 	OneOrNoneFrom,
-	BaseSchema }               from '../../types';
+	BaseSchema,
+}                              from '../../types';
 import { dummyReplyTransform } from '../../utils';
 import { PexpireOptionsJsdoc } from './pexpire.jsdoc';
 
@@ -35,12 +36,15 @@ export function PEXPIRE(key: string, seconds: number, options?: PexpireOptions):
 		if (options.NX) {
 			args_options.push('NX');
 		}
+
 		if (options.XX) {
 			args_options.push('XX');
 		}
+
 		if (options.GT) {
 			args_options.push('GT');
 		}
+
 		if (options.LT) {
 			args_options.push('LT');
 		}
