@@ -11,9 +11,10 @@ export interface HmgetSchema extends BaseSchema {
  * @param fields -
  * @returns An object with requested keys and their values.
  */
-export declare function HMGET<
-	const T extends [string | number, ...(string | number)[]],
->(key: string, ...fields: T): HmgetSchema;
+export declare function HMGET(
+	key: string,
+	...fields: (string | number)[]
+): HmgetSchema;
 export declare function replyTransform(
 	this: string[],
 	result: (string | null)[],

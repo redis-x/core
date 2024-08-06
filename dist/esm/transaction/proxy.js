@@ -38,11 +38,11 @@ function createProxyPlain(target, handler) {
 		}
 	}
 	return new Proxy(target, {
-		set(setTarget, prop, value, receiver) {
+		set(opTarget, prop, value, receiver) {
 			return Reflect.set(
-				setTarget,
+				opTarget,
 				prop,
-				processValue(value, Reflect.get(setTarget, prop), handler) ?? value,
+				processValue(value, Reflect.get(opTarget, prop), handler) ?? value,
 				receiver,
 			);
 		},
@@ -57,18 +57,18 @@ function createProxyMap(target, handler) {
 		}
 	}
 	return new Proxy(target, {
-		get(getTarget, prop, receiver) {
+		get(opTarget, prop, receiver) {
 			if (prop === "set") {
 				return function (key, value) {
-					return getTarget.set(
+					return opTarget.set(
 						key,
-						processValue(value, getTarget.get(prop), handler) ?? value,
+						processValue(value, opTarget.get(prop), handler) ?? value,
 					);
 				};
 			}
-			const value = Reflect.get(getTarget, prop, receiver);
+			const value = Reflect.get(opTarget, prop, receiver);
 			if (typeof value === "function") {
-				return value.bind(getTarget);
+				return value.bind(opTarget);
 			}
 			return value;
 		},

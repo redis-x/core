@@ -14,6 +14,7 @@ export interface LpushSchema extends BaseSchema {
  * @param elements -
  * @returns The length of the list after the push operation.
  */
-export declare function LPUSH<
-	T extends [string | number, ...(string | number)[]],
->(key: string, ...elements: T): LpushSchema;
+export declare function LPUSH(
+	key: string,
+	...elements: (string | number)[]
+): LpushSchema;

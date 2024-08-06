@@ -1,7 +1,6 @@
 import type { BaseSchema } from "../../types";
-type DelSchemaArgs = [string, ...string[]];
 export interface DelSchema extends BaseSchema {
-	args: ["DEL", ...DelSchemaArgs];
+	args: ["DEL", ...string[]];
 	replyTransform: (value: number) => number;
 }
 /**
@@ -13,5 +12,4 @@ export interface DelSchema extends BaseSchema {
  * @param keys Keys to delete.
  * @returns The number of keys that were removed.
  */
-export declare function DEL<T extends DelSchemaArgs>(...keys: T): DelSchema;
-export {};
+export declare function DEL(...keys: string[]): DelSchema;

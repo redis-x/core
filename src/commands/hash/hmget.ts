@@ -14,14 +14,9 @@ export interface HmgetSchema extends BaseSchema {
  * @param fields -
  * @returns An object with requested keys and their values.
  */
-export function HMGET<
-	const T extends [
-		string | number,
-		...(string | number)[],
-	],
->(
+export function HMGET(
 	key: string,
-	...fields: T
+	...fields: (string | number)[]
 ): HmgetSchema {
 	const fields_string = fields.map(String);
 
