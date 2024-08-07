@@ -5,6 +5,7 @@ import { dummyReplyTransform } from './utils';
 export * from './commands/hash';
 export * from './commands/keyspace';
 export * from './commands/list';
+export * from './commands/scripting';
 export * from './commands/string';
 export * from './commands/zset';
 

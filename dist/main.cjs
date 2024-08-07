@@ -23,6 +23,7 @@ __export(main_exports, {
   DECR: () => DECR,
   DECRBY: () => DECRBY,
   DEL: () => DEL,
+  EVAL: () => EVAL,
   EXPIRE: () => EXPIRE,
   GET: () => GET,
   HDEL: () => HDEL,
@@ -450,6 +451,21 @@ function LPUSH(key, ...elements) {
   };
 }
 
+// dist/esm/commands/scripting/eval.js
+function EVAL(script, keys, args) {
+  return {
+    kind: "#schema",
+    args: [
+      "EVAL",
+      script,
+      String(keys.length),
+      ...keys.map(String),
+      ...args.map(String)
+    ],
+    replyTransform: dummyReplyTransform
+  };
+}
+
 // dist/esm/commands/string/decr.js
 function DECR(key) {
   return {
@@ -604,6 +620,7 @@ function createClient(redisClient) {
   DECR,
   DECRBY,
   DEL,
+  EVAL,
   EXPIRE,
   GET,
   HDEL,

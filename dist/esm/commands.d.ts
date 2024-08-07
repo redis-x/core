@@ -2,6 +2,7 @@ import type { BaseSchema } from "./types";
 export * from "./commands/hash";
 export * from "./commands/keyspace";
 export * from "./commands/list";
+export * from "./commands/scripting";
 export * from "./commands/string";
 export * from "./commands/zset";
 export type { BaseSchema } from "./types";
