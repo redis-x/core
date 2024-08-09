@@ -1,8 +1,21 @@
-
-**/*.test.js
-biome.json
-compiler/
-eslint.config.*
+# ignore source files
 src/
+
+# ignore tests
+**/*.test.*
+**/*.test.d.ts
 test/
+
+# ignore configs
+.luarc.json
+biome.json
+eslint.config.{js,mjs,cjs}
 tsconfig.json
+
+# ignore repo configs
+.github/
+.gitea/
+
+# ignore IDE files
+.idea
+.nova

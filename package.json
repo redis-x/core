@@ -1,6 +1,6 @@
 {
 	"name": "@redis-x/client",
-	"version": "0.2.0-beta.6",
+	"version": "0.2.0-beta.7",
 	"description": "Enhanced redis client built on top of \"redis\" package.",
 	"publishConfig": {
 		"access": "public"
@@ -18,7 +18,6 @@
 		"node": ">=12.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
 		"@kirick/eslint-config": "^0.1.13",
 		"@types/bun": "^1.1.6",
 		"@types/node": "^20.14.14",
@@ -32,9 +31,10 @@
 	"scripts": {
 		"build": "bun run build:ts && bun run build:cjs",
 		"build:cjs": "bunx esbuild --bundle --platform=node --format=cjs --packages=external --outfile=dist/main.cjs dist/esm/main.js",
-		"build:ts": "rm -rf dist/esm types ; tsc && biome format --fix dist/esm",
+		"build:ts": "rm -rf dist/esm types ; tsc",
 		"lint": "eslint . && tsc --skipLibCheck --noemit",
 		"publish:npm": "bun run build && bun run lint && bun run test && npm publish",
+		"redis:down": "docker stop test-redis",
 		"redis:up": "docker ps | grep test-redis >/dev/null || docker run --rm -d -p 16379:6379 --name test-redis redis:7-alpine",
 		"test": "export REDIS_PORT=16379 ; bun run redis:up && npm run test:vitest && bun test --coverage",
 		"test:vitest": "vitest run --no-file-parallelism"
