@@ -113,6 +113,7 @@ var RedisXClient = class {
       ...args.map(String)
     ]);
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async useCommand(command) {
     const result = await this.redisClient.sendCommand(command.args);
     if (command.replyTransform) {

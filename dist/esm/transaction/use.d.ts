@@ -20,7 +20,7 @@ export declare class RedisTransactionUse {
      * @param key Key to get.
      * @returns The value of key, or `null` when key does not exist.
      */
-    GET(key: string): RedisTransactionCommand<unknown>;
+    GET(key: string): RedisTransactionCommand<string | null>;
     /**
      * Set the string value of a key.
      * - Available since: 1.0.0.
@@ -59,7 +59,7 @@ export declare class RedisTransactionUse {
      * @param keys Keys to delete.
      * @returns The number of keys that were removed.
      */
-    DEL(...keys: string[]): RedisTransactionCommand<unknown>;
+    DEL(...keys: string[]): RedisTransactionCommand<number>;
     /**
      * Invoke the execution of a server-side Lua script.
      * - Available since: 2.6.0.

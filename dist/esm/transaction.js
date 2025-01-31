@@ -35,6 +35,7 @@ export class RedisTransaction {
             this.transformers[this.queue_length - 1] = command.replyTransform;
         }
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useCommand(command) {
         this.promise = this.promise.then(() => {
             this.queueCommand(command);

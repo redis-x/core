@@ -17,7 +17,8 @@ export class RedisXClient {
 		]);
 	}
 
-	private async useCommand(command: Command) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private async useCommand(command: Command): Promise<any> {
 		const result = await this.redisClient.sendCommand(command.args);
 
 		if (command.replyTransform) {
@@ -39,7 +40,7 @@ export class RedisXClient {
 	 * @param key Key to get.
 	 * @returns The value of key, or `null` when key does not exist.
 	 */
-	GET(key: string) {
+	GET(key: string): Promise<string | null> {
 		return this.useCommand(input_get(key));
 	}
 
@@ -86,7 +87,7 @@ export class RedisXClient {
 	 * @param keys Keys to delete.
 	 * @returns The number of keys that were removed.
 	 */
-	DEL(...keys: string[]) {
+	DEL(...keys: string[]): Promise<number> {
 		return this.useCommand(input_del(...keys));
 	}
 
@@ -103,7 +104,7 @@ export class RedisXClient {
 		script: string,
 		keys: (string | number)[],
 		args: (string | number)[],
-	) {
+	): Promise<unknown> {
 		return this.useCommand(input_eval(script, keys, args));
 	}
 

@@ -33,7 +33,7 @@ export declare class RedisTransaction<L = [], C extends boolean = false, D = unk
      * @param key Key to get.
      * @returns The value of key, or `null` when key does not exist.
      */
-    GET(key: string): unknown;
+    GET(key: string): RedisTransaction<AddToList<L, string | null>, C, D>;
     /**
      * Set the string value of a key.
      * - Available since: 1.0.0.
@@ -72,7 +72,7 @@ export declare class RedisTransaction<L = [], C extends boolean = false, D = unk
      * @param keys Keys to delete.
      * @returns The number of keys that were removed.
      */
-    DEL(...keys: string[]): unknown;
+    DEL(...keys: string[]): RedisTransaction<AddToList<L, number>, C, D>;
     /**
      * Invoke the execution of a server-side Lua script.
      * - Available since: 2.6.0.
@@ -82,7 +82,7 @@ export declare class RedisTransaction<L = [], C extends boolean = false, D = unk
      * @param args Arguments passed to the script.
      * @returns Value returned by the script.
      */
-    EVAL(script: string, keys: (string | number)[], args: (string | number)[]): unknown;
+    EVAL(script: string, keys: (string | number)[], args: (string | number)[]): RedisTransaction<AddToList<L, unknown>, C, D>;
 }
 import { type SetOptions } from './commands/string/set.js';
 export {};

@@ -6,6 +6,7 @@ export class RedisTransactionUse {
     constructor(transaction) {
         this.transaction = transaction;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useCommand(command) {
         const redis_transaction_command = new RedisTransactionCommand(-1);
         this.queue.push({

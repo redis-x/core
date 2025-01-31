@@ -65,12 +65,13 @@ export class RedisTransaction<
 		}
 	}
 
-	private useCommand(command: Command) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private useCommand(command: Command): RedisTransaction<any, any, any> {
 		this.promise = this.promise.then(() => {
 			this.queueCommand(command);
 		});
 
-		return this as unknown;
+		return this;
 	}
 
 	as<const K extends string>(key: K) {
@@ -142,7 +143,7 @@ export class RedisTransaction<
 	 * @param key Key to get.
 	 * @returns The value of key, or `null` when key does not exist.
 	 */
-	GET(key: string) {
+	GET(key: string): RedisTransaction<AddToList<L, string | null>, C, D> {
 		return this.useCommand(input_get(key));
 	}
 
@@ -189,7 +190,7 @@ export class RedisTransaction<
 	 * @param keys Keys to delete.
 	 * @returns The number of keys that were removed.
 	 */
-	DEL(...keys: string[]) {
+	DEL(...keys: string[]): RedisTransaction<AddToList<L, number>, C, D> {
 		return this.useCommand(input_del(...keys));
 	}
 
@@ -206,7 +207,7 @@ export class RedisTransaction<
 		script: string,
 		keys: (string | number)[],
 		args: (string | number)[],
-	) {
+	): RedisTransaction<AddToList<L, unknown>, C, D> {
 		return this.useCommand(input_eval(script, keys, args));
 	}
 

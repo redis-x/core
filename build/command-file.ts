@@ -13,6 +13,7 @@ type CommandImplementation = {
 		raw: string,
 		list: string,
 	},
+	return_type?: string,
 }
 
 function processRawArguments(value: string) {
@@ -117,6 +118,22 @@ export class CommandFile {
 			) {
 				const getJsDoc = comments.get(node.start);
 
+				let return_type: string | undefined;
+				if (
+					node.declaration.returnType
+					&& node.declaration.returnType.typeAnnotation.type === 'TSTypeReference'
+					&& node.declaration.returnType.typeAnnotation.typeName.type === 'Identifier'
+					&& node.declaration.returnType.typeAnnotation.typeName.name === 'Command'
+					&& node.declaration.returnType.typeAnnotation.typeParameters
+				) {
+					const { start, end } = node.declaration.returnType.typeAnnotation.typeParameters;
+
+					return_type = contents.slice(
+						start + 1,
+						end - 1,
+					);
+				}
+
 				this.implementation = {
 					getJsDoc,
 					arguments: {
@@ -144,6 +161,7 @@ export class CommandFile {
 							throw new Error('Unexpected parameter type.');
 						}).join(', '),
 					},
+					return_type,
 				};
 			}
 			else if (
@@ -160,7 +178,10 @@ export class CommandFile {
 
 		if (
 			this.overloads.length === 0
-			&& this.implementation.getJsDoc === undefined
+			&& (
+				this.implementation.getJsDoc === undefined
+				|| this.implementation.return_type === undefined
+			)
 		) {
 			throw new Error(`No overloads found in ${path} and no JsDoc for implementation found.`);
 		}

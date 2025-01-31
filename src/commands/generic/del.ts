@@ -9,7 +9,7 @@ import type { Command } from '../../types.js';
  * @param keys Keys to delete.
  * @returns The number of keys that were removed.
  */
-export function input(...keys: string[]): Command {
+export function input(...keys: string[]): Command<number> {
 	return {
 		kind: '#schema',
 		args: [

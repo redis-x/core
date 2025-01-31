@@ -15,7 +15,7 @@ export declare class RedisXClient {
      * @param key Key to get.
      * @returns The value of key, or `null` when key does not exist.
      */
-    GET(key: string): Promise<unknown>;
+    GET(key: string): Promise<string | null>;
     /**
      * Set the string value of a key.
      * - Available since: 1.0.0.
@@ -54,7 +54,7 @@ export declare class RedisXClient {
      * @param keys Keys to delete.
      * @returns The number of keys that were removed.
      */
-    DEL(...keys: string[]): Promise<unknown>;
+    DEL(...keys: string[]): Promise<number>;
     /**
      * Invoke the execution of a server-side Lua script.
      * - Available since: 2.6.0.

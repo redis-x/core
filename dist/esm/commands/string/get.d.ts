@@ -10,4 +10,4 @@ import type { Command } from '../../types.js';
  * @param key Key to get.
  * @returns The value of key, or `null` when key does not exist.
  */
-export declare function input(key: string): Command;
+export declare function input(key: string): Command<string | null>;

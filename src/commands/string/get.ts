@@ -11,7 +11,7 @@ import type { Command } from '../../types.js';
  * @param key Key to get.
  * @returns The value of key, or `null` when key does not exist.
  */
-export function input(key: string): Command {
+export function input(key: string): Command<string | null> {
 	return {
 		kind: '#schema',
 		args: [

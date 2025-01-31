@@ -12,7 +12,8 @@ export class RedisTransactionUse {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-empty-function, no-useless-constructor
 	constructor(private transaction: RedisTransaction<any, any, any>) {}
 
-	private useCommand(command: Command) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private useCommand(command: Command): RedisTransactionCommand<any> {
 		const redis_transaction_command = new RedisTransactionCommand(-1);
 
 		this.queue.push({
@@ -35,7 +36,7 @@ export class RedisTransactionUse {
 	 * @param key Key to get.
 	 * @returns The value of key, or `null` when key does not exist.
 	 */
-	GET(key: string) {
+	GET(key: string): RedisTransactionCommand<string | null> {
 		return this.useCommand(input_get(key));
 	}
 
@@ -82,7 +83,7 @@ export class RedisTransactionUse {
 	 * @param keys Keys to delete.
 	 * @returns The number of keys that were removed.
 	 */
-	DEL(...keys: string[]) {
+	DEL(...keys: string[]): RedisTransactionCommand<number> {
 		return this.useCommand(input_del(...keys));
 	}
 
@@ -99,7 +100,7 @@ export class RedisTransactionUse {
 		script: string,
 		keys: (string | number)[],
 		args: (string | number)[],
-	) {
+	): RedisTransactionCommand<unknown> {
 		return this.useCommand(input_eval(script, keys, args));
 	}
 
