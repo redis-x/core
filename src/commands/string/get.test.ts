@@ -1,25 +1,15 @@
-/* eslint-disable new-cap */
-
 import {
 	test,
 	expect,
-}              from 'vitest';
-import { GET } from '../../main';
+} from 'vitest';
+import { input } from './get.js';
 
 test('GET', () => {
-	const schema = GET('key');
+	const command = input('key');
 
 	expect(
-		schema.args,
+		command.args,
 	).toStrictEqual(
 		[ 'GET', 'key' ],
 	);
-
-	expect(
-		schema.replyTransform(null),
-	).toBe(null);
-
-	expect(
-		schema.replyTransform('value'),
-	).toBe('value');
 });

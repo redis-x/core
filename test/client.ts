@@ -1,8 +1,7 @@
+import { createClient as createRedisClient } from 'redis';
+import { createClient } from '../src/main.js';
 
-import { createClient } from 'redis';
-import * as redisX      from '../src/main';
-
-export const redisClient = createClient({
+export const redisClient = createRedisClient({
 	socket: {
 		port: 16379,
 	},
@@ -11,4 +10,4 @@ export const redisClient = createClient({
 await redisClient.connect();
 await redisClient.sendCommand([ 'FLUSHDB' ]);
 
-export const redisXClient = redisX.createClient(redisClient);
+export const redisXClient = createClient(redisClient);

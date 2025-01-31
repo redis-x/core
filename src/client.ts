@@ -1,120 +1,93 @@
-
-import {
-	RedisClientType,
-	RedisFunctions,
-	RedisModules,
-	RedisScripts,
-}                               from 'redis';
-import { RedisXTransaction }    from './transaction';
-import type { TransactionData } from './transaction/types';
 import type {
-	BaseSchema,
-	InferReply,
-}                               from './types';
-
-type ExecuteReturnType<L extends (BaseSchema | undefined)[]> =
-	L extends [ infer T extends BaseSchema | undefined, ...infer R extends (BaseSchema | undefined)[] ]
-		? undefined extends T
-			? []
-			: [
-				InferReply<Exclude<T, undefined>>,
-				...ExecuteReturnType<R>,
-			]
-		: [];
+	Command,
+	RedisClient,
+} from './types.js';
 
 export class RedisXClient {
-	#redisClient: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+	// eslint-disable-next-line no-useless-constructor, no-empty-function
+	constructor(private redisClient: RedisClient) {}
 
-	constructor(redisClient: RedisClientType<RedisModules, RedisFunctions, RedisScripts>) {
-		this.#redisClient = redisClient;
+	async sendCommand<T extends string>(
+		command: T,
+		...args: (string | number)[]
+	): Promise<unknown> {
+		return await this.redisClient.sendCommand([
+			command,
+			...args.map(String),
+		]);
 	}
 
-	/**
-	 * Executes a given command.
-	 * @param command Command with its arguments.
-	 * @returns Command result.
-	 */
-	execute<
-		const T extends BaseSchema,
-	>(
-		command: T
-	): Promise<InferReply<T>>;
+	private async useCommand(command: Command) {
+		const result = await this.redisClient.sendCommand(command.args);
 
-	/**
-	 * Executes commands as a transaction.
-	 * @param commands Commands to execute.
-	 * @returns Array with the results of the commands.
-	 */
-	execute<
-		const T extends [ BaseSchema, BaseSchema, ...BaseSchema[] ],
-	>(
-		...command: T
-	): Promise<
-		ExecuteReturnType<T>
-	>;
-
-	/**
-	 * Executes commands as a transaction.
-	 * @param commands Commands to execute.
-	 * @returns Array with the results of the commands.
-	 */
-	execute<
-		T extends BaseSchema,
-	>(
-		...commands: T[]
-	): Promise<unknown[]>;
-
-	async execute(...commands: BaseSchema[]): Promise<unknown> {
-		if (commands.length === 1) {
-			if (commands[0]) {
-				const [
-					{
-						args,
-						replyTransform,
-					},
-				] = commands;
-
-				const result = await this.#redisClient.sendCommand(args);
-
-				if (typeof replyTransform === 'function') {
-					return replyTransform(result);
-				}
-
-				return result;
-			}
+		if (command.replyTransform) {
+			return command.replyTransform(result);
 		}
-		else {
-			const transaction = this.#redisClient.multi();
-			const transforms: BaseSchema['replyTransform'][] = [];
-			for (const command of commands) {
-				transaction.addCommand(command.args);
-				transforms.push(
-					command.replyTransform,
-				);
-			}
 
-			const results: unknown[] = await transaction.exec();
-			for (const [ index, result ] of results.entries()) {
-				const transform = transforms[index];
+		return result;
+	}
 
-				if (typeof transform === 'function') {
-					results[index] = transform(result);
-				}
-			}
+	// MARK: commands
+	/**
+	 * Get the value of key.
+	 *
+	 * If the key does not exist `null` is returned.
+	 *
+	 * An error is returned if the value stored at key is not a string, because GET only handles string values.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to get.
+	 * @returns The value of key, or `null` when key does not exist.
+	 */
+	GET(key: string): Promise<string | null>;
 
-			return results;
-		}
+	GET(key: string) {
+		return this.useCommand(input_get(key));
 	}
 
 	/**
-	 * Creates a transaction with structured data.
-	 * @param data Transaction data. Do not pass any commands here, add them later instead.
-	 * @returns Transaction object.
+	 * Set the string value of a key.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to set.
+	 * @param value Value to set.
+	 * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
 	 */
-	createTransaction<const T extends TransactionData>(data: T) {
-		return new RedisXTransaction<T>(
-			this.#redisClient,
-			data,
-		);
+	SET(key: string, value: string): Promise<'OK' | null>;
+	/**
+	 * Set the string value of a key.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to set.
+	 * @param value Value to set.
+	 * @param options Comand options.
+	 * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
+	 */
+	SET(key: string, value: string, options: Omit<SetOptions, 'GET'>): Promise<'OK' | null>;
+	/**
+	 * Set the string value of a key.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to set.
+	 * @param value Value to set.
+	 * @param options Comand options.
+	 * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
+	 */
+	SET(key: string, value: string, options: SetOptions): Promise<string | null>;
+
+	SET(key: string, value: string, options?: SetOptions) {
+		return this.useCommand(input_set(key, value, options));
 	}
+
+	// MARK: end commands
 }
+
+// MARK: imports
+import {
+	input as input_get,
+} from './commands/string/get.js';
+import {
+	type SetOptions,
+	input as input_set,
+} from './commands/string/set.js';
+// MARK: end imports

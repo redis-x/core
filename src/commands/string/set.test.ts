@@ -1,100 +1,76 @@
-/* eslint-disable new-cap */
+/* eslint-disable @stylistic/array-element-newline */
 
 import {
-	test,
+	describe,
 	expect,
-}              from 'vitest';
-import { SET } from '../../main';
+	test,
+} from 'vitest';
+import { input } from './set.js';
 
 test('SET', () => {
-	const schema = SET('key', 'value');
+	const command = input('key', 'value');
 
 	expect(
-		schema.args,
+		command.args,
 	).toStrictEqual(
 		[ 'SET', 'key', 'value' ],
 	);
 
-	expect(
-		schema.replyTransform(null),
-	).toBe(null);
-
-	expect(
-		schema.replyTransform('value'),
-	).toBe('value');
+	expect(command.replyTransform).toBeUndefined();
 });
 
-for (const option of [ 'NX', 'XX', 'KEEPTTL' ]) {
-	test(`SET ${option}`, () => {
-		expect(
-			SET(
-				'key',
-				'value',
-				{
-					[option]: true,
-				},
-			).args,
-		).toStrictEqual(
-			[
-				'SET',
-				'key',
-				'value',
-				option,
-			],
-		);
+for (
+	const option of [
+		'NX',
+		'XX',
+		'KEEPTTL',
+	]
+) {
+	describe(`SET ${option}`, () => {
+		for (const value of [ true, false ]) {
+			test(String(value), () => {
+				const command = input(
+					'key',
+					'value',
+					{
+						[option]: value,
+					},
+				);
 
-		expect(
-			SET(
-				'key',
-				'value',
-				{
-					[option]: false,
-				},
-			).args,
-		).toStrictEqual(
-			[ 'SET', 'key', 'value' ],
-		);
+				expect(command.args).toStrictEqual(
+					value
+						? [ 'SET', 'key', 'value', option ]
+						: [ 'SET', 'key', 'value' ],
+				);
 
-		// no tests for replyTransform
-		// because it is dummyReplyTransform
+				expect(command.replyTransform).toBeUndefined();
+			});
+		}
 	});
 }
 
-for (const option of [
-	'EX',
-	'PX',
-	'EXAT',
-	'PXAT',
-]) {
+for (const option of [ 'EX', 'PX', 'EXAT', 'PXAT' ]) {
 	test(`SET ${option}`, () => {
-		expect(
-			SET(
-				'key',
-				'value',
-				{
-					[option]: 1000,
-				},
-			).args,
-		).toStrictEqual(
-			[
-				'SET',
-				'key',
-				'value',
-				option,
-				'1000',
-			],
+		const command = input(
+			'key',
+			'value',
+			{
+				[option]: 1000,
+			},
 		);
+
+		expect(command.args).toStrictEqual(
+			[ 'SET', 'key', 'value', option, '1000' ],
+		);
+
+		expect(command.replyTransform).toBeUndefined();
 	});
 }
 
 test('SET GET', () => {
-	const schema = SET('key', 'value', {
-		GET: true,
-	});
+	const command = input('key', 'value', { GET: true });
 
-	expect(
-		schema.args,
-	).toStrictEqual(
+	expect(command.args).toStrictEqual(
 		[
 			'SET',
 			'key',
@@ -103,11 +79,5 @@ test('SET GET', () => {
 		],
 	);
 
-	expect(
-		schema.replyTransform(null),
-	).toBe(null);
-
-	expect(
-		schema.replyTransform('OK'),
-	).toBe('OK');
+	expect(command.replyTransform).toBeUndefined();
 });

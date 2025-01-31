@@ -1,20 +1,11 @@
-
-import {
-	RedisClientType,
-	RedisFunctions,
-	RedisModules,
-	RedisScripts,
-}                       from 'redis';
-import { RedisXClient } from './client';
+import { RedisXClient } from './client.js';
+import type { RedisClient } from './types.js';
 
 /**
  * Creates a new RedisX client.
  * @param redisClient Redis client.
  * @returns RedisX client.
  */
-export function createClient(redisClient: RedisClientType<RedisModules, RedisFunctions, RedisScripts>) {
+export function createClient(redisClient: RedisClient) {
 	return new RedisXClient(redisClient);
 }
-
-export { RedisXClient } from './client';
-export * from './commands';

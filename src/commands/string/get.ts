@@ -1,11 +1,4 @@
-
-import type { BaseSchema }     from '../../types';
-import { dummyReplyTransform } from '../../utils';
-
-export interface GetSchema extends BaseSchema {
-	args: [ 'GET', string ];
-	replyTransform: (value: string | null) => string | null;
-}
+import type { Command } from '../../types.js';
 
 /**
  * Get the value of key.
@@ -18,13 +11,15 @@ export interface GetSchema extends BaseSchema {
  * @param key Key to get.
  * @returns The value of key, or `null` when key does not exist.
  */
-export function GET(key: string): GetSchema {
+declare function _command(key: string): string | null;
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export function input(key: string): Command {
 	return {
 		kind: '#schema',
 		args: [
 			'GET',
 			key,
 		],
-		replyTransform: dummyReplyTransform,
 	};
 }

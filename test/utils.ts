@@ -1,4 +1,3 @@
-
 /**
  * Creates a random key for Redis.
  * @returns Random key.

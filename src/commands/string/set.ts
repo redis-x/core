@@ -1,45 +1,56 @@
+import type { Command } from '../../types.js';
 
-import type {
-	OneOrNoneFrom,
-	BaseSchema,
-}                              from '../../types';
-import { dummyReplyTransform } from '../../utils';
-import { SetOptionsJsdoc }     from './set.jsdoc';
-
-type SetOptionsCommon =
-	OneOrNoneFrom<{
-		NX: SetOptionsJsdoc['NX'],
-		XX: SetOptionsJsdoc['XX'],
-	}>
-	& OneOrNoneFrom<{
-		EX: SetOptionsJsdoc['EX'],
-		PX: SetOptionsJsdoc['PX'],
-		EXAT: SetOptionsJsdoc['EXAT'],
-		PXAT: SetOptionsJsdoc['PXAT'],
-		KEEPTTL: SetOptionsJsdoc['KEEPTTL'],
-	}>;
-// type SetOptionsModifierGet = {
-// 	GET: true,
-// };
-
-export type SetOptions =
-	& SetOptionsCommon
-	& Partial<Record<'GET', never>>
-	& SetOptionsJsdoc;
-
-export type SetOptionsWithGet =
-	& SetOptionsCommon
-	& { GET: SetOptionsJsdoc['GET'] }
-	& SetOptionsJsdoc;
-
-export interface SetSchema extends BaseSchema {
-	args: [ 'SET', string, string, ...string[] ];
-	replyTransform: (value: string | null) => 'OK' | null;
-}
-export interface SetWithGetSchema extends BaseSchema {
-	args: [ 'SET', string, string, ...string[] ];
-	replyTransform: (value: string | null) => string | null;
-}
+export type SetOptions = {
+	/**
+	 * Only set the key if it does not already exist.
+	 * - Incompatible with option `XX`.
+	 * - Incompatible with option `GET` before 7.0.0.
+	 * - Available since: 2.6.12.
+	 */
+	NX?: boolean,
+	/**
+	 * Only set the key if it already exist.
+	 * - Incompatible with option `NX`.
+	 * - Available since: 2.6.12.
+	 */
+	XX?: boolean,
+	/**
+	 * Set the specified expire time, in *seconds*.
+	 * - Incompatible with options `PX`, `EXAT`, `PXAT` and `KEEPTTL`.
+	 * - Available since: 2.6.12.
+	 */
+	EX?: number,
+	/**
+	 * Set the specified expire time, in *milliseconds*.
+	 * - Incompatible with options `EX`, `EXAT`, `PXAT` and `KEEPTTL`.
+	 * - Available since: 2.6.12.
+	 */
+	PX?: number,
+	/**
+	 * Set the specified expire time, in *seconds*.
+	 * - Incompatible with options `EX`, `PX`, `PXAT` and `KEEPTTL`.
+	 * - Available since: 6.2.0.
+	 */
+	EXAT?: number,
+	/**
+	 * Set the specified expire time, in *milliseconds*.
+	 * - Incompatible with options `EX`, `PX`, `EXAT` and `KEEPTTL`.
+	 * - Available since: 6.2.0.
+	 */
+	PXAT?: number,
+	/**
+	 * Retain the time to live associated with the key.
+	 * - Incompatible with options `EX`, `PX`, `EXAT` and `PXAT`.
+	 * - Available since: 6.0.0.
+	 */
+	KEEPTTL?: boolean,
+	/**
+	 * Get the value of the key before the SET operation.
+	 * - Incompatible with option `NX` before 7.0.0.
+	 * - Available since: 6.2.0.
+	 */
+	GET?: true,
+};
 
 /**
  * Set the string value of a key.
@@ -49,7 +60,7 @@ export interface SetWithGetSchema extends BaseSchema {
  * @param value Value to set.
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
-export function SET(key: string, value: string): SetSchema;
+declare function _command(key: string, value: string): 'OK' | null;
 
 /**
  * Set the string value of a key.
@@ -57,10 +68,10 @@ export function SET(key: string, value: string): SetSchema;
  * - Time complexity: O(1).
  * @param key Key to set.
  * @param value Value to set.
- * @param options Options. See SetOptionsJsdoc.
+ * @param options Comand options.
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
-export function SET(key: string, value: string, options: SetOptions): SetSchema;
+declare function _command(key: string, value: string, options: Omit<SetOptions, 'GET'>): 'OK' | null;
 
 /**
  * Set the string value of a key.
@@ -68,13 +79,13 @@ export function SET(key: string, value: string, options: SetOptions): SetSchema;
  * - Time complexity: O(1).
  * @param key Key to set.
  * @param value Value to set.
- * @param options Options. See SetOptionsJsdoc.
+ * @param options Comand options.
  * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
  */
-export function SET(key: string, value: string, options: SetOptionsWithGet): SetWithGetSchema;
+declare function _command(key: string, value: string, options: SetOptions): string | null;
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function SET(key: string, value: string, options?: SetOptions | SetOptionsWithGet): SetSchema | SetWithGetSchema {
+export function input(key: string, value: string, options?: SetOptions): Command {
 	const args_options: string[] = [];
 
 	if (options) {
@@ -131,6 +142,5 @@ export function SET(key: string, value: string, options?: SetOptions | SetOption
 			value,
 			...args_options,
 		],
-		replyTransform: dummyReplyTransform,
 	};
 }
