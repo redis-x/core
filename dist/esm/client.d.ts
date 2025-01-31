@@ -64,6 +64,6 @@ export declare class RedisXClient {
      * @param args Arguments passed to the script.
      * @returns Value returned by the script.
      */
-    EVAL(script: string, keys: (string | number)[], args: (string | number)[]): Promise<unknown>;
+    EVAL(script: string, keys: (string | number)[], args?: (string | number)[]): Promise<unknown>;
 }
 import { type SetOptions } from './commands/string/set.js';

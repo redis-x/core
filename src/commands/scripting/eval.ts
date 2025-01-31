@@ -12,16 +12,21 @@ import type { Command } from '../../types.js';
 export function input(
 	script: string,
 	keys: (string | number)[],
-	args: (string | number)[],
+	args?: (string | number)[],
 ): Command<unknown> {
+	const command_args: string[] = [
+		'EVAL',
+		script,
+		String(keys.length),
+		...keys.map(String),
+	];
+
+	if (args) {
+		command_args.push(...args.map(String));
+	}
+
 	return {
 		kind: '#schema',
-		args: [
-			'EVAL',
-			script,
-			String(keys.length),
-			...keys.map(String),
-			...args.map(String),
-		],
+		args: command_args,
 	};
 }

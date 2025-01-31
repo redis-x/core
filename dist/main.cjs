@@ -88,15 +88,18 @@ function input3(...keys) {
 
 // dist/esm/commands/scripting/eval.js
 function input4(script, keys, args) {
+  const command_args = [
+    "EVAL",
+    script,
+    String(keys.length),
+    ...keys.map(String)
+  ];
+  if (args) {
+    command_args.push(...args.map(String));
+  }
   return {
     kind: "#schema",
-    args: [
-      "EVAL",
-      script,
-      String(keys.length),
-      ...keys.map(String),
-      ...args.map(String)
-    ]
+    args: command_args
   };
 }
 

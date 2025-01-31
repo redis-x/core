@@ -8,14 +8,17 @@
  * @returns Value returned by the script.
  */
 export function input(script, keys, args) {
+    const command_args = [
+        'EVAL',
+        script,
+        String(keys.length),
+        ...keys.map(String),
+    ];
+    if (args) {
+        command_args.push(...args.map(String));
+    }
     return {
         kind: '#schema',
-        args: [
-            'EVAL',
-            script,
-            String(keys.length),
-            ...keys.map(String),
-            ...args.map(String),
-        ],
+        args: command_args,
     };
 }

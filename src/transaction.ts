@@ -206,7 +206,7 @@ export class RedisTransaction<
 	EVAL(
 		script: string,
 		keys: (string | number)[],
-		args: (string | number)[],
+		args?: (string | number)[],
 	): RedisTransaction<AddToList<L, unknown>, C, D> {
 		return this.useCommand(input_eval(script, keys, args));
 	}

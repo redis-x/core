@@ -82,7 +82,7 @@ export declare class RedisTransaction<L = [], C extends boolean = false, D = unk
      * @param args Arguments passed to the script.
      * @returns Value returned by the script.
      */
-    EVAL(script: string, keys: (string | number)[], args: (string | number)[]): RedisTransaction<AddToList<L, unknown>, C, D>;
+    EVAL(script: string, keys: (string | number)[], args?: (string | number)[]): RedisTransaction<AddToList<L, unknown>, C, D>;
 }
 import { type SetOptions } from './commands/string/set.js';
 export {};

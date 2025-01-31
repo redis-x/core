@@ -99,7 +99,7 @@ export class RedisTransactionUse {
 	EVAL(
 		script: string,
 		keys: (string | number)[],
-		args: (string | number)[],
+		args?: (string | number)[],
 	): RedisTransactionCommand<unknown> {
 		return this.useCommand(input_eval(script, keys, args));
 	}

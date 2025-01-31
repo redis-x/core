@@ -69,6 +69,6 @@ export declare class RedisTransactionUse {
      * @param args Arguments passed to the script.
      * @returns Value returned by the script.
      */
-    EVAL(script: string, keys: (string | number)[], args: (string | number)[]): RedisTransactionCommand<unknown>;
+    EVAL(script: string, keys: (string | number)[], args?: (string | number)[]): RedisTransactionCommand<unknown>;
 }
 import { type SetOptions } from '../commands/string/set.js';

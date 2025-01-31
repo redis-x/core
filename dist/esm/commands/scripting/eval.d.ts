@@ -8,4 +8,4 @@ import type { Command } from '../../types.js';
  * @param args Arguments passed to the script.
  * @returns Value returned by the script.
  */
-export declare function input(script: string, keys: (string | number)[], args: (string | number)[]): Command<unknown>;
+export declare function input(script: string, keys: (string | number)[], args?: (string | number)[]): Command<unknown>;
