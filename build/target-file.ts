@@ -4,7 +4,6 @@ import { type CommandFile } from './command-file.js';
 
 type TargetFileOptions = {
 	getReturnType: (return_type: string) => string,
-	getBody: (invocation: string) => string,
 }
 
 class TargetFile {
@@ -101,7 +100,7 @@ class TargetFile {
 		}
 
 		this.contents.methods += `\n\t${commandFile.command}${commandFile.implementation.arguments.raw} {\n`;
-		this.contents.methods += `\t\t${this.options.getBody(`${commandFile.import_input}(${commandFile.implementation.arguments.list})`)}\n`;
+		this.contents.methods += `\t\treturn this.useCommand(${commandFile.import_input}(${commandFile.implementation.arguments.list}));\n`;
 		this.contents.methods += `\t}\n\n`;
 
 		let import_path = node_path.relative(

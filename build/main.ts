@@ -7,21 +7,18 @@ const targetFiles = await Promise.all([
 		'src/client.ts',
 		{
 			getReturnType: (return_type: string) => `Promise<${return_type}>`,
-			getBody: (invocation: string) => `return this.useCommand(${invocation});`,
 		},
 	),
 	createTargetFile(
 		'src/transaction.ts',
 		{
 			getReturnType: (return_type: string) => `RedisTransaction<AddToList<L, ${return_type}>, C, D>`,
-			getBody: (invocation: string) => `return this.useCommand(${invocation});`,
 		},
 	),
 	createTargetFile(
 		'src/transaction/use.ts',
 		{
 			getReturnType: (return_type: string) => `RedisTransactionCommand<${return_type}>`,
-			getBody: (invocation: string) => `return this.useCommand(${invocation});`,
 		},
 	),
 ]);

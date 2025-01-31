@@ -1,6 +1,6 @@
 {
 	"name": "@redis-x/client",
-	"version": "0.3.0-beta.1",
+	"version": "0.3.0-beta.2",
 	"description": "Enhanced redis client built on top of \"redis\" package.",
 	"publishConfig": {
 		"access": "public"
@@ -18,7 +18,7 @@
 		"node": ">=14.8.0"
 	},
 	"peerDependencies": {
-		"redis": "^4.7.0"
+		"redis": "^4.6"
 	},
 	"devDependencies": {
 		"@kirick/eslint-config": "^0.1.30",
