@@ -99,6 +99,9 @@ class TargetFile {
 			this.contents.methods += `\t${commandFile.command}${overload.arguments.raw}: ${this.options.getReturnType(overload.return_type)};\n`;
 		}
 
+		if (commandFile.implementation.getJsDoc) {
+			this.contents.methods += `\t${commandFile.implementation.getJsDoc().replaceAll(/\n/g, '\n\t')}`;
+		}
 		this.contents.methods += `\n\t${commandFile.command}${commandFile.implementation.arguments.raw} {\n`;
 		this.contents.methods += `\t\treturn this.useCommand(${commandFile.import_input}(${commandFile.implementation.arguments.list}));\n`;
 		this.contents.methods += `\t}\n\n`;

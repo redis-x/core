@@ -12,4 +12,6 @@ test('GET', () => {
 	).toStrictEqual(
 		[ 'GET', 'key' ],
 	);
+
+	expect(command.replyTransform).toBeUndefined();
 });

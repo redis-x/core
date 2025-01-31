@@ -36,5 +36,6 @@ for await (const path of glob.scan('.')) {
 }
 
 for (const targetFile of targetFiles) {
+	// targetFile.print();
 	await targetFile.write();
 }

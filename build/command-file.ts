@@ -8,10 +8,29 @@ type CommandOverload = {
 	return_type: string,
 }
 type CommandImplementation = {
+	getJsDoc?: (returns_text?: string) => string,
 	arguments: {
 		raw: string,
 		list: string,
 	},
+}
+
+function processRawArguments(value: string) {
+	// if (value.includes('\n')) {
+	// 	console.log('value', value);
+	// }
+
+	// value = value.replaceAll(/^\(\n\s*/g, '(')
+	// 	.replaceAll(/,\n\s*/g, ', ')
+	// 	.replaceAll(/,\n\s*\)$/g, '');
+
+	// if (value.endsWith(',')) {
+	// 	value = value.slice(0, -1);
+	// }
+
+	value = value.replaceAll(/\n/g, '\n\t');
+
+	return value;
 }
 
 export class CommandFile {
@@ -85,7 +104,7 @@ export class CommandFile {
 				this.overloads.push({
 					getJsDoc,
 					arguments: {
-						raw: arguments_raw,
+						raw: processRawArguments(arguments_raw),
 					},
 					return_type,
 				});
@@ -96,11 +115,16 @@ export class CommandFile {
 				&& node.declaration.id?.type === 'Identifier'
 				&& node.declaration.id.name === 'input'
 			) {
+				const getJsDoc = comments.get(node.start);
+
 				this.implementation = {
+					getJsDoc,
 					arguments: {
-						raw: contents.slice(
-							node.declaration.params.start,
-							node.declaration.params.end,
+						raw: processRawArguments(
+							contents.slice(
+								node.declaration.params.start,
+								node.declaration.params.end,
+							),
 						),
 						list: node.declaration.params.items.map((item) => {
 							if (
@@ -134,8 +158,11 @@ export class CommandFile {
 			// }
 		}
 
-		if (this.overloads.length === 0) {
-			throw new Error(`No overloads found in ${path}.`);
+		if (
+			this.overloads.length === 0
+			&& this.implementation.getJsDoc === undefined
+		) {
+			throw new Error(`No overloads found in ${path} and no JsDoc for implementation found.`);
 		}
 
 		imports.push(`\tinput as ${this.import_input},`);

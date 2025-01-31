@@ -20,7 +20,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // dist/esm/main.js
 var main_exports = {};
 __export(main_exports, {
-  createClient: () => createClient
+  RedisXClient: () => RedisXClient
 });
 module.exports = __toCommonJS(main_exports);
 
@@ -75,6 +75,31 @@ function input2(key, value, options) {
   };
 }
 
+// dist/esm/commands/generic/del.js
+function input3(...keys) {
+  return {
+    kind: "#schema",
+    args: [
+      "DEL",
+      ...keys
+    ]
+  };
+}
+
+// dist/esm/commands/scripting/eval.js
+function input4(script, keys, args) {
+  return {
+    kind: "#schema",
+    args: [
+      "EVAL",
+      script,
+      String(keys.length),
+      ...keys.map(String),
+      ...args.map(String)
+    ]
+  };
+}
+
 // dist/esm/client.js
 var RedisXClient = class {
   redisClient;
@@ -95,19 +120,50 @@ var RedisXClient = class {
     }
     return result;
   }
+  // MARK: commands
+  /**
+   * Get the value of key.
+   *
+   * If the key does not exist `null` is returned.
+   *
+   * An error is returned if the value stored at key is not a string, because GET only handles string values.
+   * - Available since: 1.0.0.
+   * - Time complexity: O(1).
+   * @param key Key to get.
+   * @returns The value of key, or `null` when key does not exist.
+   */
   GET(key) {
     return this.useCommand(input(key));
   }
   SET(key, value, options) {
     return this.useCommand(input2(key, value, options));
   }
+  /**
+   * Removes the specified keys.
+   *
+   * A key is ignored if it does not exist.
+   * - Available since: 1.0.0.
+   * - Time complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash.
+   * @param keys Keys to delete.
+   * @returns The number of keys that were removed.
+   */
+  DEL(...keys) {
+    return this.useCommand(input3(...keys));
+  }
+  /**
+   * Invoke the execution of a server-side Lua script.
+   * - Available since: 2.6.0.
+   * - Time complexity: Depends on the script that is executed.
+   * @param script Script's source code.
+   * @param keys Keys accessed by the script.
+   * @param args Arguments passed to the script.
+   * @returns Value returned by the script.
+   */
+  EVAL(script, keys, args) {
+    return this.useCommand(input4(script, keys, args));
+  }
 };
-
-// dist/esm/main.js
-function createClient(redisClient) {
-  return new RedisXClient(redisClient);
-}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  createClient
+  RedisXClient
 });

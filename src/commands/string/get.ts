@@ -11,9 +11,6 @@ import type { Command } from '../../types.js';
  * @param key Key to get.
  * @returns The value of key, or `null` when key does not exist.
  */
-declare function _command(key: string): string | null;
-
-// eslint-disable-next-line jsdoc/require-jsdoc
 export function input(key: string): Command {
 	return {
 		kind: '#schema',

@@ -7,11 +7,11 @@ import {
 
 export type RedisClient = RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
 
-export type Command = {
+export type Command<T = unknown> = {
 	kind: '#schema',
 	args: string[],
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	replyTransform?: (result: any) => unknown,
+	replyTransform?: (result: any) => T,
 };
 
 // /**

@@ -15,7 +15,7 @@ export declare class RedisXClient {
      * @param key Key to get.
      * @returns The value of key, or `null` when key does not exist.
      */
-    GET(key: string): Promise<string | null>;
+    GET(key: string): Promise<unknown>;
     /**
      * Set the string value of a key.
      * - Available since: 1.0.0.
@@ -45,5 +45,25 @@ export declare class RedisXClient {
      * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
      */
     SET(key: string, value: string | number, options: SetOptions): Promise<string | null>;
+    /**
+     * Removes the specified keys.
+     *
+     * A key is ignored if it does not exist.
+     * - Available since: 1.0.0.
+     * - Time complexity: O(N) where N is the number of keys that will be removed. When a key to remove holds a value other than a string, the individual complexity for this key is O(M) where M is the number of elements in the list, set, sorted set or hash.
+     * @param keys Keys to delete.
+     * @returns The number of keys that were removed.
+     */
+    DEL(...keys: string[]): Promise<unknown>;
+    /**
+     * Invoke the execution of a server-side Lua script.
+     * - Available since: 2.6.0.
+     * - Time complexity: Depends on the script that is executed.
+     * @param script Script's source code.
+     * @param keys Keys accessed by the script.
+     * @param args Arguments passed to the script.
+     * @returns Value returned by the script.
+     */
+    EVAL(script: string, keys: (string | number)[], args: (string | number)[]): Promise<unknown>;
 }
 import { type SetOptions } from './commands/string/set.js';

@@ -1,7 +1,7 @@
 import { RedisClientType, RedisFunctions, RedisModules, RedisScripts } from 'redis';
 export type RedisClient = RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
-export type Command = {
+export type Command<T = unknown> = {
     kind: '#schema';
     args: string[];
-    replyTransform?: (result: any) => unknown;
+    replyTransform?: (result: any) => T;
 };
