@@ -35,13 +35,15 @@ test('just commands', async () => {
 describe('as', () => {
 	test('basic', async () => {
 		const result = await new RedisTransaction(redisClient)
+			.addCommand('GET', `${PREFIX}:1`)
 			.GET(`${PREFIX}:2`)
 			.as('foo')
 			.SET('bar', 1)
 			.exec();
 
-		expect(result[0]).toBe('2');
-		expect(result[1]).toBe('OK');
+		expect(result[0]).toBe('1');
+		expect(result[1]).toBe('2');
+		expect(result[2]).toBe('OK');
 		expect(result.foo).toBe('2');
 	});
 
