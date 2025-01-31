@@ -1,30 +1,26 @@
-import type {
-	Command,
-	RedisClient,
-} from './types.js';
+import { type RedisTransaction } from '../transaction.js';
+import { Command } from '../types.js';
+import { RedisTransactionCommand } from './command.js';
 
-export class RedisXClient {
-	// eslint-disable-next-line no-useless-constructor, no-empty-function
-	constructor(private redisClient: RedisClient) {}
+export class RedisTransactionUse {
+	queue: {
+		command: Command,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		redis_transaction_command: RedisTransactionCommand<any>,
+	}[] = [];
 
-	async sendCommand<T extends string>(
-		command: T,
-		...args: (string | number)[]
-	): Promise<unknown> {
-		return await this.redisClient.sendCommand([
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-empty-function, no-useless-constructor
+	constructor(private transaction: RedisTransaction<any, any, any>) {}
+
+	private useCommand(command: Command) {
+		const redis_transaction_command = new RedisTransactionCommand(-1);
+
+		this.queue.push({
 			command,
-			...args.map(String),
-		]);
-	}
+			redis_transaction_command,
+		});
 
-	private async useCommand(command: Command) {
-		const result = await this.redisClient.sendCommand(command.args);
-
-		if (command.replyTransform) {
-			return command.replyTransform(result);
-		}
-
-		return result;
+		return redis_transaction_command;
 	}
 
 	// MARK: commands
@@ -39,7 +35,7 @@ export class RedisXClient {
 	 * @param key Key to get.
 	 * @returns The value of key, or `null` when key does not exist.
 	 */
-	GET(key: string): Promise<string | null>;
+	GET(key: string): RedisTransactionCommand<string | null>;
 
 	GET(key: string) {
 		return this.useCommand(input_get(key));
@@ -53,7 +49,7 @@ export class RedisXClient {
 	 * @param value Value to set.
 	 * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
 	 */
-	SET(key: string, value: string | number): Promise<'OK' | null>;
+	SET(key: string, value: string | number): RedisTransactionCommand<'OK' | null>;
 	/**
 	 * Set the string value of a key.
 	 * - Available since: 1.0.0.
@@ -63,7 +59,7 @@ export class RedisXClient {
 	 * @param options Comand options.
 	 * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
 	 */
-	SET(key: string, value: string | number, options: Omit<SetOptions, 'GET'>): Promise<'OK' | null>;
+	SET(key: string, value: string | number, options: Omit<SetOptions, 'GET'>): RedisTransactionCommand<'OK' | null>;
 	/**
 	 * Set the string value of a key.
 	 * - Available since: 1.0.0.
@@ -73,7 +69,7 @@ export class RedisXClient {
 	 * @param options Comand options.
 	 * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
 	 */
-	SET(key: string, value: string | number, options: SetOptions): Promise<string | null>;
+	SET(key: string, value: string | number, options: SetOptions): RedisTransactionCommand<string | null>;
 
 	SET(key: string, value: string | number, options?: SetOptions) {
 		return this.useCommand(input_set(key, value, options));
@@ -85,9 +81,9 @@ export class RedisXClient {
 // MARK: imports
 import {
 	input as input_get,
-} from './commands/string/get.js';
+} from '../commands/string/get.js';
 import {
 	type SetOptions,
 	input as input_set,
-} from './commands/string/set.js';
+} from '../commands/string/set.js';
 // MARK: end imports

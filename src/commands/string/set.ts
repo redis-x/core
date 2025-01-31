@@ -60,7 +60,7 @@ export type SetOptions = {
  * @param value Value to set.
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
-declare function _command(key: string, value: string): 'OK' | null;
+declare function _command(key: string, value: string | number): 'OK' | null;
 
 /**
  * Set the string value of a key.
@@ -71,7 +71,7 @@ declare function _command(key: string, value: string): 'OK' | null;
  * @param options Comand options.
  * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
  */
-declare function _command(key: string, value: string, options: Omit<SetOptions, 'GET'>): 'OK' | null;
+declare function _command(key: string, value: string | number, options: Omit<SetOptions, 'GET'>): 'OK' | null;
 
 /**
  * Set the string value of a key.
@@ -82,10 +82,10 @@ declare function _command(key: string, value: string, options: Omit<SetOptions, 
  * @param options Comand options.
  * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
  */
-declare function _command(key: string, value: string, options: SetOptions): string | null;
+declare function _command(key: string, value: string | number, options: SetOptions): string | null;
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function input(key: string, value: string, options?: SetOptions): Command {
+export function input(key: string, value: string | number, options?: SetOptions): Command {
 	const args_options: string[] = [];
 
 	if (options) {
@@ -139,7 +139,7 @@ export function input(key: string, value: string, options?: SetOptions): Command
 		args: [
 			'SET',
 			key,
-			value,
+			String(value),
 			...args_options,
 		],
 	};

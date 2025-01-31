@@ -1,5 +1,4 @@
 import { parseSync } from 'oxc-parser';
-import node_path from 'node:path';
 
 type CommandOverload = {
 	getJsDoc: (returns_text?: string) => string,
@@ -18,7 +17,6 @@ type CommandImplementation = {
 export class CommandFile {
 	command: string;
 	import_input: string;
-	import_path: string;
 	imports: string = '';
 	overloads: CommandOverload[] = [];
 	implementation: CommandImplementation = {
@@ -29,12 +27,11 @@ export class CommandFile {
 	};
 
 	constructor(
-		private path: string,
+		public path: string,
 		contents: string,
 	) {
 		this.command = path.split('/').pop()!.split('.')[0].toUpperCase();
 		this.import_input = `input_${this.command.toLowerCase()}`;
-		this.import_path = path.replace(/^(?:\.\/)?src\//, './').replace(/\.ts$/, '.js');
 
 		const oxc = parseSync(path, contents);
 		const imports: string[] = [];

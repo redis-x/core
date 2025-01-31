@@ -1,8 +1,8 @@
+import node_path from 'node:path';
 import { parseSync } from 'oxc-parser';
 import { type CommandFile } from './command-file.js';
 
 type TargetFileOptions = {
-	async: boolean,
 	getReturnType: (return_type: string) => string,
 	getBody: (invocation: string) => string,
 }
@@ -97,14 +97,21 @@ class TargetFile {
 	addCommand(commandFile: CommandFile) {
 		for (const overload of commandFile.overloads) {
 			this.contents.methods += `\t${overload.getJsDoc().replaceAll(/\n/g, '\n\t')}\n`;
-			this.contents.methods += `\t${this.options.async ? 'async ' : ''}${commandFile.command}${overload.arguments.raw}: ${this.options.getReturnType(overload.return_type)};\n`;
+			this.contents.methods += `\t${commandFile.command}${overload.arguments.raw}: ${this.options.getReturnType(overload.return_type)};\n`;
 		}
 
-		this.contents.methods += `\n\t${this.options.async ? 'async ' : ''}${commandFile.command}${commandFile.implementation.arguments.raw} {\n`;
+		this.contents.methods += `\n\t${commandFile.command}${commandFile.implementation.arguments.raw} {\n`;
 		this.contents.methods += `\t\t${this.options.getBody(`${commandFile.import_input}(${commandFile.implementation.arguments.list})`)}\n`;
 		this.contents.methods += `\t}\n\n`;
 
-		this.contents.imports += `import ${commandFile.imports} from '${commandFile.import_path}';\n`;
+		let import_path = node_path.relative(
+			node_path.dirname(this.path),
+			commandFile.path,
+		).replace(/\.ts$/, '.js');
+		if (import_path.startsWith('.') !== true) {
+			import_path = `./${import_path}`;
+		}
+		this.contents.imports += `import ${commandFile.imports} from '${import_path}';\n`;
 	}
 
 	print() {
