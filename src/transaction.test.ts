@@ -30,7 +30,7 @@ test('just commands', async () => {
 		.GET(`${PREFIX}:3`)
 		// testing command with transformer
 		.HGETALL(key)
-		.exec();
+		.execute();
 
 	expect(result).toStrictEqual([
 		2,
@@ -49,7 +49,7 @@ describe('as', () => {
 			.GET(`${PREFIX}:2`)
 			.as('foo')
 			.SET('bar', 1)
-			.exec();
+			.execute();
 
 		expect(result[0]).toBe('1');
 		expect(result[1]).toBe('2');
@@ -63,7 +63,7 @@ describe('as', () => {
 			.as('foo')
 			.SET('bar', 1)
 			.as('foo')
-			.exec();
+			.execute();
 
 		expect(result[0]).toBe('2');
 		expect(result[1]).toBe('OK');
@@ -81,7 +81,7 @@ describe('use', () => {
 					bar: transaction.SET('foo', 1),
 				};
 			})
-			.exec();
+			.execute();
 
 		expect(result[0]).toBeUndefined();
 		expect(result.foo).toBe(1);
@@ -94,7 +94,7 @@ describe('use', () => {
 			.use((transaction) => {
 				transaction.SET('foo', 1);
 			})
-			.exec();
+			.execute();
 
 		expect(result).toStrictEqual({});
 	});
@@ -121,7 +121,7 @@ describe('use', () => {
 						baz: transaction.GET(`${PREFIX}:4`),
 					};
 				})
-				.exec();
+				.execute();
 
 			expect(result[0]).toBeUndefined();
 			expect(result.foo).toBe(1);
@@ -139,7 +139,7 @@ describe('use', () => {
 					bar: transaction.SET('foo', 1),
 				};
 			})
-			.exec();
+			.execute();
 
 		expect(result[0]).toBeUndefined();
 		expect(result.foo).toBe('2');

@@ -119,7 +119,7 @@ export class RedisXTransaction<
 		>;
 	}
 
-	async exec() {
+	async execute() {
 		type RL = C extends true ? unknown : (L extends [] ? unknown : L);
 		type R = unknown extends D
 			? unknown extends RL
