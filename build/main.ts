@@ -12,13 +12,13 @@ const targetFiles = await Promise.all([
 	createTargetFile(
 		'src/transaction.ts',
 		{
-			getReturnType: (return_type: string) => `RedisTransaction<AddToList<L, ${return_type}>, C, D>`,
+			getReturnType: (return_type: string) => `RedisXTransaction<AddToList<L, ${return_type}>, C, D>`,
 		},
 	),
 	createTargetFile(
 		'src/transaction/use.ts',
 		{
-			getReturnType: (return_type: string) => `RedisTransactionCommand<${return_type}>`,
+			getReturnType: (return_type: string) => `RedisXTransactionCommand<${return_type}>`,
 		},
 	),
 ]);
@@ -35,7 +35,19 @@ for await (const path of glob.scan('.')) {
 	}
 }
 
-for (const targetFile of targetFiles) {
-	// targetFile.print();
-	await targetFile.write();
+if (process.argv.includes('--dry-run')) {
+	for (const [ index, targetFile ] of targetFiles.entries()) {
+		if (index > 0) {
+			console.log();
+			console.log('------------------------------------------');
+			console.log();
+		}
+
+		targetFile.print();
+	}
+}
+else {
+	for (const targetFile of targetFiles) {
+		await targetFile.write();
+	}
 }

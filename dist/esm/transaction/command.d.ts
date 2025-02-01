@@ -1,10 +1,10 @@
-export declare class RedisTransactionCommand<T> {
+export declare class RedisXTransactionCommand<T> {
     index: number;
     private _type;
     constructor(index: number);
 }
-export type UnwrapRedisTransactionCommand<T> = T extends RedisTransactionCommand<infer A> ? A : T extends (infer U)[] ? UnwrapRedisTransactionCommand<U>[] : T extends Record<string, any> ? {
-    [K in keyof T]: UnwrapRedisTransactionCommand<T[K]>;
+export type UnwrapRedisXTransactionCommand<T> = T extends RedisXTransactionCommand<infer A> ? A : T extends (infer U)[] ? UnwrapRedisXTransactionCommand<U>[] : T extends Record<string, any> ? {
+    [K in keyof T]: UnwrapRedisXTransactionCommand<T[K]>;
 } : T;
 /**
  * Recursively walks through the object and unwraps all RedisTransactionCommand instances.
@@ -12,4 +12,4 @@ export type UnwrapRedisTransactionCommand<T> = T extends RedisTransactionCommand
  * @param result Result of the transaction.
  * @returns The unwrapped value.
  */
-export declare function unwrapRedisTransactionCommand<T>(target: T, result: unknown[]): UnwrapRedisTransactionCommand<T>;
+export declare function unwrapRedisTransactionCommand<T>(target: T, result: unknown[]): UnwrapRedisXTransactionCommand<T>;

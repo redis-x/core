@@ -126,12 +126,13 @@ export class CommandFile {
 					&& node.declaration.returnType.typeAnnotation.typeName.name === 'Command'
 					&& node.declaration.returnType.typeAnnotation.typeParameters
 				) {
-					const { start, end } = node.declaration.returnType.typeAnnotation.typeParameters;
-
-					return_type = contents.slice(
-						start + 1,
-						end - 1,
-					);
+					const { params } = node.declaration.returnType.typeAnnotation.typeParameters;
+					if (params[0]) {
+						return_type = contents.slice(
+							params[0].start,
+							params[0].end,
+						);
+					}
 				}
 
 				this.implementation = {

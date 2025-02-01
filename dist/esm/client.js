@@ -1,3 +1,4 @@
+import { RedisXTransaction } from './transaction.js';
 export class RedisXClient {
     redisClient;
     // eslint-disable-next-line no-useless-constructor, no-empty-function
@@ -18,6 +19,9 @@ export class RedisXClient {
         }
         return result;
     }
+    createTransaction() {
+        return new RedisXTransaction(this.redisClient);
+    }
     // MARK: commands
     /**
      * Get the value of key.
@@ -37,6 +41,30 @@ export class RedisXClient {
         return this.useCommand(input_set(key, value, options));
     }
     /**
+     * Set a timeout on key.
+     *
+     * After the timeout has expired, the key will automatically be deleted.
+     * - Available since: 1.0.0.
+     * - Time complexity: O(1).
+     * @param key Key to get.
+     * @param seconds Time to live in seconds.
+     * @param options Command options.
+     * @returns Returns `1` if the timeout was set. Returns `0` if the timeout was not set; for example, the key doesn't exist, or the operation was skipped because of the provided arguments.
+     */
+    EXPIRE(key, seconds, options) {
+        return this.useCommand(input_expire(key, seconds, options));
+    }
+    /**
+     * Returns all keys matching pattern.
+     * - Available since: 1.0.0.
+     * - Time complexity: O(N) with N being the number of keys in the database.
+     * @param pattern Pattern to match.
+     * @returns A set of keys matching pattern.
+     */
+    KEYS(pattern) {
+        return this.useCommand(input_keys(pattern));
+    }
+    /**
      * Removes the specified keys.
      *
      * A key is ignored if it does not exist.
@@ -47,6 +75,33 @@ export class RedisXClient {
      */
     DEL(...keys) {
         return this.useCommand(input_del(...keys));
+    }
+    /**
+     * Insert all the specified elements at the head of the list stored at key.
+     *
+     * If key does not exist, it is created as empty list before performing the push operations.
+     * - Available since: 1.0.0.
+     * - Multiple field/value pairs are available since Redis 2.4.0.
+     * - Time complexity: O(1) for each element added.
+     * @param key -
+     * @param elements -
+     * @returns The length of the list after the push operation.
+     */
+    LPUSH(key, ...elements) {
+        return this.useCommand(input_lpush(key, ...elements));
+    }
+    HSET(key, arg1, arg2) {
+        return this.useCommand(input_hset(key, arg1, arg2));
+    }
+    /**
+     * Returns all fields and values of the hash stored at key.
+     * - Available since: 2.0.0.
+     * - Time complexity: O(N) where N is the size of the hash.
+     * @param key -
+     * @returns Value of the key.
+     */
+    HGETALL(key) {
+        return this.useCommand(input_hgetall(key));
     }
     /**
      * Invoke the execution of a server-side Lua script.
@@ -64,6 +119,11 @@ export class RedisXClient {
 // MARK: imports
 import { input as input_get, } from './commands/string/get.js';
 import { input as input_set, } from './commands/string/set.js';
+import { input as input_expire, } from './commands/generic/expire.js';
+import { input as input_keys, } from './commands/generic/keys.js';
 import { input as input_del, } from './commands/generic/del.js';
+import { input as input_lpush, } from './commands/list/lpush.js';
+import { input as input_hset, } from './commands/hash/hset.js';
+import { input as input_hgetall, } from './commands/hash/hgetall.js';
 import { input as input_eval, } from './commands/scripting/eval.js';
 // MARK: end imports

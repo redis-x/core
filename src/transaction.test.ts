@@ -6,7 +6,7 @@ import {
 } from 'vitest';
 import { redisClient } from '../test/client.js';
 import { createRandomKey } from '../test/utils.js';
-import { RedisTransaction } from './transaction.js';
+import { RedisXTransaction } from './transaction.js';
 
 const PREFIX = createRandomKey();
 
@@ -21,20 +21,30 @@ beforeAll(async () => {
 });
 
 test('just commands', async () => {
-	const result = await new RedisTransaction(redisClient)
-		.GET(`${PREFIX}:2`)
-		.SET('bar', 1)
+	const key = createRandomKey();
+
+	const result = await new RedisXTransaction(redisClient)
+		// testing unknown commands
+		.addCommand('HSET', key, 'foo', '1', 'baz', '2')
+		// tedting command with no transformer
+		.GET(`${PREFIX}:3`)
+		// testing command with transformer
+		.HGETALL(key)
 		.exec();
 
-	expect(result).toEqual([
-		'2',
-		'OK',
+	expect(result).toStrictEqual([
+		2,
+		'3',
+		{
+			foo: '1',
+			baz: '2',
+		},
 	]);
 });
 
 describe('as', () => {
 	test('basic', async () => {
-		const result = await new RedisTransaction(redisClient)
+		const result = await new RedisXTransaction(redisClient)
 			.addCommand('GET', `${PREFIX}:1`)
 			.GET(`${PREFIX}:2`)
 			.as('foo')
@@ -48,7 +58,7 @@ describe('as', () => {
 	});
 
 	test('reusing name', async () => {
-		const result = await new RedisTransaction(redisClient)
+		const result = await new RedisXTransaction(redisClient)
 			.GET(`${PREFIX}:2`)
 			.as('foo')
 			.SET('bar', 1)
@@ -63,7 +73,7 @@ describe('as', () => {
 
 describe('use', () => {
 	test('basic', async () => {
-		const result = await new RedisTransaction(redisClient)
+		const result = await new RedisXTransaction(redisClient)
 			.GET(`${PREFIX}:2`)
 			.use((transaction) => {
 				return {
@@ -81,7 +91,7 @@ describe('use', () => {
 	test('multiple with if', async () => {
 		for (const ref of [ true, false ]) {
 			// eslint-disable-next-line no-await-in-loop
-			const result = await new RedisTransaction(redisClient)
+			const result = await new RedisXTransaction(redisClient)
 				.GET(`${PREFIX}:2`)
 				.use((transaction) => {
 					return {
@@ -110,7 +120,7 @@ describe('use', () => {
 	});
 
 	test('with as', async () => {
-		const result = await new RedisTransaction(redisClient)
+		const result = await new RedisXTransaction(redisClient)
 			.GET(`${PREFIX}:2`)
 			.as('foo')
 			.use((transaction) => {

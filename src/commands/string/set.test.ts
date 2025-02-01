@@ -10,22 +10,14 @@ import { input } from './set.js';
 test('SET', () => {
 	const command = input('key', 'value');
 
-	expect(
-		command.args,
-	).toStrictEqual(
+	expect(command.args).toStrictEqual(
 		[ 'SET', 'key', 'value' ],
 	);
 
 	expect(command.replyTransform).toBeUndefined();
 });
 
-for (
-	const option of [
-		'NX',
-		'XX',
-		'KEEPTTL',
-	]
-) {
+for (const option of [ 'NX', 'XX', 'KEEPTTL' ]) {
 	describe(`SET ${option}`, () => {
 		for (const value of [ true, false ]) {
 			test(String(value), () => {
@@ -70,14 +62,12 @@ for (const option of [ 'EX', 'PX', 'EXAT', 'PXAT' ]) {
 test('SET GET', () => {
 	const command = input('key', 'value', { GET: true });
 
-	expect(command.args).toStrictEqual(
-		[
-			'SET',
-			'key',
-			'value',
-			'GET',
-		],
-	);
+	expect(command.args).toStrictEqual([
+		'SET',
+		'key',
+		'value',
+		'GET',
+	]);
 
 	expect(command.replyTransform).toBeUndefined();
 });

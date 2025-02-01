@@ -1,20 +1,20 @@
-import { type RedisTransaction } from '../transaction.js';
+import { type RedisXTransaction } from '../transaction.js';
 import { Command } from '../types.js';
-import { RedisTransactionCommand } from './command.js';
+import { RedisXTransactionCommand } from './command.js';
 
-export class RedisTransactionUse {
+export class RedisXTransactionUse {
 	queue: {
 		command: Command,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		redis_transaction_command: RedisTransactionCommand<any>,
+		redis_transaction_command: RedisXTransactionCommand<any>,
 	}[] = [];
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-empty-function, no-useless-constructor
-	constructor(private transaction: RedisTransaction<any, any, any>) {}
+	constructor(private transaction: RedisXTransaction<any, any, any>) {}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private useCommand(command: Command): RedisTransactionCommand<any> {
-		const redis_transaction_command = new RedisTransactionCommand(-1);
+	private useCommand(command: Command): RedisXTransactionCommand<any> {
+		const redis_transaction_command = new RedisXTransactionCommand(-1);
 
 		this.queue.push({
 			command,
@@ -36,7 +36,7 @@ export class RedisTransactionUse {
 	 * @param key Key to get.
 	 * @returns The value of key, or `null` when key does not exist.
 	 */
-	GET(key: string): RedisTransactionCommand<string | null> {
+	GET(key: string): RedisXTransactionCommand<string | null> {
 		return this.useCommand(input_get(key));
 	}
 
@@ -48,7 +48,7 @@ export class RedisTransactionUse {
 	 * @param value Value to set.
 	 * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
 	 */
-	SET(key: string, value: string | number): RedisTransactionCommand<'OK' | null>;
+	SET(key: string, value: string | number): RedisXTransactionCommand<'OK' | null>;
 	/**
 	 * Set the string value of a key.
 	 * - Available since: 1.0.0.
@@ -58,7 +58,7 @@ export class RedisTransactionUse {
 	 * @param options Comand options.
 	 * @returns Returns string `"OK"` if the key was set, or `null` if operation was aborted (conflict with one of the XX/NX options).
 	 */
-	SET(key: string, value: string | number, options: Omit<SetOptions, 'GET'>): RedisTransactionCommand<'OK' | null>;
+	SET(key: string, value: string | number, options: Omit<SetOptions, 'GET'>): RedisXTransactionCommand<'OK' | null>;
 	/**
 	 * Set the string value of a key.
 	 * - Available since: 1.0.0.
@@ -68,10 +68,36 @@ export class RedisTransactionUse {
 	 * @param options Comand options.
 	 * @returns Returns string with the previous value of the key, or `null` if the key didn't exist before the SET.
 	 */
-	SET(key: string, value: string | number, options: SetOptions): RedisTransactionCommand<string | null>;
+	SET(key: string, value: string | number, options: SetOptions): RedisXTransactionCommand<string | null>;
 
 	SET(key: string, value: string | number, options?: SetOptions) {
 		return this.useCommand(input_set(key, value, options));
+	}
+
+	/**
+	 * Set a timeout on key.
+	 *
+	 * After the timeout has expired, the key will automatically be deleted.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(1).
+	 * @param key Key to get.
+	 * @param seconds Time to live in seconds.
+	 * @param options Command options.
+	 * @returns Returns `1` if the timeout was set. Returns `0` if the timeout was not set; for example, the key doesn't exist, or the operation was skipped because of the provided arguments.
+	 */
+	EXPIRE(key: string, seconds: number, options?: ExpireOptions): RedisXTransactionCommand<0 | 1> {
+		return this.useCommand(input_expire(key, seconds, options));
+	}
+
+	/**
+	 * Returns all keys matching pattern.
+	 * - Available since: 1.0.0.
+	 * - Time complexity: O(N) with N being the number of keys in the database.
+	 * @param pattern Pattern to match.
+	 * @returns A set of keys matching pattern.
+	 */
+	KEYS(pattern: string): RedisXTransactionCommand<Set<string>> {
+		return this.useCommand(input_keys(pattern));
 	}
 
 	/**
@@ -83,8 +109,82 @@ export class RedisTransactionUse {
 	 * @param keys Keys to delete.
 	 * @returns The number of keys that were removed.
 	 */
-	DEL(...keys: string[]): RedisTransactionCommand<number> {
+	DEL(...keys: string[]): RedisXTransactionCommand<number> {
 		return this.useCommand(input_del(...keys));
+	}
+
+	/**
+	 * Insert all the specified elements at the head of the list stored at key.
+	 *
+	 * If key does not exist, it is created as empty list before performing the push operations.
+	 * - Available since: 1.0.0.
+	 * - Multiple field/value pairs are available since Redis 2.4.0.
+	 * - Time complexity: O(1) for each element added.
+	 * @param key -
+	 * @param elements -
+	 * @returns The length of the list after the push operation.
+	 */
+	LPUSH(
+		key: string,
+		...elements: (string | number)[]
+	): RedisXTransactionCommand<number> {
+		return this.useCommand(input_lpush(key, ...elements));
+	}
+
+	/**
+	 * Sets the specified fields to their respective values in the hash stored at key.
+	 * - Available since: 2.0.0.
+	 * - Multiple field/value pairs are available since Redis 4.0.0.
+	 * - Time complexity: O(1) for each field/value pair added.
+	 * @param key Key that contains the hash.
+	 * @param field Field to set.
+	 * @param value Value to set.
+	 * @returns The number of fields that were added.
+	 */
+	HSET(
+		key: string,
+		field: string,
+		value: string | number,
+	): RedisXTransactionCommand<number>;
+	/**
+	 * Sets the specified fields to their respective values in the hash stored at key.
+	 * - Available since: 2.0.0.
+	 * - Multiple field/value pairs are available since Redis 4.0.0.
+	 * - Time complexity: O(1) for each field/value pair added.
+	 * @param key Key that contains the hash.
+	 * @param pairs Object containing field/value pairs to set.
+	 * @returns The number of fields that were added.
+	 */
+	HSET(
+		key: string,
+		pairs: Record<
+			string,
+			string | number
+		>
+	): RedisXTransactionCommand<number>;
+
+	HSET(
+		key: string,
+		arg1:
+			| string
+			| Record<
+				string,
+				string | number
+			>,
+		arg2?: string | number,
+	) {
+		return this.useCommand(input_hset(key, arg1, arg2));
+	}
+
+	/**
+	 * Returns all fields and values of the hash stored at key.
+	 * - Available since: 2.0.0.
+	 * - Time complexity: O(N) where N is the size of the hash.
+	 * @param key -
+	 * @returns Value of the key.
+	 */
+	HGETALL(key: string): RedisXTransactionCommand<Record<string, string>> {
+		return this.useCommand(input_hgetall(key));
 	}
 
 	/**
@@ -100,7 +200,7 @@ export class RedisTransactionUse {
 		script: string,
 		keys: (string | number)[],
 		args?: (string | number)[],
-	): RedisTransactionCommand<unknown> {
+	): RedisXTransactionCommand<unknown> {
 		return this.useCommand(input_eval(script, keys, args));
 	}
 
@@ -116,8 +216,24 @@ import {
 	input as input_set,
 } from '../commands/string/set.js';
 import {
+	type ExpireOptions,
+	input as input_expire,
+} from '../commands/generic/expire.js';
+import {
+	input as input_keys,
+} from '../commands/generic/keys.js';
+import {
 	input as input_del,
 } from '../commands/generic/del.js';
+import {
+	input as input_lpush,
+} from '../commands/list/lpush.js';
+import {
+	input as input_hset,
+} from '../commands/hash/hset.js';
+import {
+	input as input_hgetall,
+} from '../commands/hash/hgetall.js';
 import {
 	input as input_eval,
 } from '../commands/scripting/eval.js';

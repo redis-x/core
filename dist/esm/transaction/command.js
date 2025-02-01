@@ -1,5 +1,5 @@
 import { isPlainObject } from '../utils.js';
-export class RedisTransactionCommand {
+export class RedisXTransactionCommand {
     index;
     _type; // Dummy private property
     // eslint-disable-next-line no-useless-constructor, no-empty-function
@@ -14,7 +14,7 @@ export class RedisTransactionCommand {
  * @returns The unwrapped value.
  */
 export function unwrapRedisTransactionCommand(target, result) {
-    if (target instanceof RedisTransactionCommand) {
+    if (target instanceof RedisXTransactionCommand) {
         return result[target.index];
     }
     if (Array.isArray(target)) {

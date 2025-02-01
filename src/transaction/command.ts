@@ -1,20 +1,20 @@
 import { isPlainObject } from '../utils.js';
 
-export class RedisTransactionCommand<T> {
+export class RedisXTransactionCommand<T> {
 	private _type!: T; // Dummy private property
 
 	// eslint-disable-next-line no-useless-constructor, no-empty-function
 	constructor(public index: number) {}
 }
 
-export type UnwrapRedisTransactionCommand<T> =
-	T extends RedisTransactionCommand<infer A>
+export type UnwrapRedisXTransactionCommand<T> =
+	T extends RedisXTransactionCommand<infer A>
 		? A
 		: T extends (infer U)[]
-			? UnwrapRedisTransactionCommand<U>[]
+			? UnwrapRedisXTransactionCommand<U>[]
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			: T extends Record<string, any>
-				? { [K in keyof T]: UnwrapRedisTransactionCommand<T[K]> }
+				? { [K in keyof T]: UnwrapRedisXTransactionCommand<T[K]> }
 				: T;
 
 /**
@@ -23,9 +23,9 @@ export type UnwrapRedisTransactionCommand<T> =
  * @param result Result of the transaction.
  * @returns The unwrapped value.
  */
-export function unwrapRedisTransactionCommand<T>(target: T, result: unknown[]): UnwrapRedisTransactionCommand<T> {
-	if (target instanceof RedisTransactionCommand) {
-		return result[target.index] as UnwrapRedisTransactionCommand<T>;
+export function unwrapRedisTransactionCommand<T>(target: T, result: unknown[]): UnwrapRedisXTransactionCommand<T> {
+	if (target instanceof RedisXTransactionCommand) {
+		return result[target.index] as UnwrapRedisXTransactionCommand<T>;
 	}
 
 	if (Array.isArray(target)) {
@@ -40,5 +40,5 @@ export function unwrapRedisTransactionCommand<T>(target: T, result: unknown[]): 
 		}
 	}
 
-	return target as UnwrapRedisTransactionCommand<T>;
+	return target as UnwrapRedisXTransactionCommand<T>;
 }
