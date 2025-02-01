@@ -399,7 +399,7 @@ var RedisXTransaction = class {
     });
     return this;
   }
-  async exec() {
+  async execute() {
     await this.promise;
     const result = await this.multi.exec();
     for (const [index, transformer] of this.transformers.entries()) {

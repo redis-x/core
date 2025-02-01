@@ -20,7 +20,7 @@ export declare class RedisXTransaction<L = [], C extends boolean = false, D = un
     private useCommand;
     as<const K extends string>(key: K): RedisXTransaction<L, C, { [P in keyof D | K]: K extends P ? GetLast<L> : P extends keyof D ? D[P] : never; }>;
     use<const CB extends (transaction: RedisXTransactionUse) => Awaitable<Record<string, any> | void>>(callback: CB): RedisXTransaction<[], true, Awaited<ReturnType<CB>> extends Record<string, any> ? UnwrapRedisXTransactionCommand<Awaited<ReturnType<CB>>> & D : D>;
-    exec(): Promise<unknown extends D ? unknown extends (C extends true ? unknown : L extends [] ? unknown : L) ? Record<string, never> : C extends true ? unknown : L extends [] ? unknown : L : (C extends true ? unknown : L extends [] ? unknown : L) & { [K in keyof D]: D[K]; }>;
+    execute(): Promise<unknown extends D ? unknown extends (C extends true ? unknown : L extends [] ? unknown : L) ? Record<string, never> : C extends true ? unknown : L extends [] ? unknown : L : (C extends true ? unknown : L extends [] ? unknown : L) & { [K in keyof D]: D[K]; }>;
     /**
      * Get the value of key.
      *
