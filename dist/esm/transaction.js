@@ -74,7 +74,6 @@ export class RedisXTransaction {
         // console.log('this.data', this.data);
         const result_named = unwrapRedisTransactionCommand(this.data, result);
         if (this.return_no_array) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return result_named;
         }
         return Object.assign(result, result_named);

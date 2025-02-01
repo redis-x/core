@@ -7,6 +7,7 @@ import {
 } from './transaction/command.js';
 import { RedisXTransactionUse } from './transaction/use.js';
 import type {
+	Awaitable,
 	Command,
 	RedisClient,
 } from './types.js';
@@ -84,7 +85,7 @@ export class RedisXTransaction<
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	use<const CB extends (transaction: RedisXTransactionUse) => Record<string, any> | Promise<Record<string, any>>>(callback: CB) {
+	use<const CB extends (transaction: RedisXTransactionUse) => Awaitable<Record<string, any> | void>>(callback: CB) {
 		this.return_no_array = true;
 		this.promise = this.promise.then(async () => {
 			const transaction_use = new RedisXTransactionUse(this);
@@ -108,10 +109,24 @@ export class RedisXTransaction<
 		});
 
 		type R = Awaited<ReturnType<CB>>;
-		return this as unknown as RedisXTransaction<[], true, UnwrapRedisXTransactionCommand<R> & D>;
+		return this as unknown as RedisXTransaction<
+			[],
+			true,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			R extends Record<string, any>
+				? UnwrapRedisXTransactionCommand<R> & D
+				: D
+		>;
 	}
 
-	async exec(): Promise<(true extends C ? unknown : (L extends [] ? unknown : L)) & D> {
+	async exec() {
+		type RL = C extends true ? unknown : (L extends [] ? unknown : L);
+		type R = unknown extends D
+			? unknown extends RL
+				? Record<string, never>
+				: RL
+			: RL & { [K in keyof D]: D[K] };
+
 		await this.promise;
 
 		const result = await this.multi.exec() as unknown[];
@@ -126,15 +141,13 @@ export class RedisXTransaction<
 		const result_named = unwrapRedisTransactionCommand(this.data, result);
 
 		if (this.return_no_array) {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return result_named as any;
+			return result_named as R;
 		}
 
 		return Object.assign(
 			result,
 			result_named,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		) as any;
+		) as R;
 	}
 
 	// MARK: commands

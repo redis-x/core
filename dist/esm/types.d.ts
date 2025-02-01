@@ -5,3 +5,4 @@ export type Command<T = unknown> = {
     args: string[];
     replyTransform?: (result: any) => T;
 };
+export type Awaitable<T> = T | Promise<T>;

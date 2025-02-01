@@ -14,6 +14,8 @@ export type Command<T = unknown> = {
 	replyTransform?: (result: any) => T,
 };
 
+export type Awaitable<T> = T | Promise<T>;
+
 // /**
 //  * Checks if a value is a schema.
 //  * @param value Value to check.

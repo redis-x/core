@@ -1,6 +1,6 @@
 import { type UnwrapRedisXTransactionCommand } from './transaction/command.js';
 import { RedisXTransactionUse } from './transaction/use.js';
-import type { RedisClient } from './types.js';
+import type { Awaitable, RedisClient } from './types.js';
 type AddToList<T, U> = T extends any[] ? [...T, U] : [U];
 type GetLast<L> = L extends [...any[], infer T] ? T : never;
 export declare class RedisXTransaction<L = [], C extends boolean = false, D = unknown> {
@@ -19,8 +19,8 @@ export declare class RedisXTransaction<L = [], C extends boolean = false, D = un
     private queueCommand;
     private useCommand;
     as<const K extends string>(key: K): RedisXTransaction<L, C, { [P in keyof D | K]: K extends P ? GetLast<L> : P extends keyof D ? D[P] : never; }>;
-    use<const CB extends (transaction: RedisXTransactionUse) => Record<string, any> | Promise<Record<string, any>>>(callback: CB): RedisXTransaction<[], true, UnwrapRedisXTransactionCommand<Awaited<ReturnType<CB>>> & D>;
-    exec(): Promise<(true extends C ? unknown : (L extends [] ? unknown : L)) & D>;
+    use<const CB extends (transaction: RedisXTransactionUse) => Awaitable<Record<string, any> | void>>(callback: CB): RedisXTransaction<[], true, Awaited<ReturnType<CB>> extends Record<string, any> ? UnwrapRedisXTransactionCommand<Awaited<ReturnType<CB>>> & D : D>;
+    exec(): Promise<unknown extends D ? unknown extends (C extends true ? unknown : L extends [] ? unknown : L) ? Record<string, never> : C extends true ? unknown : L extends [] ? unknown : L : (C extends true ? unknown : L extends [] ? unknown : L) & { [K in keyof D]: D[K]; }>;
     /**
      * Get the value of key.
      *
